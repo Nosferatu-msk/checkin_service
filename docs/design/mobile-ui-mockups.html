@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile UI Mockups — Контроль присутствия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 48px;
+            font-size: 16px;
+        }
+
+        .screen-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .screen-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .screen-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        /* Mobile Frame */
+        .mobile-frame {
+            width: 375px;
+            height: 812px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+            border: 12px solid #1f2937;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .mobile-header {
+            background: #10b981;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .header-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-action {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-content {
+            flex: 1;
+            overflow-y: auto;
+            background: #f9fafb;
+        }
+
+        .content-padded {
+            padding: 20px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #10b981;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Components */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Login Screen */
+        .login-logo {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Status Card */
+        .status-card {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .status-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .status-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .status-time {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* List Item */
+        .list-item {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .list-icon {
+            width: 40px;
+            height: 40px;
+            background: #d1fae5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .list-content {
+            flex: 1;
+        }
+
+        .list-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .list-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* PIN Input */
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 40px 0;
+        }
+
+        .pin-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+        }
+
+        .pin-dot.filled {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        /* Numpad */
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 20px;
+        }
+
+        .numpad-btn {
+            aspect-ratio: 1;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .numpad-btn:active {
+            background: #e5e7eb;
+        }
+
+        /* Sync Status */
+        .sync-icon {
+            width: 80px;
+            height: 80px;
+            margin: 40px auto;
+            background: #d1fae5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        /* Grid for multiple phones */
+        .phones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(375px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .phone-wrapper {
+            text-align: center;
+        }
+
+        .phone-label {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .icon-sm {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-lg {
+            width: 32px;
+            height: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Mobile UI Mockups</h1>
+        <p class="subtitle">Мобильное приложение "Контроль присутствия" — Android</p>
+
+        <div class="phones-grid">
+            <!-- 1. LOGIN SCREEN -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="login-logo">
+                            <svg class="icon-lg" viewBox="0 0 24 24" style="width: 64px; height: 64px; margin: 0 auto 16px; stroke: #10b981;"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg>
+                            <div class="login-title">Контроль присутствия</div>
+                            <div class="login-subtitle">Войдите в систему</div>
+                        </div>
+                        
+                        <div class="content-padded">
+                            <div class="form-group">
+                                <label class="form-label">Логин</label>
+                                <input type="text" class="form-input" placeholder="Введите логин">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Пароль</label>
+                                <input type="password" class="form-input" placeholder="Введите пароль">
+                            </div>
+                            
+                            <button class="btn btn-primary">Войти</button>
+                            <button class="btn btn-secondary">Забыли пароль?</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">1. Login Screen</div>
+            </div>
+
+            <!-- 2. PIN SETUP -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="back-btn">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        </div>
+                        <div class="header-title">Установите PIN-код</div>
+                        <div class="header-action"></div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="content-padded" style="text-align: center;">
+                            <svg class="icon-lg" viewBox="0 0 24 24" style="width: 64px; height: 64px; margin: 40px auto 20px; stroke: #10b981;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Создайте PIN-код</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-bottom: 40px;">Введите 4 цифры для быстрого входа</div>
+                            
+                            <div class="pin-container">
+                                <div class="pin-dot filled"></div>
+                                <div class="pin-dot filled"></div>
+                                <div class="pin-dot"></div>
+                                <div class="pin-dot"></div>
+                            </div>
+                            
+                            <div class="numpad">
+                                <button class="numpad-btn">1</button>
+                                <button class="numpad-btn">2</button>
+                                <button class="numpad-btn">3</button>
+                                <button class="numpad-btn">4</button>
+                                <button class="numpad-btn">5</button>
+                                <button class="numpad-btn">6</button>
+                                <button class="numpad-btn">7</button>
+                                <button class="numpad-btn">8</button>
+                                <button class="numpad-btn">9</button>
+                                <button class="numpad-btn"></button>
+                                <button class="numpad-btn">0</button>
+                                <button class="numpad-btn">⌫</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">2. PIN Setup</div>
+            </div>
+
+            <!-- 3. HOME SCREEN -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="header-action"></div>
+                        <div class="header-title">Главная</div>
+                        <div class="header-action">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="content-padded">
+                            <div class="status-card">
+                                <div class="status-label">Текущий статус</div>
+                                <div class="status-value">На работе</div>
+                                <div class="status-time">Вход в 09:00 • БЦ "Москва"</div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-title">Сегодня</div>
+                                <div class="card-text">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <span>Время на работе:</span>
+                                        <strong>6ч 45мин</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Посещено зон:</span>
+                                        <strong>3 из 5</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-title">Последняя активность</div>
+                                <div class="card-text">
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>10:32</strong> — Офис 102 (Этаж 1)
+                                    </div>
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>09:45</strong> — Переговорная (Этаж 2)
+                                    </div>
+                                    <div>
+                                        <strong>09:00</strong> — Вход в здание
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary">Синхронизировать</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item active">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span>Главная</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            <span>История</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            <span>Настройки</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">3. Home Screen</div>
+            </div>
+
+            <!-- 4. ATTENDANCE HISTORY -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="back-btn">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        </div>
+                        <div class="header-title">История присутствия</div>
+                        <div class="header-action"></div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">Сегодня</div>
+                                <div class="list-subtitle">БЦ "Москва" • 6ч 45мин</div>
+                            </div>
+                            <span class="badge badge-success">✓ OK</span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">Вчера</div>
+                                <div class="list-subtitle">БЦ "Москва" • 8ч 12мин</div>
+                            </div>
+                            <span class="badge badge-success">✓ OK</span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">15 ноября</div>
+                                <div class="list-subtitle">Склад №3 • 7ч 30мин</div>
+                            </div>
+                            <span class="badge badge-warning">⚠ SLA</span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">14 ноября</div>
+                                <div class="list-subtitle">БЦ "Москва" • 8ч 05мин</div>
+                            </div>
+                            <span class="badge badge-success">✓ OK</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span>Главная</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            <span>История</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            <span>Настройки</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">4. Attendance History</div>
+            </div>
+
+            <!-- 5. SYNC SCREEN -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="back-btn">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        </div>
+                        <div class="header-title">Синхронизация</div>
+                        <div class="header-action"></div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="content-padded" style="text-align: center;">
+                            <div class="sync-icon">
+                                <svg class="icon-lg" viewBox="0 0 24 24" style="stroke: #10b981;"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            
+                            <div style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">Синхронизация завершена</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-bottom: 32px;">Все данные успешно отправлены на сервер</div>
+                            
+                            <div class="card" style="text-align: left;">
+                                <div class="card-title">Последняя синхронизация</div>
+                                <div class="card-text">
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>Время:</strong> 10:45
+                                    </div>
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>Отправлено записей:</strong> 12
+                                    </div>
+                                    <div>
+                                        <strong>Статус:</strong> <span style="color: #10b981;">✓ Успешно</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card" style="text-align: left;">
+                                <div class="card-title">Данные для синхронизации</div>
+                                <div class="card-text">
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>Ожидает отправки:</strong> 0
+                                    </div>
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>В локальной БД:</strong> 248
+                                    </div>
+                                    <div>
+                                        <strong>Размер:</strong> 1.2 MB
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary">Синхронизировать вручную</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">5. Sync Screen</div>
+            </div>
+
+            <!-- 6. SETTINGS SCREEN -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="header-action"></div>
+                        <div class="header-title">Настройки</div>
+                        <div class="header-action"></div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">Профиль</div>
+                                <div class="list-subtitle">Иван Петров</div>
+                            </div>
+                            <span>
+                                <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280;"><polyline points="9 18 15 12 9 6"/></svg>
+                            </span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">Безопасность</div>
+                                <div class="list-subtitle">PIN-код, биометрия</div>
+                            </div>
+                            <span>
+                                <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280;"><polyline points="9 18 15 12 9 6"/></svg>
+                            </span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">Уведомления</div>
+                                <div class="list-subtitle">Push-уведомления</div>
+                            </div>
+                            <span>
+                                <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280;"><polyline points="9 18 15 12 9 6"/></svg>
+                            </span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">Синхронизация</div>
+                                <div class="list-subtitle">Автоматически каждые 10 мин</div>
+                            </div>
+                            <span>
+                                <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280;"><polyline points="9 18 15 12 9 6"/></svg>
+                            </span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">Данные и хранилище</div>
+                                <div class="list-subtitle">1.2 MB использовано</div>
+                            </div>
+                            <span>
+                                <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280;"><polyline points="9 18 15 12 9 6"/></svg>
+                            </span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="list-icon">
+                                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            </div>
+                            <div class="list-content">
+                                <div class="list-title">О приложении</div>
+                                <div class="list-subtitle">Версия 1.0.0</div>
+                            </div>
+                            <span>
+                                <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280;"><polyline points="9 18 15 12 9 6"/></svg>
+                            </span>
+                        </div>
+                        
+                        <div style="padding: 20px;">
+                            <button class="btn btn-secondary" style="color: #ef4444; border-color: #ef4444;">Выйти из аккаунта</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span>Главная</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            <span>История</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            <span>Настройки</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">6. Settings Screen</div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 16px; margin-top: 40px;">
+            <h2 style="font-size: 28px; margin-bottom: 24px;">📋 Итого макетов</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                <div>
+                    <h3 style="font-size: 20px; margin-bottom: 16px;">🖥️ Web UI (13 страниц)</h3>
+                    <ul style="list-style: none; line-height: 2;">
+                        <li>✓ Login Page</li>
+                        <li>✓ Dashboard</li>
+                        <li>✓ Objects List</li>
+                        <li>✓ Object Details</li>
+                        <li>⏳ Zones Management</li>
+                        <li>⏳ Beacons Management</li>
+                        <li>⏳ Employees List</li>
+                        <li>⏳ Employee Details</li>
+                        <li>⏳ Attendance Report</li>
+                        <li>⏳ SLA Violations</li>
+                        <li>⏳ Fraud Detection</li>
+                        <li>⏳ Contracts Management</li>
+                        <li>⏳ Settings</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 style="font-size: 20px; margin-bottom: 16px;">📱 Mobile UI (7 экранов)</h3>
+                    <ul style="list-style: none; line-height: 2;">
+                        <li>✓ Login Screen</li>
+                        <li>✓ PIN Setup</li>
+                        <li>✓ Home Screen</li>
+                        <li>✓ Attendance History</li>
+                        <li>✓ Sync Screen</li>
+                        <li>✓ Settings Screen</li>
+                        <li>⏳ Biometric Setup</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

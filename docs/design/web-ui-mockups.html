@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web UI Mockups — Контроль присутствия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 48px;
+            font-size: 16px;
+        }
+
+        .page-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .page-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        /* Web Frame */
+        .web-frame {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .web-header {
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .web-logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .web-nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .web-nav-item {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+            cursor: pointer;
+        }
+
+        .web-nav-item:hover {
+            opacity: 1;
+        }
+
+        .web-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .web-avatar {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .web-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .web-sidebar {
+            width: 240px;
+            background: #f9fafb;
+            border-right: 1px solid #e5e7eb;
+            padding: 24px 0;
+        }
+
+        .sidebar-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #374151;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: #f3f4f6;
+        }
+
+        .sidebar-item.active {
+            background: #d1fae5;
+            color: #065f46;
+            font-weight: 600;
+        }
+
+        .sidebar-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .web-main {
+            flex: 1;
+            padding: 24px;
+            background: white;
+        }
+
+        .page-header {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .data-table tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Login Page */
+        .login-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* Charts placeholder */
+        .chart-placeholder {
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        /* Tree view */
+        .tree-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tree-item:hover {
+            background: #f3f4f6;
+        }
+
+        .tree-item.selected {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .tree-children {
+            margin-left: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖥️ Web UI Mockups</h1>
+        <p class="subtitle">Система "Контроль присутствия" — Администратор/Куратор</p>
+
+        <!-- 1. LOGIN PAGE -->
+        <div class="page-section">
+            <div class="page-title">1. Login Page</div>
+            <p class="page-description">Страница авторизации для администраторов и кураторов</p>
+            
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-title">Контроль присутствия</div>
+                    <div class="login-subtitle">Войдите в систему</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Логин</label>
+                        <input type="text" class="form-input" placeholder="Введите логин">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Пароль</label>
+                        <input type="password" class="form-input" placeholder="Введите пароль">
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 8px;">Войти</button>
+                    
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="#" style="color: #10b981; font-size: 14px; text-decoration: none;">Забыли пароль?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DASHBOARD -->
+        <div class="page-section">
+            <div class="page-title">2. Dashboard</div>
+            <p class="page-description">Главная панель с общей статистикой и графиками</p>
+            
+            <div class="web-frame">
+                <div class="web-header">
+                    <div class="web-logo">Контроль присутствия</div>
+                    <div class="web-nav">
+                        <span class="web-nav-item">Dashboard</span>
+                        <span class="web-nav-item">Объекты</span>
+                        <span class="web-nav-item">Сотрудники</span>
+                        <span class="web-nav-item">Отчёты</span>
+                    </div>
+                    <div class="web-user">
+                        <div class="web-avatar">АИ</div>
+                        <span>Александр И.</span>
+                    </div>
+                </div>
+                
+                <div class="web-content">
+                    <div class="web-sidebar">
+                        <div class="sidebar-item active">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 21V9"/></svg> Dashboard
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg> Объекты
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Зоны
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg> Маяки
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Сотрудники
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Отчёты
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Нарушения
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Фрод
+                        </div>
+                    </div>
+                    
+                    <div class="web-main">
+                        <div class="page-header">Dashboard</div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Всего объектов</div>
+                                <div class="stat-value">12</div>
+                                <div class="stat-change positive">+2 за месяц</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Активных маяков</div>
+                                <div class="stat-value">248</div>
+                                <div class="stat-change positive">98% uptime</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Сотрудников</div>
+                                <div class="stat-value">86</div>
+                                <div class="stat-change positive">+5 за месяц</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Нарушений SLA</div>
+                                <div class="stat-value">7</div>
+                                <div class="stat-change negative">+3 за неделю</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid-2">
+                            <div class="card">
+                                <div class="card-title" style="margin-bottom: 16px;">Присутствие за неделю</div>
+                                <div class="chart-placeholder">
+                                    <div class="chart-title">📈 Line Chart</div>
+                                    <p>График присутствия сотрудников по дням</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title" style="margin-bottom: 16px;">Топ объектов</div>
+                                <div class="chart-placeholder">
+                                    <div class="chart-title">📊 Bar Chart</div>
+                                    <p>Количество сотрудников на объектах</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title" style="margin-bottom: 16px;">Последние события</div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Время</th>
+                                        <th>Событие</th>
+                                        <th>Объект</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>10:45</td>
+                                        <td>Сотрудник вошёл в зону</td>
+                                        <td>БЦ "Москва"</td>
+                                        <td><span class="badge badge-success">✓ OK</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:32</td>
+                                        <td>Низкий заряд маяка</td>
+                                        <td>Склад №3</td>
+                                        <td><span class="badge badge-warning">⚠ 15%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:15</td>
+                                        <td>Нарушение SLA</td>
+                                        <td>Офис "Северный"</td>
+                                        <td><span class="badge badge-error">❌ Critical</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. OBJECTS LIST -->
+        <div class="page-section">
+            <div class="page-title">3. Objects List</div>
+            <p class="page-description">Список всех объектов с основной информацией</p>
+            
+            <div class="web-frame">
+                <div class="web-header">
+                    <div class="web-logo">Контроль присутствия</div>
+                    <div class="web-nav">
+                        <span class="web-nav-item">Dashboard</span>
+                        <span class="web-nav-item" style="opacity: 1; font-weight: 600;">Объекты</span>
+                        <span class="web-nav-item">Сотрудники</span>
+                        <span class="web-nav-item">Отчёты</span>
+                    </div>
+                    <div class="web-user">
+                        <div class="web-avatar">АИ</div>
+                        <span>Александр И.</span>
+                    </div>
+                </div>
+                
+                <div class="web-content">
+                    <div class="web-sidebar">
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 21V9"/></svg> Dashboard
+                        </div>
+                        <div class="sidebar-item active">
+                            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg> Объекты
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Зоны
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg> Маяки
+                        </div>
+                        <div class="sidebar-item">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Сотрудники
+                        </div>
+                    </div>
+                    
+                    <div class="web-main">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <div class="page-header" style="margin: 0;">Объекты</div>
+                            <button class="btn btn-primary">+ Добавить объект</button>
+                        </div>
+                        
+                        <div class="card">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Адрес</th>
+                                        <th>Зон</th>
+                                        <th>Маяков</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>БЦ "Москва"</strong></td>
+                                        <td>г. Москва, ул. Примерная, д. 1</td>
+                                        <td>12</td>
+                                        <td>48</td>
+                                        <td><span class="badge badge-success">✓ Активен</span></td>
+                                        <td>
+                                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Подробнее</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Склад №3</strong></td>
+                                        <td>г. Москва, ул. Складская, д. 3</td>
+                                        <td>5</td>
+                                        <td>12</td>
+                                        <td><span class="badge badge-success">✓ Активен</span></td>
+                                        <td>
+                                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Подробнее</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Офис "Северный"</strong></td>
+                                        <td>г. Москва, ул. Северная, д. 15</td>
+                                        <td>8</td>
+                                        <td>32</td>
+                                        <td><span class="badge badge-warning">⚠ Проблемы</span></td>
+                                        <td>
+                                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Подробнее</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. OBJECT DETAILS -->
+        <div class="page-section">
+            <div class="page-title">4. Object Details</div>
+            <p class="page-description">Детальная карточка объекта с зонами и маяками</p>
+            
+            <div class="web-frame">
+                <div class="web-header">
+                    <div class="web-logo">Контроль присутствия</div>
+                    <div class="web-nav">
+                        <span class="web-nav-item">Dashboard</span>
+                        <span class="web-nav-item" style="opacity: 1; font-weight: 600;">Объекты</span>
+                        <span class="web-nav-item">Сотрудники</span>
+                    </div>
+                    <div class="web-user">
+                        <div class="web-avatar">АИ</div>
+                        <span>Александр И.</span>
+                    </div>
+                </div>
+                
+                <div class="web-content">
+                    <div class="web-sidebar">
+                        <div class="sidebar-item">
+                            <span>📊</span> Dashboard
+                        </div>
+                        <div class="sidebar-item active">
+                            <span>🏢</span> Объекты
+                        </div>
+                    </div>
+                    
+                    <div class="web-main">
+                        <div style="margin-bottom: 24px;">
+                            <a href="#" style="color: #10b981; text-decoration: none; font-size: 14px;">← Назад к списку объектов</a>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title" style="font-size: 24px;">БЦ "Москва"</div>
+                                    <div style="color: #6b7280; font-size: 14px; margin-top: 4px;">г. Москва, ул. Примерная, д. 1</div>
+                                </div>
+                                <span class="badge badge-success" style="padding: 6px 16px; font-size: 14px;">✓ Активен</span>
+                            </div>
+                            
+                            <div class="stats-grid" style="margin-top: 24px;">
+                                <div class="stat-card">
+                                    <div class="stat-label">Зон</div>
+                                    <div class="stat-value">12</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">Маяков</div>
+                                    <div class="stat-value">48</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">Сотрудников сегодня</div>
+                                    <div class="stat-value">24</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title" style="margin-bottom: 16px;">Зоны объекта</div>
+                            <div class="tree-item selected">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg> Этаж 1
+                            </div>
+                            <div class="tree-children">
+                                <div class="tree-item">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Входная группа
+                                </div>
+                                <div class="tree-item">
+                                    <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Офис 101
+                                </div>
+                                <div class="tree-item">
+                                    <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Офис 102
+                                </div>
+                            </div>
+                            <div class="tree-item">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg> Этаж 2
+                            </div>
+                            <div class="tree-item">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg> Этаж 3
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Continue with more pages... -->
+        <div class="page-section">
+            <div class="page-title">5-13. Дополнительные страницы</div>
+            <p class="page-description">Zones Management, Beacons Management, Employees List, Employee Details, Attendance Report, SLA Violations, Fraud Detection, Contracts Management, Settings</p>
+            
+            <div style="text-align: center; padding: 60px 20px; color: #6b7280;">
+                <p style="font-size: 18px; margin-bottom: 16px;">🔄 Следующие страницы будут созданы аналогично</p>
+                <p>Каждая страница следует единому дизайн-паттерну с sidebar навигацией</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile UI Mockups — Контроль присутствия (v3)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 48px;
+            font-size: 16px;
+        }
+
+        .screen-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .screen-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .screen-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        /* Mobile Frame */
+        .mobile-frame {
+            width: 375px;
+            height: 812px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+            border: 12px solid #1f2937;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .mobile-header {
+            background: #10b981;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .header-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-action {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-content {
+            flex: 1;
+            overflow-y: auto;
+            background: #f9fafb;
+        }
+
+        .content-padded {
+            padding: 20px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #10b981;
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .icon-sm {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-lg {
+            width: 32px;
+            height: 32px;
+        }
+
+        /* Components */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Login Screen */
+        .login-logo {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Status Card */
+        .status-card {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .status-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .status-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .status-time {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Beacon List Item */
+        .beacon-item {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .beacon-icon {
+            width: 48px;
+            height: 48px;
+            background: #d1fae5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .beacon-content {
+            flex: 1;
+        }
+
+        .beacon-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .beacon-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* Grid for multiple phones */
+        .phones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(375px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .phone-wrapper {
+            text-align: center;
+        }
+
+        .phone-label {
+            margin-top: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .phone-description {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Mobile UI Mockups (v3)</h1>
+        <p class="subtitle">Мобильное приложение "Контроль присутствия" — BLE Discovery</p>
+
+        <div class="phones-grid">
+            <!-- 1. LOGIN SCREEN -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="login-logo">
+                            <svg class="icon-lg" viewBox="0 0 24 24" style="width: 64px; height: 64px; margin: 0 auto 16px; stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+                            </svg>
+                            <div class="login-title">Контроль присутствия</div>
+                            <div class="login-subtitle">Войдите в систему</div>
+                        </div>
+                        
+                        <div class="content-padded">
+                            <div class="form-group">
+                                <label class="form-label">Логин</label>
+                                <input type="text" class="form-input" placeholder="Введите логин">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Пароль</label>
+                                <input type="password" class="form-input" placeholder="Введите пароль">
+                            </div>
+                            
+                            <button class="btn btn-primary">Войти</button>
+                            <button class="btn btn-secondary">Забыли пароль?</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">1. Login Screen</div>
+                <div class="phone-description">Авторизация по логину и паролю</div>
+            </div>
+
+            <!-- 2. HOME SCREEN (BLE Discovery) -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="header-action"></div>
+                        <div class="header-title">Маяки рядом</div>
+                        <div class="header-action">
+                            <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: white; stroke-width: 1.5; fill: none;">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="content-padded">
+                            <div class="status-card">
+                                <div class="status-label">Текущий статус</div>
+                                <div class="status-value">На работе</div>
+                                <div class="status-time">БЦ "Москва" • Вход в 09:00</div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <div class="card-title" style="margin: 0;">Обнаружено маяков</div>
+                                <span class="badge badge-success">3 активных</span>
+                            </div>
+
+                            <div class="beacon-item">
+                                <div class="beacon-icon">
+                                    <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                                    </svg>
+                                </div>
+                                <div class="beacon-content">
+                                    <div class="beacon-name">Маяк #001</div>
+                                    <div class="beacon-info">Этаж 1 • Офис 101 • RSSI: -65</div>
+                                </div>
+                                <span class="badge badge-success">Активен</span>
+                            </div>
+
+                            <div class="beacon-item">
+                                <div class="beacon-icon">
+                                    <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                                    </svg>
+                                </div>
+                                <div class="beacon-content">
+                                    <div class="beacon-name">Маяк #002</div>
+                                    <div class="beacon-info">Этаж 1 • Переговорная • RSSI: -72</div>
+                                </div>
+                                <span class="badge badge-success">Активен</span>
+                            </div>
+
+                            <div class="beacon-item">
+                                <div class="beacon-icon">
+                                    <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                                    </svg>
+                                </div>
+                                <div class="beacon-content">
+                                    <div class="beacon-name">Маяк #003</div>
+                                    <div class="beacon-info">Этаж 2 • Коридор • RSSI: -78</div>
+                                </div>
+                                <span class="badge badge-success">Активен</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item active">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            </svg>
+                            <span>Маяки</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                            <span>История</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            <span>Настройки</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">2. Home Screen (BLE Discovery)</div>
+                <div class="phone-description">Главный экран с обнаруженными маяками</div>
+            </div>
+
+            <!-- 3. HISTORY SCREEN -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="back-btn">
+                            <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: white; stroke-width: 1.5; fill: none;">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                        </div>
+                        <div class="header-title">История</div>
+                        <div class="header-action"></div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="content-padded">
+                            <div class="card-title">Последние 7 дней</div>
+                            
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div>
+                                        <div style="font-size: 16px; font-weight: 700; color: #111827;">Сегодня</div>
+                                        <div style="font-size: 13px; color: #6b7280;">БЦ "Москва"</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 18px; font-weight: 700; color: #10b981;">6ч 45м</div>
+                                        <div style="font-size: 12px; color: #6b7280;">3 маяка</div>
+                                    </div>
+                                </div>
+                                <span class="badge badge-success">✓ Норма</span>
+                            </div>
+
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div>
+                                        <div style="font-size: 16px; font-weight: 700; color: #111827;">Вчера</div>
+                                        <div style="font-size: 13px; color: #6b7280;">БЦ "Москва"</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 18px; font-weight: 700; color: #10b981;">8ч 12м</div>
+                                        <div style="font-size: 12px; color: #6b7280;">5 маяков</div>
+                                    </div>
+                                </div>
+                                <span class="badge badge-success">✓ Норма</span>
+                            </div>
+
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div>
+                                        <div style="font-size: 16px; font-weight: 700; color: #111827;">15 ноября</div>
+                                        <div style="font-size: 13px; color: #6b7280;">Склад №3</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 18px; font-weight: 700; color: #f59e0b;">7ч 30м</div>
+                                        <div style="font-size: 12px; color: #6b7280;">2 маяка</div>
+                                    </div>
+                                </div>
+                                <span class="badge badge-warning">⚠ SLA</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            </svg>
+                            <span>Маяки</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                            <span>История</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            <span>Настройки</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">3. History Screen</div>
+                <div class="phone-description">История присутствия за последние дни</div>
+            </div>
+
+            <!-- 4. SETTINGS SCREEN -->
+            <div class="phone-wrapper">
+                <div class="mobile-frame">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    
+                    <div class="mobile-header">
+                        <div class="header-action"></div>
+                        <div class="header-title">Настройки</div>
+                        <div class="header-action"></div>
+                    </div>
+                    
+                    <div class="mobile-content">
+                        <div class="beacon-item">
+                            <div class="beacon-icon">
+                                <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                    <circle cx="12" cy="8" r="4"/>
+                                    <path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
+                                </svg>
+                            </div>
+                            <div class="beacon-content">
+                                <div class="beacon-name">Профиль</div>
+                                <div class="beacon-info">Иван Петров</div>
+                            </div>
+                            <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="beacon-item">
+                            <div class="beacon-icon">
+                                <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                            </div>
+                            <div class="beacon-content">
+                                <div class="beacon-name">Безопасность</div>
+                                <div class="beacon-info">PIN-код, биометрия</div>
+                            </div>
+                            <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="beacon-item">
+                            <div class="beacon-icon">
+                                <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                                </svg>
+                            </div>
+                            <div class="beacon-content">
+                                <div class="beacon-name">Уведомления</div>
+                                <div class="beacon-info">Push-уведомления</div>
+                            </div>
+                            <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="beacon-item">
+                            <div class="beacon-icon">
+                                <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                    <polyline points="23 4 23 10 17 10"/>
+                                    <polyline points="1 20 1 14 7 14"/>
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                                </svg>
+                            </div>
+                            <div class="beacon-content">
+                                <div class="beacon-name">Синхронизация</div>
+                                <div class="beacon-info">Автоматически каждые 10 мин</div>
+                            </div>
+                            <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="beacon-item">
+                            <div class="beacon-icon">
+                                <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="16" x2="12" y2="12"/>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                                </svg>
+                            </div>
+                            <div class="beacon-content">
+                                <div class="beacon-name">О приложении</div>
+                                <div class="beacon-info">Версия 1.0.0</div>
+                            </div>
+                            <svg class="icon-sm" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </div>
+                        
+                        <div style="padding: 20px;">
+                            <button class="btn btn-secondary" style="color: #ef4444; border-color: #ef4444;">Выйти из аккаунта</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            </svg>
+                            <span>Маяки</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #6b7280; stroke-width: 1.5; fill: none;">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                            <span>История</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg class="icon" viewBox="0 0 24 24" style="stroke: #10b981; stroke-width: 1.5; fill: none;">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            <span>Настройки</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">4. Settings Screen</div>
+                <div class="phone-description">Настройки приложения</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
