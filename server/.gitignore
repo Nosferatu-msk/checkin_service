@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.js.map
+*.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Keys
+keys/
+*.pem
+*.key
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Testing
+.junit/
+test-results/
+
+# Docker
+.docker/
+
+# Temp files
+tmp/
+temp/
+*.tmp
