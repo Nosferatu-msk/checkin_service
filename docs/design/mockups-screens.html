@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Макеты экранов — Контроль присутствия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f9fafb;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 48px;
+            font-size: 16px;
+        }
+
+        .platform-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .platform-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .platform-icon {
+            width: 48px;
+            height: 48px;
+            background: #10b981;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .platform-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .screen-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .screen-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .screen-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        /* Mobile Frame */
+        .mobile-frame {
+            width: 375px;
+            height: 750px;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .mobile-status-bar {
+            height: 44px;
+            background: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .mobile-header {
+            background: #10b981;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .mobile-content {
+            padding: 16px;
+            height: calc(100% - 44px - 56px - 64px);
+            overflow-y: auto;
+        }
+
+        .mobile-bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .nav-item.active {
+            color: #10b981;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Web Frame */
+        .web-frame {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .web-header {
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .web-logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .web-nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .web-nav-item {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .web-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .web-avatar {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .web-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .web-sidebar {
+            width: 240px;
+            background: #f9fafb;
+            border-right: 1px solid #e5e7eb;
+            padding: 24px 0;
+        }
+
+        .sidebar-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #374151;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: #f3f4f6;
+        }
+
+        .sidebar-item.active {
+            background: #d1fae5;
+            color: #065f46;
+            font-weight: 600;
+        }
+
+        .web-main {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 24px;
+        }
+
+        /* Components */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #d1d5db;
+            color: #374151;
+        }
+
+        .input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #f9fafb;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table td {
+            padding: 12px;
+            font-size: 14px;
+            color: #4b5563;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .table tr:hover {
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Макеты экранов</h1>
+        <p class="subtitle">Система контроля присутствия • Emerald Theme</p>
+
+        <!-- МОБИЛЬНОЕ ПРИЛОЖЕНИЕ -->
+        <div class="platform-section">
+            <div class="platform-header">
+                <div class="platform-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="white" stroke-width="1.5" fill="none">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                        <line x1="12" y1="18" x2="12.01" y2="18"/>
+                    </svg>
+                </div>
+                <div class="platform-title">Мобильное приложение (Android)</div>
+            </div>
+
+            <div class="screens-grid">
+                <!-- Экран входа -->
+                <div class="screen-card">
+                    <div class="screen-title">1. Экран входа</div>
+                    <div class="screen-description">Авторизация сотрудника по логину и паролю. Первый экран при запуске приложения.</div>
+                    <div class="mobile-frame">
+                        <div class="mobile-status-bar">
+                            <span>9:41</span>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="1.5" fill="none">
+                                    <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+                                    <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+                                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                                    <line x1="12" y1="20" x2="12.01" y2="20"/>
+                                </svg>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="1.5" fill="none">
+                                    <rect x="1" y="6" width="18" height="12" rx="2" ry="2"/>
+                                    <line x1="23" y1="13" x2="23" y2="11"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div style="padding: 40px 24px;">
+                            <div style="text-align: center; margin-bottom: 48px;">
+                                <div style="width: 80px; height: 80px; background: #10b981; border-radius: 20px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+                                    <svg viewBox="0 0 24 24" width="48" height="48" stroke="white" stroke-width="1.5" fill="none">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/>
+                                    </svg>
+                                </div>
+                                <h1 style="font-size: 24px; font-weight: 700; color: #111827;">Контроль присутствия</h1>
+                                <p style="color: #6b7280; margin-top: 8px;">Войдите в систему</p>
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Логин</label>
+                                <input type="text" class="input" placeholder="ivanov.ii">
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Пароль</label>
+                                <input type="password" class="input" placeholder="••••••••">
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%; padding: 14px;">Войти</button>
+                            <div style="text-align: center; margin-top: 16px;">
+                                <a href="#" style="color: #10b981; font-size: 14px; text-decoration: none;">Забыли пароль?</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Главный экран -->
+                <div class="screen-card">
+                    <div class="screen-title">2. Главный экран</div>
+                    <div class="screen-description">Рабочий экран с статусом сбора данных и основной информацией.</div>
+                    <div class="mobile-frame">
+                        <div class="mobile-status-bar">
+                            <span>9:41</span>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="1.5" fill="none">
+                                    <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+                                    <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+                                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                                    <line x1="12" y1="20" x2="12.01" y2="20"/>
+                                </svg>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="1.5" fill="none">
+                                    <rect x="1" y="6" width="18" height="12" rx="2" ry="2"/>
+                                    <line x1="23" y1="13" x2="23" y2="11"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mobile-header">Контроль присутствия</div>
+                        <div class="mobile-content">
+                            <div class="card" style="background: #f0fdf4; border-color: #86efac;">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div style="width: 48px; height: 48px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="white" stroke-width="2" fill="none">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 16px; font-weight: 600; color: #065f46;">Сбор данных активен</div>
+                                        <div style="font-size: 13px; color: #047857;">BLE-сканирование работает</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="stat-card">
+                                    <div class="stat-value">12</div>
+                                    <div class="stat-label">Несинхр. пакеты</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">85%</div>
+                                    <div class="stat-label">Заряд батареи</div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div style="font-size: 14px; color: #6b7280;">Последняя синхронизация</div>
+                                    <div style="font-size: 14px; font-weight: 600; color: #111827;">10:23</div>
+                                </div>
+                                <button class="btn btn-primary" style="width: 100%;">Синхронизировать сейчас</button>
+                            </div>
+                        </div>
+                        <div class="mobile-bottom-nav">
+                            <div class="nav-item active">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                </svg>
+                                <span>Главная</span>
+                            </div>
+                            <div class="nav-item">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none">
+                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4"/>
+                                </svg>
+                                <span>Настройки</span>
+                            </div>
+                            <div class="nav-item">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none">
+                                    <circle cx="12" cy="8" r="4"/>
+                                    <path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
+                                </svg>
+                                <span>Профиль</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Экран настроек -->
+                <div class="screen-card">
+                    <div class="screen-title">3. Экран настроек</div>
+                    <div class="screen-description">Настройки безопасности, PIN-код, биометрия.</div>
+                    <div class="mobile-frame">
+                        <div class="mobile-status-bar">
+                            <span>9:41</span>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="1.5" fill="none">
+                                    <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+                                    <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+                                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                                    <line x1="12" y1="20" x2="12.01" y2="20"/>
+                                </svg>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="1.5" fill="none">
+                                    <rect x="1" y="6" width="18" height="12" rx="2" ry="2"/>
+                                    <line x1="23" y1="13" x2="23" y2="11"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mobile-header">Настройки</div>
+                        <div class="mobile-content">
+                            <div class="card">
+                                <div class="card-title" style="margin-bottom: 16px;">Безопасность</div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                                    <div>
+                                        <div style="font-size: 14px; font-weight: 500; color: #111827;">PIN-код</div>
+                                        <div style="font-size: 13px; color: #6b7280;">Установлен 4-значный код</div>
+                                    </div>
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="#9ca3af" stroke-width="1.5" fill="none">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                                    <div>
+                                        <div style="font-size: 14px; font-weight: 500; color: #111827;">Биометрия</div>
+                                        <div style="font-size: 13px; color: #6b7280;">Включено</div>
+                                    </div>
+                                    <div style="width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative;">
+                                        <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; right: 2px; top: 2px;"></div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+                                    <div>
+                                        <div style="font-size: 14px; font-weight: 500; color: #111827;">Скриншоты</div>
+                                        <div style="font-size: 13px; color: #6b7280;">Запрещено</div>
+                                    </div>
+                                    <div style="width: 44px; height: 24px; background: #d1d5db; border-radius: 12px; position: relative;">
+                                        <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; left: 2px; top: 2px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-title" style="margin-bottom: 16px;">О приложении</div>
+                                <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                    <span style="color: #6b7280;">Версия</span>
+                                    <span style="color: #111827; font-weight: 500;">1.0.0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                    <span style="color: #6b7280;">Сборка</span>
+                                    <span style="color: #111827; font-weight: 500;">2026.11.04</span>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-secondary" style="width: 100%; color: #ef4444; border-color: #ef4444;">Выйти из аккаунта</button>
+                        </div>
+                        <div class="mobile-bottom-nav">
+                            <div class="nav-item">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                </svg>
+                                <span>Главная</span>
+                            </div>
+                            <div class="nav-item active">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none">
+                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4"/>
+                                </svg>
+                                <span>Настройки</span>
+                            </div>
+                            <div class="nav-item">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none">
+                                    <circle cx="12" cy="8" r="4"/>
+                                    <path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
+                                </svg>
+                                <span>Профиль</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ВЕБ-ИНТЕРФЕЙС -->
+        <div class="platform-section">
+            <div class="platform-header">
+                <div class="platform-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="white" stroke-width="1.5" fill="none">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                </div>
+                <div class="platform-title">Веб-интерфейс (Админ-панель)</div>
+            </div>
+
+            <div class="screens-grid">
+                <!-- Дашборд -->
+                <div class="screen-card" style="grid-column: 1 / -1;">
+                    <div class="screen-title">4. Дашборд администратора</div>
+                    <div class="screen-description">Главная страница с общей статистикой и ключевыми метриками.</div>
+                    <div class="web-frame">
+                        <div class="web-header">
+                            <div class="web-logo">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="white" stroke-width="1.5" fill="none" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/>
+                                </svg>
+                                Контроль присутствия
+                            </div>
+                            <div class="web-nav">
+                                <a href="#" class="web-nav-item">Дашборд</a>
+                                <a href="#" class="web-nav-item">Объекты</a>
+                                <a href="#" class="web-nav-item">Сотрудники</a>
+                                <a href="#" class="web-nav-item">Отчеты</a>
+                            </div>
+                            <div class="web-user">
+                                <div class="web-avatar">АП</div>
+                                <span style="color: white;">Администратор</span>
+                            </div>
+                        </div>
+                        <div class="web-content">
+                            <div class="web-sidebar">
+                                <div class="sidebar-item active">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <line x1="18" y1="20" x2="18" y2="10"/>
+                                        <line x1="12" y1="20" x2="12" y2="4"/>
+                                        <line x1="6" y1="20" x2="6" y2="14"/>
+                                    </svg>
+                                    Дашборд
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                        <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+                                    </svg>
+                                    Объекты
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/>
+                                    </svg>
+                                    Маяки
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                    Сотрудники
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                    Договоры
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <line x1="18" y1="20" x2="18" y2="10"/>
+                                        <line x1="12" y1="20" x2="12" y2="4"/>
+                                        <line x1="6" y1="20" x2="6" y2="14"/>
+                                    </svg>
+                                    Отчеты
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                    </svg>
+                                    Настройки
+                                </div>
+                            </div>
+                            <div class="web-main">
+                                <h2 class="page-title">Дашборд</h2>
+                                
+                                <div class="stat-grid">
+                                    <div class="stat-card">
+                                        <div class="stat-value">12</div>
+                                        <div class="stat-label">Активных объектов</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">248</div>
+                                        <div class="stat-label">Маяков</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">156</div>
+                                        <div class="stat-label">Сотрудников</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">94%</div>
+                                        <div class="stat-label">SLA выполнено</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">Посещения за неделю</div>
+                                        </div>
+                                        <div style="height: 200px; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+                                            [График посещений]
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">Проблемы</div>
+                                        </div>
+                                        <div style="margin-bottom: 12px;">
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                                                <span style="color: #4b5563;">Маяки offline</span>
+                                                <span class="badge badge-error">3</span>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                                                <span style="color: #4b5563;">Низкий заряд</span>
+                                                <span class="badge badge-warning">12</span>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                                <span style="color: #4b5563;">SLA нарушения</span>
+                                                <span class="badge badge-warning">5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Список объектов -->
+                <div class="screen-card" style="grid-column: 1 / -1;">
+                    <div class="screen-title">5. Список объектов</div>
+                    <div class="screen-description">Управление объектами, зонами и маяками.</div>
+                    <div class="web-frame">
+                        <div class="web-header">
+                            <div class="web-logo">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="white" stroke-width="1.5" fill="none" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/>
+                                </svg>
+                                Контроль присутствия
+                            </div>
+                            <div class="web-nav">
+                                <a href="#" class="web-nav-item">Дашборд</a>
+                                <a href="#" class="web-nav-item">Объекты</a>
+                                <a href="#" class="web-nav-item">Сотрудники</a>
+                                <a href="#" class="web-nav-item">Отчеты</a>
+                            </div>
+                            <div class="web-user">
+                                <div class="web-avatar">АП</div>
+                                <span style="color: white;">Администратор</span>
+                            </div>
+                        </div>
+                        <div class="web-content">
+                            <div class="web-sidebar">
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <line x1="18" y1="20" x2="18" y2="10"/>
+                                        <line x1="12" y1="20" x2="12" y2="4"/>
+                                        <line x1="6" y1="20" x2="6" y2="14"/>
+                                    </svg>
+                                    Дашборд
+                                </div>
+                                <div class="sidebar-item active">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                        <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+                                    </svg>
+                                    Объекты
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/>
+                                    </svg>
+                                    Маяки
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                    Сотрудники
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                    Договоры
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <line x1="18" y1="20" x2="18" y2="10"/>
+                                        <line x1="12" y1="20" x2="12" y2="4"/>
+                                        <line x1="6" y1="20" x2="6" y2="14"/>
+                                    </svg>
+                                    Отчеты
+                                </div>
+                                <div class="sidebar-item">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                    </svg>
+                                    Настройки
+                                </div>
+                            </div>
+                            <div class="web-main">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                                    <h2 class="page-title" style="margin: 0;">Объекты</h2>
+                                    <button class="btn btn-primary">+ Добавить объект</button>
+                                </div>
+
+                                <div class="card">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Название</th>
+                                                <th>Адрес</th>
+                                                <th>Зоны</th>
+                                                <th>Маяки</th>
+                                                <th>Статус</th>
+                                                <th>Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="font-weight: 600;">Бизнес-центр "Москва"</td>
+                                                <td>г. Москва, ул. Примерная, 1</td>
+                                                <td>12</td>
+                                                <td>48</td>
+                                                <td><span class="badge badge-success">Активен</span></td>
+                                                <td>
+                                                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">Редактировать</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600;">ТЦ "Центральный"</td>
+                                                <td>г. Москва, пр. Ленина, 25</td>
+                                                <td>8</td>
+                                                <td>32</td>
+                                                <td><span class="badge badge-success">Активен</span></td>
+                                                <td>
+                                                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">Редактировать</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600;">Склад №3</td>
+                                                <td>г. Москва, ул. Складская, 5</td>
+                                                <td>4</td>
+                                                <td>16</td>
+                                                <td><span class="badge badge-warning">Обслуживание</span></td>
+                                                <td>
+                                                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">Редактировать</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
