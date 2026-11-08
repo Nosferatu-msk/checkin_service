@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Object } from '../objects/entities/object.entity';
+import { ObjectEntity } from '../objects/entities/object.entity';
 import { Beacon } from '../beacons/entities/beacon.entity';
-import { User } from '../users/entities/user.entity';
+import { User } from '@/modules/users/entities/user.entity';
 import { RequirementViolation } from '../sla/entities/requirement-violation.entity';
 import { AttendanceCalculated } from '../attendance/entities/attendance-calculated.entity';
 
 @Injectable()
 export class AnalyticsService {
   constructor(
-    @InjectRepository(Object)
-    private objectRepository: Repository<Object>,
+    @InjectRepository(ObjectEntity)
+    private objectRepository: Repository<ObjectEntity>,
     @InjectRepository(Beacon)
     private beaconRepository: Repository<Beacon>,
     @InjectRepository(User)
@@ -46,7 +46,7 @@ export class AnalyticsService {
     // Маяки с низким зарядом
     const lowBatteryBeacons = await this.beaconRepository.find({
       where: { battery_level: 20 },
-      select: ['id', 'uuid', 'battery_level'],
+      select: { id: true, uuid: true, battery_level: true },
       order: { battery_level: 'ASC' },
       take: 5,
     });

@@ -1,16 +1,21 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsDateString, IsArray, IsUUID } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsDateString, IsArray, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateContractDto {
-  @ApiProperty({ example: 'Договор №123', description: 'Название договора' })
+  @ApiProperty({ example: 'Договор №123', description: 'Название договора', required: false })
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  @IsOptional()
+  name?: string;
 
   @ApiProperty({ example: '123/2026', description: 'Номер договора', required: false })
   @IsString()
   @IsOptional()
   number?: string;
+
+  @ApiProperty({ example: 'ООО "Подрядчик"', description: 'Название подрядчика', required: false })
+  @IsString()
+  @IsOptional()
+  contractor_name?: string;
 
   @ApiProperty({ example: '2026-01-01', description: 'Дата начала', required: false })
   @IsDateString()

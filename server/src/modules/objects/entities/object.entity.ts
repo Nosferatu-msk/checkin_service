@@ -7,10 +7,10 @@ import {
   Index,
   OneToMany,
 } from 'typeorm';
-import type { Zone } from '../../zones/entities/zone.entity';
+import { Zone } from '../../zones/entities/zone.entity';
 
 @Entity('objects')
-export class Object {
+export class ObjectEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -30,6 +30,6 @@ export class Object {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Zone, (zone) => zone.object)
+  @OneToMany('Zone', (zone: any) => zone.object)
   zones: Zone[];
 }

@@ -100,6 +100,41 @@ export class AttendanceService {
     };
   }
 
+  async getAllAttendance(
+    from?: Date,
+    to?: Date,
+    userId?: string,
+    objectId?: string,
+  ) {
+    const queryBuilder = this.attendanceRawRepository.createQueryBuilder('attendance');
+
+    if (from) {
+      queryBuilder.andWhere('attendance.scan_timestamp_start >= :from', { from });
+    }
+
+    if (to) {
+      queryBuilder.andWhere('attendance.scan_timestamp_end <= :to', { to });
+    }
+
+    if (userId) {
+      queryBuilder.andWhere('attendance.user_id = :userId', { userId });
+    }
+
+    // Если нужен фильтр по object_id, фильтруем через beacon -> zone
+    if (objectId) {
+      queryBuilder
+        .innerJoin('beacons', 'beacon', 'beacon.uuid = attendance.beacon_uuid')
+        .innerJoin('zones', 'zone', 'zone.id = beacon.zone_id')
+        .andWhere('zone.object_id = :objectId', { objectId });
+    }
+
+    const records = await queryBuilder
+      .orderBy('attendance.scan_timestamp_start', 'DESC')
+      .getMany();
+
+    return { data: records };
+  }
+
   async submitBeaconTelemetry(telemetryDto: SubmitBeaconTelemetryDto) {
     let accepted = 0;
 

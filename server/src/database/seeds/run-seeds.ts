@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { dataSourceOptions } from '../config/database.config';
-import { User } from '../../modules/users/entities/user.entity';
+import { dataSourceOptions } from '@/config/database.config';
+import { User } from '@/modules/users/entities/user.entity';
 
 const dataSource = new DataSource(dataSourceOptions);
 

@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/redux';
+import { useAppSelector } from '@/hooks/redux';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

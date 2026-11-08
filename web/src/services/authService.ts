@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { LoginCredentials, LoginResponse } from '../types/auth';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -31,9 +31,10 @@ api.interceptors.response.use(
           const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
             refresh_token: refreshToken,
           });
-          localStorage.setItem('access_token', response.data.data.access_token);
+          const newToken = response.data.access_token;
+          localStorage.setItem('access_token', newToken);
           // Повторить оригинальный запрос
-          error.config.headers.Authorization = `Bearer ${response.data.data.access_token}`;
+          error.config.headers.Authorization = `Bearer ${newToken}`;
           return api(error.config);
         } catch (refreshError) {
           // Refresh token тоже истёк, выходим
@@ -48,9 +49,9 @@ api.interceptors.response.use(
 );
 
 export const authService = {
-  login: async (credentials: LoginCredentials) => {
-    const response = await api.post<{ data: LoginResponse }>('/auth/login', credentials);
-    return response;
+  login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
+    const response = await api.post<LoginResponse>('/auth/login', credentials);
+    return response.data;
   },
 
   logout: async () => {
@@ -59,8 +60,8 @@ export const authService = {
   },
 
   refreshToken: async (refreshToken: string) => {
-    const response = await api.post('/auth/refresh', { refresh_token: refreshToken });
-    return response;
+    const response = await api.post<LoginResponse>('/auth/refresh', { refresh_token: refreshToken });
+    return response.data;
   },
 };
 

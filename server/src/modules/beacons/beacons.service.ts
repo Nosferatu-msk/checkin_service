@@ -68,7 +68,7 @@ export class BeaconsService {
   async findOne(id: string): Promise<Beacon> {
     const beacon = await this.beaconRepository.findOne({
       where: { id },
-      relations: ['zone'],
+      relations: { zone: true },
     });
 
     if (!beacon) {
@@ -81,7 +81,7 @@ export class BeaconsService {
   async findByUuid(uuid: string): Promise<Beacon> {
     const beacon = await this.beaconRepository.findOne({
       where: { uuid },
-      relations: ['zone'],
+      relations: { zone: true },
     });
 
     if (!beacon) {

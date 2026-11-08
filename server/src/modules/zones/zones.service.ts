@@ -12,9 +12,9 @@ export class ZonesService {
   ) {}
 
   async create(createZoneDto: CreateZoneDto): Promise<Zone> {
-    // Определение level и path
+    // Определение level
     let level = 1;
-    let path = '';
+    let parentPath = '';
 
     if (createZoneDto.parent_zone_id) {
       const parentZone = await this.zoneRepository.findOne({
@@ -26,22 +26,21 @@ export class ZonesService {
       }
 
       level = parentZone.level + 1;
-      path = `${parentZone.path}.${createZoneDto.id}`;
-    } else {
-      path = createZoneDto.id;
+      parentPath = parentZone.path;
     }
 
+    // Создаем зону с временным path (будет обновлен после сохранения)
     const zone = this.zoneRepository.create({
       ...createZoneDto,
       level,
-      path,
+      path: 'temp', // Временное значение, ltree позволяет
     });
 
     const savedZone = await this.zoneRepository.save(zone);
 
     // Обновить path с реальным ID
-    savedZone.path = createZoneDto.parent_zone_id
-      ? `${createZoneDto.parent_zone_id}.${savedZone.id}`
+    savedZone.path = parentPath
+      ? `${parentPath}.${savedZone.id}`
       : savedZone.id;
 
     return this.zoneRepository.save(savedZone);
@@ -70,7 +69,7 @@ export class ZonesService {
   async findOne(id: string): Promise<Zone> {
     const zone = await this.zoneRepository.findOne({
       where: { id },
-      relations: ['object', 'parent_zone', 'children', 'beacons'],
+      relations: { object: true, parent_zone: true, children: true, beacons: true },
     });
 
     if (!zone) {
@@ -110,7 +109,7 @@ export class ZonesService {
   async remove(id: string): Promise<void> {
     const zone = await this.zoneRepository.findOne({
       where: { id },
-      relations: ['children'],
+      relations: { children: true },
     });
 
     if (!zone) {
@@ -127,7 +126,7 @@ export class ZonesService {
   async getTree(objectId: string) {
     const zones = await this.zoneRepository.find({
       where: { object_id: objectId },
-      relations: ['children'],
+      relations: { children: true },
       order: { path: 'ASC' },
     });
 

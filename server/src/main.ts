@@ -39,7 +39,12 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: ['https://app.checkin-service.com', 'https://admin.checkin-service.com'],
+    origin: [
+      'https://app.checkin-service.com',
+      'https://admin.checkin-service.com',
+      'http://localhost:3001',
+      'http://localhost:5173',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
@@ -48,7 +53,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
       transform: true,
     }),
   );

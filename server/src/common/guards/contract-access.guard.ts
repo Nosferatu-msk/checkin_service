@@ -30,7 +30,7 @@ export class ContractAccessGuard implements CanActivate {
     if (user.role === 'curator') {
       const contract = await this.contractRepository.findOne({
         where: { id: contractId },
-        relations: ['curators'],
+        relations: { curators: true },
       });
 
       if (!contract) {

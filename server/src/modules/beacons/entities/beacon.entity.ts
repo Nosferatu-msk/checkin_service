@@ -7,7 +7,7 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import type { Zone } from '../../zones/entities/zone.entity';
+import { Zone } from '../../zones/entities/zone.entity';
 
 @Entity('beacons')
 export class Beacon {
@@ -18,7 +18,7 @@ export class Beacon {
   @Index()
   zone_id: string;
 
-  @ManyToOne(() => Zone, (zone: any) => zone.beacons, { onDelete: 'CASCADE' })
+  @ManyToOne('Zone', (zone: any) => zone.beacons, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'zone_id' })
   zone: Zone;
 

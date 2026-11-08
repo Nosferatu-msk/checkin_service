@@ -8,8 +8,8 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import type { Object } from '../../objects/entities/object.entity';
-import type { Beacon } from '../../beacons/entities/beacon.entity';
+import { ObjectEntity } from '../../objects/entities/object.entity';
+import { Beacon } from '../../beacons/entities/beacon.entity';
 
 @Entity('zones')
 export class Zone {
@@ -20,9 +20,9 @@ export class Zone {
   @Index()
   object_id: string;
 
-  @ManyToOne(() => Object, (object) => object.zones, { onDelete: 'CASCADE' })
+  @ManyToOne('ObjectEntity', (object: any) => object.zones, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'object_id' })
-  object: Object;
+  object: ObjectEntity;
 
   @Column({ type: 'uuid', nullable: true })
   @Index()
@@ -55,6 +55,6 @@ export class Zone {
   @CreateDateColumn()
   created_at: Date;
 
-  @OneToMany(() => Beacon, (beacon) => beacon.zone)
+  @OneToMany('Beacon', (beacon: any) => beacon.zone)
   beacons: Beacon[];
 }

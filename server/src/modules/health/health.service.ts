@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 
 @Injectable()
 export class HealthService {
   constructor(
-    @InjectConnection() private readonly connection: Connection,
+    @InjectConnection() private readonly connection: DataSource,
     @InjectQueue('health-check') private readonly healthQueue: Queue,
   ) {}
 

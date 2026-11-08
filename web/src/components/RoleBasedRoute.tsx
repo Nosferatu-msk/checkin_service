@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/redux';
-import { User } from '../../types/auth';
+import { useAppSelector } from '@/hooks/redux';
+import { User } from '@/types/auth';
 
 interface RoleBasedRouteProps {
   children: React.ReactNode;

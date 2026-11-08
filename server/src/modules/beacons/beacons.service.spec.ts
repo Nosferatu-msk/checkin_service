@@ -7,7 +7,7 @@ import { Beacon } from './entities/beacon.entity';
 describe('BeaconsService', () => {
   let service: BeaconsService;
 
-  const mockBeaconRepository = {
+  const mockBeaconRepository: any = {
     create: jest.fn(),
     save: jest.fn(),
     findOne: jest.fn(),
@@ -20,8 +20,8 @@ describe('BeaconsService', () => {
       skip: jest.fn().mockReturnThis(),
       take: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
-      getCount: jest.fn().mockResolvedValue(0),
-      getMany: jest.fn().mockResolvedValue([]),
+      getCount: (jest.fn() as any).mockResolvedValue(0),
+      getMany: (jest.fn() as any).mockResolvedValue([]),
     })),
   };
 

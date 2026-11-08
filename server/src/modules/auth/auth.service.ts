@@ -3,9 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from '../users/entities/user.entity';
+import { User } from '@/modules/users/entities/user.entity';
 import { LoginDto } from './dto/auth.dto';
 import { ConfigService } from '@nestjs/config';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private userRepository: Repository<User>,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private redisService: RedisService,
   ) {}
 
   async validateUser(login: string, password: string): Promise<User> {
@@ -79,10 +81,16 @@ export class AuthService {
 
   async refreshToken(refreshToken: string) {
     try {
+      // Проверка blacklist
+      const isBlacklisted = await this.redisService.isBlacklisted(refreshToken);
+      if (isBlacklisted) {
+        throw new UnauthorizedException('Токен отозван');
+      }
+
       const payload = this.jwtService.verify(refreshToken);
-      
+
       const user = await this.userRepository.findOne({ where: { id: payload.sub } });
-      
+
       if (!user || !user.is_active) {
         throw new UnauthorizedException('Недействительный токен');
       }
@@ -110,13 +118,32 @@ export class AuthService {
         expires_in: 900, // 15 минут в секундах
       };
     } catch (error) {
+      if (error instanceof UnauthorizedException || error instanceof ForbiddenException) {
+        throw error;
+      }
       throw new UnauthorizedException('Недействительный refresh token');
     }
   }
 
   async logout(refreshToken: string) {
-    // В реальной реализации нужно добавить токен в blacklist в Redis
-    // blacklist.add(refreshToken)
-    return { message: 'Выход выполнен успешно' };
+    try {
+      // Декодирование токена для получения срока действия
+      const payload = this.jwtService.verify(refreshToken, { ignoreExpiration: true });
+      
+      // Вычисление оставшегося времени жизни токена
+      const now = Math.floor(Date.now() / 1000);
+      const exp = payload.exp;
+      const ttl = exp - now;
+
+      if (ttl > 0) {
+        // Добавление токена в blacklist на оставшееся время жизни
+        await this.redisService.addToBlacklist(refreshToken, ttl);
+      }
+
+      return { message: 'Выход выполнен успешно' };
+    } catch (error) {
+      // Если токен уже недействителен, просто возвращаем успех
+      return { message: 'Выход выполнен успешно' };
+    }
   }
 }

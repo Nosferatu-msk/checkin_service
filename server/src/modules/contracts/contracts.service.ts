@@ -3,16 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Contract } from './entities/contract.entity';
 import { CreateContractDto, UpdateContractDto } from './dto/contract.dto';
-import { Object } from '../objects/entities/object.entity';
-import { User } from '../users/entities/user.entity';
+import { ObjectEntity } from '../objects/entities/object.entity';
+import { User } from '@/modules/users/entities/user.entity';
 
 @Injectable()
 export class ContractsService {
   constructor(
     @InjectRepository(Contract)
     private contractRepository: Repository<Contract>,
-    @InjectRepository(Object)
-    private objectRepository: Repository<Object>,
+    @InjectRepository(ObjectEntity)
+    private objectRepository: Repository<ObjectEntity>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
@@ -70,7 +70,7 @@ export class ContractsService {
   async findOne(id: string): Promise<Contract> {
     const contract = await this.contractRepository.findOne({
       where: { id },
-      relations: ['objects', 'employees', 'curators'],
+      relations: { objects: true, employees: true, curators: true },
     });
 
     if (!contract) {
@@ -94,7 +94,7 @@ export class ContractsService {
   async remove(id: string): Promise<void> {
     const contract = await this.contractRepository.findOne({
       where: { id },
-      relations: ['objects', 'employees', 'curators'],
+      relations: { objects: true, employees: true, curators: true },
     });
 
     if (!contract) {
@@ -115,7 +115,7 @@ export class ContractsService {
   async addObjects(contractId: string, objectIds: string[]): Promise<{ added: number; total: number }> {
     const contract = await this.contractRepository.findOne({
       where: { id: contractId },
-      relations: ['objects'],
+      relations: { objects: true },
     });
 
     if (!contract) {
@@ -144,7 +144,7 @@ export class ContractsService {
   async addEmployees(contractId: string, employeeIds: string[]): Promise<{ added: number; total: number }> {
     const contract = await this.contractRepository.findOne({
       where: { id: contractId },
-      relations: ['employees'],
+      relations: { employees: true },
     });
 
     if (!contract) {
@@ -172,7 +172,7 @@ export class ContractsService {
   async addCurators(contractId: string, curatorIds: string[]): Promise<{ added: number; total: number }> {
     const contract = await this.contractRepository.findOne({
       where: { id: contractId },
-      relations: ['curators'],
+      relations: { curators: true },
     });
 
     if (!contract) {
@@ -200,7 +200,7 @@ export class ContractsService {
   async isCuratorAssigned(contractId: string, userId: string): Promise<boolean> {
     const contract = await this.contractRepository.findOne({
       where: { id: contractId },
-      relations: ['curators'],
+      relations: { curators: true },
     });
 
     if (!contract) {

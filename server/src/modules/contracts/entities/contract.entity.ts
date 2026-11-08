@@ -8,8 +8,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Object } from '../objects/entities/object.entity';
-import { User } from '../users/entities/user.entity';
+import { ObjectEntity } from '@/modules/objects/entities/object.entity';
+import { User } from '@/modules/users/entities/user.entity';
 
 @Entity('contracts')
 export class Contract {
@@ -21,6 +21,9 @@ export class Contract {
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   number: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  contractor_name: string;
 
   @Column({ type: 'date', nullable: true })
   start_date: Date;
@@ -38,13 +41,13 @@ export class Contract {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToMany(() => Object)
+  @ManyToMany(() => ObjectEntity)
   @JoinTable({
     name: 'contract_objects',
     joinColumn: { name: 'contract_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'object_id', referencedColumnName: 'id' },
   })
-  objects: Object[];
+  objects: ObjectEntity[];
 
   @ManyToMany(() => User)
   @JoinTable({

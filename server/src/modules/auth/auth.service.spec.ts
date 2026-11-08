@@ -1,28 +1,38 @@
-import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
+import { User } from '@/modules/users/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
+import { RedisService } from '../redis/redis.service';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;
   let jwtService: JwtService;
 
-  const mockUserRepository = {
+  const mockUserRepository: any = {
     findOne: jest.fn(),
     update: jest.fn(),
   };
 
-  const mockJwtService = {
+  const mockJwtService: any = {
     sign: jest.fn(),
     verify: jest.fn(),
   };
 
-  const mockConfigService = {
-    get: jest.fn((key: string, defaultValue: any) => defaultValue),
+  const mockConfigService: any = {
+    get: jest.fn(),
+  };
+
+  const mockRedisService: any = {
+    addToBlacklist: jest.fn(),
+    isBlacklisted: jest.fn(),
+    removeFromBlacklist: jest.fn(),
+    setDeviceFingerprint: jest.fn(),
+    getDeviceFingerprint: jest.fn(),
+    deleteDeviceFingerprint: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -40,6 +50,10 @@ describe('AuthService', () => {
         {
           provide: ConfigService,
           useValue: mockConfigService,
+        },
+        {
+          provide: RedisService,
+          useValue: mockRedisService,
         },
       ],
     }).compile();

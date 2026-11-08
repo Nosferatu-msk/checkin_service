@@ -32,7 +32,7 @@ export class ImportExportService {
     response.end();
   }
 
-  async importObjects(file: Express.Multer.File, mode: 'add' | 'update' | 'replace') {
+  async importObjects(file: any, mode: 'add' | 'update' | 'replace') {
     const workbook = new ExcelJS.Workbook();
     
     try {

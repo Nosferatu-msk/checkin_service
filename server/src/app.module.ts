@@ -18,6 +18,7 @@ import { ImportExportModule } from './modules/import-export/import-export.module
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
+import { RedisModule } from './modules/redis/redis.module';
 
 @Module({
   imports: [
@@ -55,6 +56,9 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
         },
       }),
     }),
+
+    // Redis Module (for token blacklist, caching, etc.)
+    RedisModule,
 
     // Rate Limiting
     ThrottlerModule.forRootAsync({

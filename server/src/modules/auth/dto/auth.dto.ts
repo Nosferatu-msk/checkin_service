@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MinLength } from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
@@ -20,6 +20,7 @@ export class LoginDto {
 
   @ApiProperty({ example: 'fcm_token_here', description: 'FCM push токен', required: false })
   @IsString()
+  @IsOptional()
   push_token?: string;
 }
 

@@ -5,6 +5,17 @@ import Layout from './components/Layout/Layout';
 import LoginPage from './pages/auth/LoginPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import ObjectsPage from './pages/objects/ObjectsPage';
+import ZonesPage from './pages/zones/ZonesPage';
+import BeaconsPage from './pages/beacons/BeaconsPage';
+import ContractsPage from './pages/contracts/ContractsPage';
+import UsersPage from './pages/users/UsersPage';
+import AttendancePage from './pages/attendance/AttendancePage';
+import SLAPage from './pages/sla/SLAPage';
+import FraudPage from './pages/fraud/FraudPage';
+import ReportsPage from './pages/reports/ReportsPage';
+import NotificationsPage from './pages/notifications/NotificationsPage';
+import SettingsPage from './pages/settings/SettingsPage';
+import ProfilePage from './pages/profile/ProfilePage';
 import './App.css';
 
 function App() {
@@ -32,7 +43,7 @@ function App() {
           path="zones"
           element={
             <RoleBasedRoute allowedRoles={['admin', 'curator']}>
-              <div>Zones Page (TODO)</div>
+              <ZonesPage />
             </RoleBasedRoute>
           }
         />
@@ -40,7 +51,7 @@ function App() {
           path="beacons"
           element={
             <RoleBasedRoute allowedRoles={['admin', 'curator']}>
-              <div>Beacons Page (TODO)</div>
+              <BeaconsPage />
             </RoleBasedRoute>
           }
         />
@@ -48,7 +59,7 @@ function App() {
           path="contracts"
           element={
             <RoleBasedRoute allowedRoles={['admin', 'curator']}>
-              <div>Contracts Page (TODO)</div>
+              <ContractsPage />
             </RoleBasedRoute>
           }
         />
@@ -56,16 +67,16 @@ function App() {
           path="employees"
           element={
             <RoleBasedRoute allowedRoles={['admin', 'curator']}>
-              <div>Employees Page (TODO)</div>
+              <UsersPage />
             </RoleBasedRoute>
           }
         />
-        <Route path="attendance" element={<div>Attendance Page (TODO)</div>} />
+        <Route path="attendance" element={<AttendancePage />} />
         <Route
           path="sla"
           element={
             <RoleBasedRoute allowedRoles={['admin', 'curator']}>
-              <div>SLA Page (TODO)</div>
+              <SLAPage />
             </RoleBasedRoute>
           }
         />
@@ -73,20 +84,28 @@ function App() {
           path="fraud"
           element={
             <RoleBasedRoute allowedRoles={['admin']}>
-              <div>Fraud Page (TODO)</div>
+              <FraudPage />
             </RoleBasedRoute>
           }
         />
-        <Route path="notifications" element={<div>Notifications Page (TODO)</div>} />
+        <Route
+          path="reports"
+          element={
+            <RoleBasedRoute allowedRoles={['admin', 'curator']}>
+              <ReportsPage />
+            </RoleBasedRoute>
+          }
+        />
+        <Route path="notifications" element={<NotificationsPage />} />
         <Route
           path="settings"
           element={
             <RoleBasedRoute allowedRoles={['admin']}>
-              <div>Settings Page (TODO)</div>
+              <SettingsPage />
             </RoleBasedRoute>
           }
         />
-        <Route path="profile" element={<div>Profile Page (TODO)</div>} />
+        <Route path="profile" element={<ProfilePage />} />
         <Route path="forbidden" element={<div>Доступ запрещен</div>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

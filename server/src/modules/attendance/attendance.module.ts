@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
-import { AttendanceController } from './attendance.controller';
+import { AttendanceController, AdminAttendanceController } from './attendance.controller';
 import { AttendanceService } from './attendance.service';
 import { AttendanceRaw } from './entities/attendance-raw.entity';
 import { AttendanceCalculated } from './entities/attendance-calculated.entity';
@@ -16,7 +16,7 @@ import { AttendanceWorker } from './workers/attendance.worker';
       name: 'attendance-processing',
     }),
   ],
-  controllers: [AttendanceController],
+  controllers: [AttendanceController, AdminAttendanceController],
   providers: [AttendanceService, AttendanceWorker],
   exports: [AttendanceService],
 })

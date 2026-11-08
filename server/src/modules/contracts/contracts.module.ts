@@ -3,11 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ContractsController } from './contracts.controller';
 import { ContractsService } from './contracts.service';
 import { Contract } from './entities/contract.entity';
-import { Object } from '../objects/entities/object.entity';
-import { User } from '../users/entities/user.entity';
+import { ObjectEntity } from '../objects/entities/object.entity';
+import { User } from '@/modules/users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Contract, Object, User])],
+  imports: [TypeOrmModule.forFeature([Contract, ObjectEntity, User])],
   controllers: [ContractsController],
   providers: [ContractsService],
   exports: [ContractsService],

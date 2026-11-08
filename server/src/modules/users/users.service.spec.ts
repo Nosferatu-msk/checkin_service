@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 describe('UsersService', () => {
   let service: UsersService;
 
-  const mockUserRepository = {
+  const mockUserRepository: any = {
     create: jest.fn(),
     save: jest.fn(),
     find: jest.fn(),
@@ -20,8 +20,8 @@ describe('UsersService', () => {
       skip: jest.fn().mockReturnThis(),
       take: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
-      getCount: jest.fn().mockResolvedValue(0),
-      getMany: jest.fn().mockResolvedValue([]),
+      getCount: (jest.fn() as any).mockResolvedValue(0),
+      getMany: (jest.fn() as any).mockResolvedValue([]),
     })),
   };
 

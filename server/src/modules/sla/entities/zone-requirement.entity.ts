@@ -9,8 +9,8 @@ import {
   JoinColumn,
   Unique,
 } from 'typeorm';
-import { Zone } from '../zones/entities/zone.entity';
-import { Contract } from '../contracts/entities/contract.entity';
+import { Zone } from '@/modules/zones/entities/zone.entity';
+import { Contract } from '@/modules/contracts/entities/contract.entity';
 
 @Entity('zone_requirements')
 @Unique(['zone_id', 'contract_id'])

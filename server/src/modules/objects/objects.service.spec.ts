@@ -2,12 +2,12 @@ import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals
 import { Test, TestingModule } from '@nestjs/testing';
 import { ObjectsService } from './objects.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Object } from './entities/object.entity';
+import { ObjectEntity } from './entities/object.entity';
 
 describe('ObjectsService', () => {
   let service: ObjectsService;
 
-  const mockObjectRepository = {
+  const mockObjectRepository: any = {
     create: jest.fn(),
     save: jest.fn(),
     findOne: jest.fn(),
@@ -19,8 +19,8 @@ describe('ObjectsService', () => {
       skip: jest.fn().mockReturnThis(),
       take: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
-      getCount: jest.fn().mockResolvedValue(0),
-      getMany: jest.fn().mockResolvedValue([]),
+      getCount: (jest.fn() as any).mockResolvedValue(0),
+      getMany: (jest.fn() as any).mockResolvedValue([]),
     })),
   };
 
@@ -29,7 +29,7 @@ describe('ObjectsService', () => {
       providers: [
         ObjectsService,
         {
-          provide: getRepositoryToken(Object),
+          provide: getRepositoryToken(ObjectEntity),
           useValue: mockObjectRepository,
         },
       ],
@@ -63,7 +63,7 @@ describe('ObjectsService', () => {
       const result = await service.create(createDto);
 
       expect(result).toBeDefined();
-      expect(result.name).toBe(createDto.name);
+      expect((result as any).name).toBe(createDto.name);
     });
   });
 
@@ -80,7 +80,7 @@ describe('ObjectsService', () => {
       const result = await service.findOne('uuid');
 
       expect(result).toBeDefined();
-      expect(result.id).toBe('uuid');
+      expect((result as any).id).toBe('uuid');
     });
 
     it('should throw NotFoundException if object not found', async () => {

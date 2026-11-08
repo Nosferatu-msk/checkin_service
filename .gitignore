@@ -34,3 +34,59 @@ Thumbs.db
 
 # Design system generated files (keep only committed design docs)
 design-system/
+
+# Temporary files
+*.tmp
+*.temp
+token.json
+
+# Local testing reports and documentation (not for production)
+LOCAL_TESTING_*.md
+FINAL_*.md
+PROJECT_COMPLETE*.md
+ATTENDANCE_ENDPOINT_FIXED.md
+QUICK_START.md
+TROUBLESHOOTING.md
+local-test.sh
+
+# Council folder (IT Council discussions and progress tracking)
+council/
+
+# Environment files with local secrets
+.env.local
+.env.*.local
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Keys (JWT and other secrets)
+*.pem
+*.key
+keys/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backups
+backups/
+*.bak
+*.backup
+
+# Mobile app build outputs
+mobile/app/build/
+mobile/app/.gradle/
+mobile/app/captures/
+mobile/app/profiling/
+

@@ -20,10 +20,10 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      const response = await authService.login(credentials);
-      localStorage.setItem('access_token', response.data.access_token);
-      localStorage.setItem('refresh_token', response.data.refresh_token);
-      return response.data;
+      const data = await authService.login(credentials);
+      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('refresh_token', data.refresh_token);
+      return data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error?.message || 'Ошибка входа');
     }

@@ -13,8 +13,10 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@ne
 import { AttendanceService } from './attendance.service';
 import { SubmitAttendanceDto, SubmitBeaconTelemetryDto } from './dto/attendance.dto';
 import { PushTokenDto } from './dto/push-token.dto';
+import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
 import { AuthGuard } from '../../common/guards/auth.guard';
-import { Public } from '../../common/decorators/public.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('mobile')
@@ -104,5 +106,35 @@ export class AttendanceController {
         platform: pushTokenDto.platform,
       },
     };
+  }
+}
+
+@ApiTags('admin')
+@Controller('admin')
+@UseGuards(PassportAuthGuard('jwt'), RolesGuard)
+@ApiBearerAuth()
+export class AdminAttendanceController {
+  constructor(private readonly attendanceService: AttendanceService) {}
+
+  @Get('attendance')
+  @Roles('admin', 'curator')
+  @ApiOperation({ summary: 'Получение всех записей присутствия (для админов)' })
+  @ApiQuery({ name: 'from', required: false, description: 'Начало периода' })
+  @ApiQuery({ name: 'to', required: false, description: 'Конец периода' })
+  @ApiQuery({ name: 'user_id', required: false, description: 'Фильтр по пользователю' })
+  @ApiQuery({ name: 'object_id', required: false, description: 'Фильтр по объекту' })
+  @ApiResponse({ status: 200, description: 'Записи присутствия' })
+  async getAllAttendance(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('user_id') userId?: string,
+    @Query('object_id') objectId?: string,
+  ) {
+    return this.attendanceService.getAllAttendance(
+      from ? new Date(from) : undefined,
+      to ? new Date(to) : undefined,
+      userId,
+      objectId,
+    );
   }
 }

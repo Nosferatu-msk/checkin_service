@@ -44,7 +44,7 @@ export class ImportExportController {
   @ApiResponse({ status: 400, description: 'Ошибки валидации' })
   async importData(
     @Param('type') type: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: any,
     @Query('mode') mode: 'add' | 'update' | 'replace' = 'add',
   ) {
     if (!file) {

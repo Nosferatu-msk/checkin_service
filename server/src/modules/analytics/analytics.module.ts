@@ -2,16 +2,16 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './analytics.service';
-import { Object } from '../objects/entities/object.entity';
+import { ObjectEntity } from '../objects/entities/object.entity';
 import { Beacon } from '../beacons/entities/beacon.entity';
-import { User } from '../users/entities/user.entity';
+import { User } from '@/modules/users/entities/user.entity';
 import { RequirementViolation } from '../sla/entities/requirement-violation.entity';
 import { AttendanceCalculated } from '../attendance/entities/attendance-calculated.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      Object,
+      ObjectEntity,
       Beacon,
       User,
       RequirementViolation,

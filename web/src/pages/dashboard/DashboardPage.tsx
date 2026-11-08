@@ -1,4 +1,4 @@
-import { Card, Row, Col, Statistic, Table, Tag } from 'antd';
+import { Card, Row, Col, Statistic, Table, Tag, message } from 'antd';
 import {
   BankOutlined,
   AlertOutlined,
@@ -6,17 +6,52 @@ import {
   WarningOutlined,
 } from '@ant-design/icons';
 import { useAppSelector } from '../../hooks/redux';
+import { useEffect, useState } from 'react';
+import { objectsApi, beaconsApi, usersApi } from '../../services/api';
 import './DashboardPage.css';
+
+interface DashboardStats {
+  objects_count: number;
+  beacons_count: number;
+  employees_count: number;
+  sla_violations: number;
+}
 
 const DashboardPage: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const [stats, setStats] = useState<DashboardStats>({
+    objects_count: 0,
+    beacons_count: 0,
+    employees_count: 0,
+    sla_violations: 0,
+  });
+  const [loading, setLoading] = useState(false);
 
-  // TODO: Заменить на реальные данные из API
-  const stats = {
-    objects_count: 12,
-    beacons_count: 248,
-    employees_count: 86,
-    sla_violations: 7,
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      const [objectsRes, beaconsRes, usersRes] = await Promise.all([
+        objectsApi.getAll(),
+        beaconsApi.getAll(),
+        usersApi.getAll(),
+      ]);
+
+      setStats({
+        objects_count: objectsRes.data.data?.length || 0,
+        beacons_count: beaconsRes.data.data?.length || 0,
+        employees_count: usersRes.data.data?.length || 0,
+        sla_violations: 0, // TODO: Получить из SLA API
+      });
+    } catch (error) {
+      message.error('Ошибка загрузки данных dashboard');
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const recentEvents = [
@@ -64,8 +99,12 @@ const DashboardPage: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => {
-        const color = status === 'success' ? 'green' : status === 'warning' ? 'orange' : 'red';
-        return <Tag color={color}>{status}</Tag>;
+        const colorMap: Record<string, string> = {
+          success: 'green',
+          warning: 'orange',
+          error: 'red',
+        };
+        return <Tag color={colorMap[status] || 'default'}>{status}</Tag>;
       },
     },
   ];
@@ -73,10 +112,10 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="dashboard-page">
       <h1>Dashboard</h1>
-      
+
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card loading={loading}>
             <Statistic
               title="Объекты"
               value={stats.objects_count}
@@ -86,7 +125,7 @@ const DashboardPage: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card loading={loading}>
             <Statistic
               title="Маяки"
               value={stats.beacons_count}
@@ -96,7 +135,7 @@ const DashboardPage: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card loading={loading}>
             <Statistic
               title="Сотрудники"
               value={stats.employees_count}
@@ -106,7 +145,7 @@ const DashboardPage: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card loading={loading}>
             <Statistic
               title="Нарушения SLA"
               value={stats.sla_violations}

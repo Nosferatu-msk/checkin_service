@@ -28,7 +28,7 @@ export class SlaWorker {
       // Получаем все активные нормативы
       const requirements = await this.requirementRepository.find({
         where: { is_active: true },
-        relations: ['zone', 'contract'],
+        relations: { zone: true, contract: true },
       });
 
       let violationsCreated = 0;

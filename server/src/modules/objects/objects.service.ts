@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Object } from './entities/object.entity';
+import { ObjectEntity } from './entities/object.entity';
 import { CreateObjectDto, UpdateObjectDto } from './dto/object.dto';
 
 @Injectable()
 export class ObjectsService {
   constructor(
-    @InjectRepository(Object)
-    private objectRepository: Repository<Object>,
+    @InjectRepository(ObjectEntity)
+    private objectRepository: Repository<ObjectEntity>,
   ) {}
 
   async create(createObjectDto: CreateObjectDto): Promise<Object> {
@@ -55,7 +55,7 @@ export class ObjectsService {
   async findOne(id: string): Promise<Object> {
     const object = await this.objectRepository.findOne({
       where: { id },
-      relations: ['zones'],
+      relations: { zones: true },
     });
 
     if (!object) {

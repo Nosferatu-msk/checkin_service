@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Index,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Zone } from '@/modules/zones/entities/zone.entity';
 
 @Entity('attendance_calculated')
 export class AttendanceCalculated {
@@ -18,6 +21,10 @@ export class AttendanceCalculated {
   @Column({ type: 'uuid' })
   @Index()
   zone_id: string;
+
+  @ManyToOne(() => Zone, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'zone_id' })
+  zone: Zone;
 
   @Column({ type: 'timestamptz' })
   @Index()

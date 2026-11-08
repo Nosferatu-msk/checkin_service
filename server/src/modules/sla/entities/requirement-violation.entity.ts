@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ZoneRequirement } from './entities/zone-requirement.entity';
+import { ZoneRequirement } from '@/modules/sla/entities/zone-requirement.entity';
 
 @Entity('requirement_violations')
 export class RequirementViolation {

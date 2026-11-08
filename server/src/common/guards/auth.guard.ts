@@ -1,22 +1,10 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { Injectable, ExecutionContext } from '@nestjs/common';
+import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
-
-  canActivate(context: ExecutionContext): boolean {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-
-    if (isPublic) {
-      return true;
-    }
-
-    const request = context.switchToHttp().getRequest();
-    return !!request.user;
+export class AuthGuard extends PassportAuthGuard('jwt') {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const result = await super.canActivate(context);
+    return result as boolean;
   }
 }
