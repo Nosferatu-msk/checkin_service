@@ -7,6 +7,8 @@ import { AttendanceRaw } from '../entities/attendance-raw.entity';
 import { AttendanceCalculated } from '../entities/attendance-calculated.entity';
 import { Beacon } from '../../beacons/entities/beacon.entity';
 import { Zone } from '../../zones/entities/zone.entity';
+import { FraudService } from '../../fraud/fraud.service';
+import { NotificationsService } from '../../notifications/notifications.service';
 
 @Processor('attendance-processing')
 export class AttendanceWorker {
@@ -21,6 +23,8 @@ export class AttendanceWorker {
     private beaconRepository: Repository<Beacon>,
     @InjectRepository(Zone)
     private zoneRepository: Repository<Zone>,
+    private readonly fraudService: FraudService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   @Process('process-raw-attendance')
@@ -73,7 +77,27 @@ export class AttendanceWorker {
 
         if (macMismatch) {
           this.logger.warn(`MAC mismatch for beacon ${beaconUuid}: expected ${beacon.mac_address}, got ${macMismatch.mac_address}`);
-          // TODO: Логировать фрод-событие
+
+          // Создание записи в fraud_log
+          await this.fraudService.create({
+            user_id: userId,
+            fraud_type: 'beacon_clone_detected',
+            severity: 'critical',
+            details: {
+              beacon_uuid: beaconUuid,
+              expected_mac: beacon.mac_address,
+              actual_mac: macMismatch.mac_address,
+              detected_at: new Date().toISOString(),
+            },
+          });
+
+          // Уведомление администраторов
+          await this.notificationsService.sendToAdmins(
+            'fraud_alert',
+            'Обнаружено клонирование маяка',
+            `MAC mismatch для маяка ${beaconUuid}: ожидаемый ${beacon.mac_address}, получен ${macMismatch.mac_address}`,
+          );
+
           continue;
         }
 

@@ -3,9 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AttendanceRaw } from './entities/attendance-raw.entity';
 import { AttendanceCalculated } from './entities/attendance-calculated.entity';
+import { DevicePushToken } from './entities/device-push-token.entity';
 import { SubmitAttendanceDto, SubmitBeaconTelemetryDto } from './dto/attendance.dto';
 import { Beacon } from '../beacons/entities/beacon.entity';
 import { Zone } from '../zones/entities/zone.entity';
+import { FraudService } from '../fraud/fraud.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class AttendanceService {
@@ -20,6 +23,10 @@ export class AttendanceService {
     private beaconRepository: Repository<Beacon>,
     @InjectRepository(Zone)
     private zoneRepository: Repository<Zone>,
+    @InjectRepository(DevicePushToken)
+    private pushTokenRepository: Repository<DevicePushToken>,
+    private readonly fraudService: FraudService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async submitAttendance(userId: string, submitDto: SubmitAttendanceDto) {
@@ -49,7 +56,27 @@ export class AttendanceService {
       // Проверка MAC-адреса (защита от клонирования)
       if (beacon.mac_address && record.mac_address !== beacon.mac_address) {
         this.logger.warn(`MAC address mismatch for beacon ${record.beacon_uuid}`);
-        // TODO: Логировать фрод-событие
+
+        // Создание записи в fraud_log
+        await this.fraudService.create({
+          user_id: userId,
+          fraud_type: 'beacon_clone_detected',
+          severity: 'critical',
+          details: {
+            beacon_uuid: record.beacon_uuid,
+            expected_mac: beacon.mac_address,
+            actual_mac: record.mac_address,
+            detected_at: new Date().toISOString(),
+          },
+        });
+
+        // Уведомление администраторов
+        await this.notificationsService.sendToAdmins(
+          'fraud_alert',
+          'Обнаружено клонирование маяка',
+          `MAC mismatch для маяка ${record.beacon_uuid}: ожидаемый ${beacon.mac_address}, получен ${record.mac_address}`,
+        );
+
         continue;
       }
 
@@ -172,5 +199,62 @@ export class AttendanceService {
       .getMany();
 
     return { data: records };
+  }
+
+  async savePushToken(userId: string, pushToken: string, platform: 'android' | 'ios' | 'web') {
+    // Ищем существующий токен
+    let tokenEntity = await this.pushTokenRepository.findOne({
+      where: { push_token: pushToken },
+    });
+
+    if (tokenEntity) {
+      // Токен уже существует - обновляем user_id, platform и активируем
+      tokenEntity.user_id = userId;
+      tokenEntity.platform = platform;
+      tokenEntity.is_active = true;
+      await this.pushTokenRepository.save(tokenEntity);
+      this.logger.log(`Updated push token for user ${userId}`);
+    } else {
+      // Создаём новую запись
+      tokenEntity = this.pushTokenRepository.create({
+        user_id: userId,
+        push_token: pushToken,
+        platform,
+        is_active: true,
+      });
+      await this.pushTokenRepository.save(tokenEntity);
+      this.logger.log(`Created new push token for user ${userId}`);
+    }
+
+    return {
+      message: 'Токен зарегистрирован',
+      user_id: userId,
+      platform,
+    };
+  }
+
+  async removePushToken(userId: string, pushToken?: string) {
+    if (pushToken) {
+      // Удаляем конкретный токен
+      const result = await this.pushTokenRepository.delete({
+        user_id: userId,
+        push_token: pushToken,
+      });
+      this.logger.log(`Removed push token for user ${userId}`);
+      return { deleted: result.affected || 0 };
+    } else {
+      // Удаляем все токены пользователя
+      const result = await this.pushTokenRepository.delete({ user_id: userId });
+      this.logger.log(`Removed all push tokens for user ${userId}`);
+      return { deleted: result.affected || 0 };
+    }
+  }
+
+  async getActiveBeaconUuids(): Promise<string[]> {
+    const allowedBeacons = await this.beaconRepository.find({
+      where: { is_active: true },
+      select: { uuid: true },
+    });
+    return allowedBeacons.map((b) => b.uuid);
   }
 }

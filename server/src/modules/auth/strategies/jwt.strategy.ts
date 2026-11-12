@@ -10,10 +10,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private configService: ConfigService,
     private redisService: RedisService,
   ) {
+    const publicKey = configService.get<string>('JWT_PUBLIC_KEY');
+    
+    if (!publicKey) {
+      throw new Error('JWT_PUBLIC_KEY не установлен в переменных окружения');
+    }
+    
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_PUBLIC_KEY'),
+      secretOrKey: publicKey,
       algorithms: ['RS256'],
       issuer: 'checkin-service',
       audience: 'checkin-client',
@@ -24,14 +30,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!payload.sub) {
       throw new UnauthorizedException('Недействительный токен');
     }
-
-    // Проверка blacklist (для access token)
-    // В production нужно проверять access token в blacklist
-    // const token = ExtractJwt.fromAuthHeaderAsBearerToken();
-    // const isBlacklisted = await this.redisService.isBlacklisted(token);
-    // if (isBlacklisted) {
-    //   throw new UnauthorizedException('Токен отозван');
-    // }
 
     return {
       id: payload.sub,

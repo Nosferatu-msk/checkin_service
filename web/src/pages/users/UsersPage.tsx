@@ -1,6 +1,6 @@
-import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, StopOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm, Card } from 'antd';
+import { PlusOutlined, EditOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons';
+import { useEffect, useState, useCallback } from 'react';
 import { usersApi, contractsApi } from '../../services/api';
 import './UsersPage.css';
 
@@ -21,6 +21,23 @@ interface ContractItem {
   name: string;
 }
 
+interface TableParams {
+  pagination: {
+    current: number;
+    pageSize: number;
+    total?: number;
+  };
+  sorter?: {
+    field?: string;
+    order?: 'ascend' | 'descend';
+  };
+  filters?: {
+    search?: string;
+    role?: string;
+    is_active?: boolean | undefined;
+  };
+}
+
 const UsersPage: React.FC = () => {
   const [users, setUsers] = useState<UserItem[]>([]);
   const [contracts, setContracts] = useState<ContractItem[]>([]);
@@ -28,24 +45,55 @@ const UsersPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<UserItem | null>(null);
   const [form] = Form.useForm();
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: { current: 1, pageSize: 10 },
+    filters: {},
+  });
+  const [searchValue, setSearchValue] = useState('');
+  const [roleFilter, setRoleFilter] = useState<string | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<boolean | undefined>(undefined);
 
-  useEffect(() => {
-    fetchUsers();
-    fetchContracts();
-  }, []);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await usersApi.getAll();
+      const params: any = {
+        page: tableParams.pagination.current,
+        limit: tableParams.pagination.pageSize,
+      };
+
+      if (tableParams.sorter?.field) {
+        params.sort_by = tableParams.sorter.field;
+        params.sort_order = tableParams.sorter.order === 'ascend' ? 'asc' : 'desc';
+      }
+
+      if (tableParams.filters?.search) {
+        params.search = tableParams.filters.search;
+      }
+
+      if (tableParams.filters?.role) {
+        params.role = tableParams.filters.role;
+      }
+
+      if (tableParams.filters?.is_active !== undefined) {
+        params.is_active = tableParams.filters.is_active;
+      }
+
+      const response = await usersApi.getAll(params);
       setUsers(response.data.data);
+      setTableParams(prev => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: response.data.total || response.data.data.length,
+        },
+      }));
     } catch (error) {
       message.error('Ошибка загрузки пользователей');
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [tableParams]);
 
   const fetchContracts = async () => {
     try {
@@ -54,6 +102,53 @@ const UsersPage: React.FC = () => {
     } catch (error) {
       console.error('Error fetching contracts:', error);
     }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchContracts();
+  }, [fetchUsers]);
+
+  const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
+    setTableParams({
+      pagination,
+      sorter: {
+        field: sorter.field,
+        order: sorter.order,
+      },
+      filters: {
+        search: searchValue,
+        role: roleFilter,
+        is_active: statusFilter,
+      },
+    });
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, search: value },
+    }));
+  };
+
+  const handleRoleFilter = (value: string | undefined) => {
+    setRoleFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, role: value },
+    }));
+  };
+
+  const handleStatusFilter = (value: boolean | undefined) => {
+    setStatusFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, is_active: value },
+    }));
   };
 
   const handleAdd = () => {
@@ -105,6 +200,7 @@ const UsersPage: React.FC = () => {
       title: 'Логин',
       dataIndex: 'login',
       key: 'login',
+      sorter: true,
     },
     {
       title: 'Email',
@@ -115,11 +211,13 @@ const UsersPage: React.FC = () => {
       title: 'ФИО',
       dataIndex: 'full_name',
       key: 'full_name',
+      sorter: true,
     },
     {
       title: 'Роль',
       dataIndex: 'role',
       key: 'role',
+      sorter: true,
       render: (role: string) => {
         const colors: Record<string, string> = {
           admin: 'red',
@@ -183,11 +281,51 @@ const UsersPage: React.FC = () => {
         </Button>
       </div>
 
+      <Card style={{ marginBottom: 16 }}>
+        <Space wrap>
+          <Input
+            placeholder="Поиск по логину/ФИО/email..."
+            prefix={<SearchOutlined />}
+            value={searchValue}
+            onChange={(e) => handleSearch(e.target.value)}
+            allowClear
+            style={{ width: 280 }}
+          />
+          <Select
+            placeholder="Роль"
+            allowClear
+            style={{ width: 150 }}
+            value={roleFilter}
+            onChange={handleRoleFilter}
+          >
+            <Select.Option value="admin">Администратор</Select.Option>
+            <Select.Option value="curator">Куратор</Select.Option>
+            <Select.Option value="employee">Сотрудник</Select.Option>
+          </Select>
+          <Select
+            placeholder="Статус"
+            allowClear
+            style={{ width: 150 }}
+            value={statusFilter}
+            onChange={handleStatusFilter}
+          >
+            <Select.Option value={true}>Активные</Select.Option>
+            <Select.Option value={false}>Неактивные</Select.Option>
+          </Select>
+        </Space>
+      </Card>
+
       <Table
         columns={columns}
         dataSource={users}
         loading={loading}
         rowKey="id"
+        pagination={{
+          ...tableParams.pagination,
+          showSizeChanger: true,
+          showTotal: (total) => `Всего пользователей: ${total}`,
+        }}
+        onChange={handleTableChange}
       />
 
       <Modal

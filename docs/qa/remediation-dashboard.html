@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remediation Dashboard — Контроль присутствия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #1a202c;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-label {
+            color: #718096;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value.critical { color: #e53e3e; }
+        .stat-value.high { color: #ed8936; }
+        .stat-value.medium { color: #d69e2e; }
+        .stat-value.good { color: #10b981; }
+        
+        .stat-change {
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .progress-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #1a202c;
+            margin-bottom: 20px;
+        }
+        
+        .priority-bar {
+            margin-bottom: 25px;
+        }
+        
+        .priority-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .priority-label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .priority-stats {
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .progress-bar {
+            height: 32px;
+            background: #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .progress-fill.critical {
+            background: linear-gradient(90deg, #e53e3e 0%, #fc8181 100%);
+        }
+        
+        .progress-fill.high {
+            background: linear-gradient(90deg, #ed8936 0%, #f6ad55 100%);
+        }
+        
+        .progress-fill.medium {
+            background: linear-gradient(90deg, #d69e2e 0%, #f6e05e 100%);
+        }
+        
+        .tasks-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .task-category {
+            margin-bottom: 30px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .category-icon {
+            font-size: 24px;
+        }
+        
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+        
+        .task-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        
+        .task-item:hover {
+            background: #edf2f7;
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .task-checkbox.checked {
+            background: #10b981;
+            border-color: #10b981;
+        }
+        
+        .task-text {
+            flex: 1;
+            font-size: 14px;
+            color: #2d3748;
+        }
+        
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #a0aec0;
+        }
+        
+        .task-estimate {
+            font-size: 12px;
+            color: #718096;
+            padding: 4px 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+        
+        .timeline {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .timeline-marker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #718096;
+            flex-shrink: 0;
+        }
+        
+        .timeline-marker.active {
+            background: #10b981;
+            color: white;
+        }
+        
+        .timeline-content {
+            flex: 1;
+        }
+        
+        .timeline-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-description {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-hours {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #edf2f7;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #4a5568;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .stat-value {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Remediation Dashboard</h1>
+            <p class="subtitle">Контроль присутствия — План устранения замечаний IT Council</p>
+        </header>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Всего задач</div>
+                <div class="stat-value good">75</div>
+                <div class="stat-change">Выполнено: 0 (0%)</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">Критические</div>
+                <div class="stat-value critical">16</div>
+                <div class="stat-change">Блокирующие проблемы</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">Высокий приоритет</div>
+                <div class="stat-value high">9</div>
+                <div class="stat-change">Security vulnerabilities</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">Оценка усилий</div>
+                <div class="stat-value medium">184ч</div>
+                <div class="stat-change">~5 недель работы</div>
+            </div>
+        </div>
+        
+        <div class="progress-section">
+            <h2 class="section-title">📈 Прогресс по приоритетам</h2>
+            
+            <div class="priority-bar">
+                <div class="priority-header">
+                    <span class="priority-label">🔴 Приоритет 1: Критические</span>
+                    <span class="priority-stats">0 / 22 задач</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill critical" style="width: 0%">0%</div>
+                </div>
+            </div>
+            
+            <div class="priority-bar">
+                <div class="priority-header">
+                    <span class="priority-label">🟠 Приоритет 2: Security</span>
+                    <span class="priority-stats">0 / 14 задач</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill high" style="width: 0%">0%</div>
+                </div>
+            </div>
+            
+            <div class="priority-bar">
+                <div class="priority-header">
+                    <span class="priority-label">🟡 Приоритет 3: Тесты</span>
+                    <span class="priority-stats">0 / 25 задач</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill medium" style="width: 0%">0%</div>
+                </div>
+            </div>
+            
+            <div class="priority-bar">
+                <div class="priority-header">
+                    <span class="priority-label">🟢 Приоритет 4: Infrastructure</span>
+                    <span class="priority-stats">0 / 14 задач</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%">0%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline">
+            <h2 class="section-title">📅 Timeline выполнения</h2>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker active">1</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Неделя 1: TypeScript Errors + Security Critical</div>
+                    <div class="timeline-description">Исправление блокирующих ошибок, WebSocket authentication, CORS, JWT blacklist</div>
+                    <span class="timeline-hours">⏱ 20 часов</span>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker">2</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Неделя 2: Security Hardening</div>
+                    <div class="timeline-description">Rate limiting, Device fingerprint validation, Security headers</div>
+                    <span class="timeline-hours">⏱ 12 часов</span>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker">3-4</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Недели 3-4: Test Coverage (Backend)</div>
+                    <div class="timeline-description">Unit tests для workers, controllers, integration tests</div>
+                    <span class="timeline-hours">⏱ 104 часа</span>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker">5</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Неделя 5: Infrastructure + Mobile Tests</div>
+                    <div class="timeline-description">Docker configuration, deployment guide, mobile app tests</div>
+                    <span class="timeline-hours">⏱ 48 часов</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Интерактивность для чекбоксов
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                const taskText = this.nextElementSibling;
+                taskText.classList.toggle('completed');
+                
+                // Обновить прогресс (упрощённо)
+                updateProgress();
+            });
+        });
+        
+        function updateProgress() {
+            const total = document.querySelectorAll('.task-checkbox').length;
+            const completed = document.querySelectorAll('.task-checkbox.checked').length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            console.log(`Прогресс: ${completed}/${total} (${percentage}%)`);
+            // Здесь можно добавить обновление progress bars
+        }
+    </script>
+</body>
+</html>

@@ -59,7 +59,18 @@
             android:name=".service.BleScanningService"
             android:exported="false"
             android:foregroundServiceType="connectedDevice|location" />
-        
+
+        <!-- Boot Completed Receiver — автозапуск BLE сканирования после перезагрузки -->
+        <receiver
+            android:name=".receiver.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
         <!-- Sync Worker -->
         <provider
             android:name="androidx.startup.InitializationProvider"

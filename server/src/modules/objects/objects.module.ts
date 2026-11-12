@@ -8,6 +8,6 @@ import { ObjectEntity } from './entities/object.entity';
   imports: [TypeOrmModule.forFeature([ObjectEntity])],
   controllers: [ObjectsController],
   providers: [ObjectsService],
-  exports: [ObjectsService],
+  exports: [ObjectsService], // Экспортируем для использования в ImportExportModule
 })
 export class ObjectsModule {}

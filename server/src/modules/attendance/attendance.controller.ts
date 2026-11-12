@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Query,
   UseGuards,
@@ -18,6 +19,7 @@ import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { ConfigService } from '@nestjs/config';
+import { AuthenticatedRequest } from '../../common/types/request.types';
 
 @ApiTags('mobile')
 @Controller('mobile')
@@ -33,9 +35,11 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Получение настроек для мобильного приложения' })
   @ApiResponse({ status: 200, description: 'Настройки получены' })
   async getSettings() {
+    const allowedBeaconUuids = await this.attendanceService.getActiveBeaconUuids();
+
     return {
       data: {
-        allowed_beacon_uuids: [], // TODO: Загрузить из БД
+        allowed_beacon_uuids: allowedBeaconUuids,
         aggregation_interval_sec: this.configService.get<number>('AGGREGATION_INTERVAL_SEC', 600),
         sync_interval_sec: this.configService.get<number>('SYNC_INTERVAL_SEC', 600),
         scan_duty_cycle: {
@@ -58,7 +62,10 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Отправка данных присутствия' })
   @ApiResponse({ status: 200, description: 'Данные приняты' })
   @ApiResponse({ status: 409, description: 'Дублирующийся запрос' })
-  async submitAttendance(@Request() req, @Body() submitDto: SubmitAttendanceDto) {
+  async submitAttendance(
+    @Request() req: AuthenticatedRequest,
+    @Body() submitDto: SubmitAttendanceDto,
+  ) {
     return this.attendanceService.submitAttendance(req.user.id, submitDto);
   }
 
@@ -80,7 +87,7 @@ export class AttendanceController {
   @ApiQuery({ name: 'to', required: false, description: 'Конец периода' })
   @ApiResponse({ status: 200, description: 'История присутствия' })
   async getMyAttendance(
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
@@ -97,15 +104,31 @@ export class AttendanceController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Регистрация push-токена для FCM' })
   @ApiResponse({ status: 200, description: 'Токен зарегистрирован' })
-  async registerPushToken(@Request() req, @Body() pushTokenDto: PushTokenDto) {
-    // TODO: Сохранить токен в БД
-    return {
-      data: {
-        message: 'Токен зарегистрирован',
-        user_id: req.user.id,
-        platform: pushTokenDto.platform,
-      },
-    };
+  async registerPushToken(
+    @Request() req: AuthenticatedRequest,
+    @Body() pushTokenDto: PushTokenDto,
+  ) {
+    const result = await this.attendanceService.savePushToken(
+      req.user.id,
+      pushTokenDto.push_token,
+      pushTokenDto.platform,
+    );
+    return { data: result };
+  }
+
+  @Delete('push-token')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Удаление push-токена' })
+  @ApiQuery({ name: 'push_token', required: false, description: 'Конкретный токен для удаления' })
+  @ApiResponse({ status: 200, description: 'Токен удалён' })
+  async removePushToken(
+    @Request() req: AuthenticatedRequest,
+    @Query('push_token') pushToken?: string,
+  ) {
+    const result = await this.attendanceService.removePushToken(req.user.id, pushToken);
+    return { data: result };
   }
 }
 

@@ -14,11 +14,13 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { SlaModule } from './modules/sla/sla.module';
 import { FraudModule } from './modules/fraud/fraud.module';
+import { AuditModule } from './modules/audit/audit.module';
 import { ImportExportModule } from './modules/import-export/import-export.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
 import { RedisModule } from './modules/redis/redis.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -59,6 +61,9 @@ import { RedisModule } from './modules/redis/redis.module';
 
     // Redis Module (for token blacklist, caching, etc.)
     RedisModule,
+
+    // Email Module
+    EmailModule,
 
     // Rate Limiting
     ThrottlerModule.forRootAsync({
@@ -105,6 +110,9 @@ import { RedisModule } from './modules/redis/redis.module';
 
     // Fraud
     FraudModule,
+
+    // Audit
+    AuditModule,
 
     // Import/Export
     ImportExportModule,

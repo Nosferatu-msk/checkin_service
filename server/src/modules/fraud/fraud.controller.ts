@@ -16,6 +16,7 @@ import { CreateFraudLogDto, ReviewFraudDto } from './dto/fraud.dto';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { AuthenticatedRequest } from '../../common/types/request.types';
 
 @ApiTags('fraud')
 @ApiBearerAuth()
@@ -82,7 +83,7 @@ export class FraudController {
   async review(
     @Param('id', ParseIntPipe) id: number,
     @Body() reviewDto: ReviewFraudDto,
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
   ) {
     const fraudLog = await this.fraudService.review(id, reviewDto, req.user.id);
     return { data: fraudLog };

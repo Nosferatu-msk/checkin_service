@@ -3,11 +3,18 @@ package com.checkin.mobile.service
 import android.Manifest
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.core.content.ContextCompat
+import android.util.Log
 import com.checkin.mobile.data.local.BeaconDao
 import com.checkin.mobile.data.local.entity.BeaconScanEntity
+import com.checkin.mobile.domain.repository.SettingsRepository
+import com.checkin.mobile.domain.usecase.attendance.PresenceAlgorithm
+import com.checkin.mobile.domain.usecase.attendance.RssiSample
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +35,20 @@ import javax.inject.Singleton
 @Singleton
 class BleManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val beaconDao: BeaconDao
+    private val beaconDao: BeaconDao,
+    private val settingsRepository: SettingsRepository,
+    private val presenceAlgorithm: PresenceAlgorithm
 ) : BeaconConsumer {
+
+    companion object {
+        private const val TAG = "BleManager"
+        
+        // Duty cycle параметры (согласно ТЗ раздел 4.1)
+        private const val SCAN_DUTY_CYCLE_MS = 3000L  // 3 секунды сканирование
+        private const val PAUSE_DUTY_CYCLE_MS = 7000L // 7 секунд пауза
+    }
+
+    private var allowedBeaconUuids: List<String> = emptyList()
 
     private val beaconManager: BeaconManager by lazy {
         BeaconManager.getInstanceForApplication(context).apply {
@@ -39,6 +58,8 @@ class BleManager @Inject constructor(
             beaconParsers.add(BeaconParser().setBeaconLayout("x,s:0-1=feaa,m:2-2=20,d:3-3,d:4-5,d:6-7,d:8-11"))
         }
     }
+
+    private val region = Region("AllBeacons", null, null, null)
 
     private val _isScanning = MutableStateFlow(false)
     val isScanning: StateFlow<Boolean> = _isScanning.asStateFlow()
@@ -50,10 +71,24 @@ class BleManager @Inject constructor(
     private val aggregationBuffer = mutableMapOf<String, MutableList<BeaconReading>>()
     private var aggregationIntervalMs = 10 * 60 * 1000L // 10 minutes
 
+    // Duty cycle
+    private var dutyCycleHandler: Handler? = null
+    private var dutyCycleRunnable: Runnable? = null
+
     private val scope = CoroutineScope(Dispatchers.IO)
+
+    /**
+     * Загрузить whitelist разрешённых UUID маяков из серверных настроек.
+     * Следует вызывать при старте приложения и при необходимости обновить список.
+     */
+    suspend fun loadAllowedBeacons() {
+        allowedBeaconUuids = settingsRepository.getAllowedBeaconUuids()
+        Log.d(TAG, "Loaded ${allowedBeaconUuids.size} allowed beacon UUIDs")
+    }
 
     fun startScanning() {
         if (!hasRequiredPermissions()) {
+            Log.w(TAG, "Missing required BLE permissions")
             return
         }
 
@@ -61,25 +96,78 @@ class BleManager @Inject constructor(
             if (beacons.isNotEmpty()) {
                 val beaconList = beacons.toList()
                 _discoveredBeacons.value = beaconList
-                
-                // Aggregate beacon data
-                aggregateBeacons(beaconList)
+
+                // Filter beacons by whitelist and aggregate
+                val filteredBeacons = filterBeaconsByWhitelist(beaconList)
+                if (filteredBeacons.isNotEmpty()) {
+                    aggregateBeacons(filteredBeacons)
+                }
             }
         }
 
-        beaconManager.startRangingBeaconsInRegion(
-            Region("AllBeacons", null, null, null)
-        )
-
+        // Запустить duty cycle для экономии батареи
+        startDutyCycle()
         _isScanning.value = true
+        Log.d(TAG, "Scanning started with duty cycle")
     }
 
     fun stopScanning() {
-        beaconManager.stopRangingBeaconsInRegion(
-            Region("AllBeacons", null, null, null)
-        )
+        // Остановить duty cycle
+        stopDutyCycle()
+        
+        beaconManager.stopRangingBeaconsInRegion(region)
         _isScanning.value = false
         _discoveredBeacons.value = emptyList()
+        Log.d(TAG, "Scanning stopped")
+    }
+
+    /**
+     * Запустить duty cycle: 3 секунды сканирование / 7 секунд пауза.
+     * Согласно ТЗ раздел 4.1 для экономии батареи.
+     */
+    private fun startDutyCycle() {
+        dutyCycleHandler = Handler(Looper.getMainLooper())
+        dutyCycleRunnable = object : Runnable {
+            override fun run() {
+                // Начало цикла сканирования
+                beaconManager.startRangingBeaconsInRegion(region)
+                Log.d(TAG, "Duty cycle: scanning started")
+
+                // Через 3 секунды — пауза
+                dutyCycleHandler?.postDelayed({
+                    beaconManager.stopRangingBeaconsInRegion(region)
+                    Log.d(TAG, "Duty cycle: pause started")
+
+                    // Через 7 секунд — снова сканирование
+                    dutyCycleHandler?.postDelayed(this, PAUSE_DUTY_CYCLE_MS)
+                }, SCAN_DUTY_CYCLE_MS)
+            }
+        }
+
+        dutyCycleHandler?.post(dutyCycleRunnable!!)
+    }
+
+    /**
+     * Остановить duty cycle.
+     */
+    private fun stopDutyCycle() {
+        dutyCycleRunnable?.let { dutyCycleHandler?.removeCallbacks(it) }
+        dutyCycleRunnable = null
+        dutyCycleHandler = null
+    }
+
+    /**
+     * Фильтрация маяков по whitelist UUID.
+     * Если whitelist пуст — пропускаются все маяки (фильтрация отключена).
+     */
+    private fun filterBeaconsByWhitelist(beacons: List<Beacon>): List<Beacon> {
+        if (allowedBeaconUuids.isEmpty()) {
+            // Whitelist не загружен или пуст — пропускаем все маяки
+            return beacons
+        }
+        return beacons.filter { beacon ->
+            beacon.id1.toString() in allowedBeaconUuids
+        }
     }
 
     private fun aggregateBeacons(beacons: List<Beacon>) {
@@ -118,12 +206,16 @@ class BleManager @Inject constructor(
                 val elapsed = now - firstReading.timestamp
 
                 if (elapsed >= aggregationIntervalMs) {
-                    // Aggregate readings
-                    val aggregated = aggregateReadings(readings)
-                    
-                    // Save to database
-                    scope.launch {
-                        beaconDao.insertBeaconScan(aggregated)
+                    // Определить присутствие и вычислить медиану RSSI
+                    val result = processAggregatedData(readings)
+
+                    if (result != null) {
+                        // Присутствие подтверждено — сохранить в БД
+                        scope.launch {
+                            beaconDao.insertBeaconScan(result)
+                        }
+                    } else {
+                        Log.d(TAG, "Beacon $key: присутствие не подтверждено, пропуск интервала")
                     }
 
                     keysToRemove.add(key)
@@ -135,9 +227,32 @@ class BleManager @Inject constructor(
         keysToRemove.forEach { aggregationBuffer.remove(it) }
     }
 
-    private fun aggregateReadings(readings: List<BeaconReading>): BeaconScanEntity {
-        val rssiValues = readings.map { it.rssi }.sorted()
-        val medianRssi = if (rssiValues.isEmpty()) 0 else rssiValues[rssiValues.size / 2]
+    /**
+     * Обработать агрегированные замеры: определить присутствие и вычислить медиану RSSI.
+     *
+     * @return [BeaconScanEntity] если присутствие подтверждено, null если нет
+     */
+    private fun processAggregatedData(readings: List<BeaconReading>): BeaconScanEntity? {
+        // Конвертировать BeaconReading в RssiSample для алгоритма
+        val samples = readings.map { reading ->
+            RssiSample(rssi = reading.rssi, timestamp = reading.timestamp)
+        }
+
+        // Определить присутствие через алгоритм
+        val presenceResult = presenceAlgorithm.evaluate(
+            samples = samples,
+            intervalMs = aggregationIntervalMs
+        )
+
+        if (!presenceResult.isPresent) {
+            Log.d(TAG, "Presence not confirmed: ${presenceResult.reason}")
+            return null
+        }
+
+        Log.d(TAG, "Presence confirmed: ${presenceResult.reason}")
+
+        // Вычислить мин/макс из всех замеров (до фильтрации — для информативности)
+        val allRssi = readings.map { it.rssi }
 
         return BeaconScanEntity(
             beacon_uuid = readings.first().uuid,
@@ -146,10 +261,10 @@ class BleManager @Inject constructor(
             mac_address = readings.first().macAddress,
             scan_timestamp_start = Date(readings.first().timestamp),
             scan_timestamp_end = Date(readings.last().timestamp),
-            median_rssi = medianRssi.toFloat(),
-            min_rssi = rssiValues.minOrNull()?.toFloat() ?: 0f,
-            max_rssi = rssiValues.maxOrNull()?.toFloat() ?: 0f,
-            samples_count = readings.size,
+            median_rssi = presenceResult.medianRssi.toFloat(),
+            min_rssi = allRssi.minOrNull()?.toFloat() ?: 0f,
+            max_rssi = allRssi.maxOrNull()?.toFloat() ?: 0f,
+            samples_count = presenceResult.filteredSamplesCount,
             sync_status = "pending"
         )
     }

@@ -1,8 +1,8 @@
 import { Form, Input, Button, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { login, clearError } from '../../store/slices/authSlice';
+import { login } from '../../store/slices/authSlice';
 import './LoginPage.css';
 
 const LoginPage: React.FC = () => {
@@ -66,7 +66,7 @@ const LoginPage: React.FC = () => {
           </Form.Item>
 
           <div className="login-footer">
-            <a href="/forgot-password">Забыли пароль?</a>
+            <Link to="/forgot-password">Забыли пароль?</Link>
           </div>
         </Form>
       </Card>

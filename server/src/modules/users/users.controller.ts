@@ -14,6 +14,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { CreateDeviceDto, UpdateDeviceDto } from './dto/device.dto';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -76,5 +77,64 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     await this.usersService.remove(id);
+  }
+
+  // === User Devices Endpoints ===
+
+  @Post(':id/devices')
+  @ApiOperation({ summary: 'Добавление устройства пользователя' })
+  @ApiResponse({ status: 201, description: 'Устройство добавлено' })
+  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
+  async addDevice(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() createDeviceDto: CreateDeviceDto,
+  ) {
+    const device = await this.usersService.addDevice(id, createDeviceDto);
+    return { data: device };
+  }
+
+  @Get(':id/devices')
+  @ApiOperation({ summary: 'Получение списка устройств пользователя' })
+  @ApiResponse({ status: 200, description: 'Список устройств' })
+  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
+  async getDevices(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.getDevices(id);
+  }
+
+  @Get(':id/devices/:deviceId')
+  @ApiOperation({ summary: 'Получение устройства пользователя' })
+  @ApiResponse({ status: 200, description: 'Устройство найдено' })
+  @ApiResponse({ status: 404, description: 'Устройство не найдено' })
+  async getDevice(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+  ) {
+    const device = await this.usersService.getDevice(id, deviceId);
+    return { data: device };
+  }
+
+  @Put(':id/devices/:deviceId')
+  @ApiOperation({ summary: 'Обновление устройства пользователя' })
+  @ApiResponse({ status: 200, description: 'Устройство обновлено' })
+  @ApiResponse({ status: 404, description: 'Устройство не найдено' })
+  async updateDevice(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+    @Body() updateDeviceDto: UpdateDeviceDto,
+  ) {
+    const device = await this.usersService.updateDevice(id, deviceId, updateDeviceDto);
+    return { data: device };
+  }
+
+  @Delete(':id/devices/:deviceId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Удаление устройства пользователя' })
+  @ApiResponse({ status: 204, description: 'Устройство удалено' })
+  @ApiResponse({ status: 404, description: 'Устройство не найдено' })
+  async removeDevice(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+  ) {
+    await this.usersService.removeDevice(id, deviceId);
   }
 }

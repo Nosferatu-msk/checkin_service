@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -37,16 +38,26 @@ async function bootstrap() {
     }),
   });
 
-  // CORS
+  // Security Headers
+  app.use(helmet());
+
+  // CORS - environment-based configuration
+  const allowedOrigins = process.env.NODE_ENV === 'production'
+    ? ['https://app.checkin-service.com', 'https://admin.checkin-service.com']
+    : ['http://localhost:3001', 'http://localhost:5173'];
+
   app.enableCors({
-    origin: [
-      'https://app.checkin-service.com',
-      'https://admin.checkin-service.com',
-      'http://localhost:3001',
-      'http://localhost:5173',
-    ],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Device-Fingerprint',
+      'X-Requested-With',
+    ],
+    exposedHeaders: ['X-Request-Id'],
+    maxAge: 86400, // 24 часа
   });
 
   // Validation
@@ -82,9 +93,10 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  
+
   console.log(`Application is running on: http://localhost:${port}`);
   console.log(`Swagger documentation: http://localhost:${port}/api/docs`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 }
 
 bootstrap();

@@ -3,6 +3,23 @@
 
 #include <Arduino.h>
 
+// ==================== Eddystone-TLM Frame ====================
+// Eddystone-TLM frame type for telemetry (battery, temperature)
+// Reference: https://github.com/google/eddystone/tree/master/eddystone-tlm
+
+#define EDDYSTONE_TLM_FRAME_TYPE 0x20
+#define EDDYSTONE_SERVICE_UUID   0xFEAA
+
+// Eddystone-TLM packet structure (unencrypted)
+struct EddystoneTLM {
+    uint8_t frame_type;      // 0x20 - TLM frame type
+    uint8_t version;         // TLM version (0x00)
+    uint16_t battery_mv;     // Battery voltage in mV (big-endian)
+    uint16_t temperature;    // Temperature in 8.8 fixed-point format (big-endian)
+    uint32_t adv_count;      // Advertising count since power-on (big-endian)
+    uint32_t sec_count;      // Time since power-on in 0.1s resolution (big-endian)
+};
+
 // Default beacon configuration
 struct BeaconConfig {
     uint8_t uuid[16];

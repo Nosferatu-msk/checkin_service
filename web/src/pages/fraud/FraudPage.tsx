@@ -1,6 +1,6 @@
 import { Table, Card, DatePicker, Select, Button, Space, Tag, Modal, Form, Input, message } from 'antd';
 import { FilterOutlined, EyeOutlined, CheckOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { fraudApi } from '../../services/api';
 import dayjs from 'dayjs';
 import './FraudPage.css';
@@ -20,6 +20,18 @@ interface FraudLog {
   user?: { id: string; full_name: string; login: string };
 }
 
+interface TableParams {
+  pagination: {
+    current: number;
+    pageSize: number;
+    total?: number;
+  };
+  sorter?: {
+    field?: string;
+    order?: 'ascend' | 'descend';
+  };
+}
+
 const FraudPage: React.FC = () => {
   const [fraudLogs, setFraudLogs] = useState<FraudLog[]>([]);
   const [loading, setLoading] = useState(false);
@@ -29,37 +41,65 @@ const FraudPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | undefined>();
   const [selectedSeverity, setSelectedSeverity] = useState<string | undefined>();
   const [form] = Form.useForm();
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: { current: 1, pageSize: 50 },
+  });
 
-  useEffect(() => {
-    fetchFraudLogs();
-  }, [dateRange, selectedType, selectedSeverity]);
-
-  const fetchFraudLogs = async () => {
+  const fetchFraudLogs = useCallback(async () => {
     setLoading(true);
     try {
-      const params: any = {};
-      
+      const params: any = {
+        page: tableParams.pagination.current,
+        limit: tableParams.pagination.pageSize,
+      };
+
       if (dateRange) {
         params.from = dateRange[0].toISOString();
         params.to = dateRange[1].toISOString();
       }
-      
+
       if (selectedType) {
         params.fraud_type = selectedType;
       }
-      
+
       if (selectedSeverity) {
         params.severity = selectedSeverity;
       }
 
+      if (tableParams.sorter?.field) {
+        params.sort_by = tableParams.sorter.field;
+        params.sort_order = tableParams.sorter.order === 'ascend' ? 'asc' : 'desc';
+      }
+
       const response = await fraudApi.getAll(params);
       setFraudLogs(response.data.data);
+      setTableParams(prev => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: response.data.total || response.data.data.length,
+        },
+      }));
     } catch (error) {
       message.error('Ошибка загрузки данных фрод-мониторинга');
       console.error('Error fetching fraud logs:', error);
     } finally {
       setLoading(false);
     }
+  }, [tableParams, dateRange, selectedType, selectedSeverity]);
+
+  useEffect(() => {
+    fetchFraudLogs();
+  }, [fetchFraudLogs]);
+
+  const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
+    setTableParams({
+      pagination,
+      sorter: {
+        field: sorter.field,
+        order: sorter.order,
+      },
+    });
   };
 
   const handleViewDetails = (record: FraudLog) => {
@@ -86,12 +126,14 @@ const FraudPage: React.FC = () => {
       title: 'Дата',
       dataIndex: 'created_at',
       key: 'created_at',
+      sorter: true,
       render: (date: string) => dayjs(date).format('DD.MM.YYYY HH:mm'),
     },
     {
       title: 'Тип фрода',
       dataIndex: 'fraud_type',
       key: 'fraud_type',
+      sorter: true,
       render: (type: string) => {
         const labels: Record<string, string> = {
           mock_location: 'Подмена GPS',
@@ -105,13 +147,14 @@ const FraudPage: React.FC = () => {
     {
       title: 'Сотрудник',
       key: 'user',
-      render: (_: any, record: FraudLog) => 
+      render: (_: any, record: FraudLog) =>
         record.user?.full_name || record.user?.login || '-',
     },
     {
       title: 'Серьёзность',
       dataIndex: 'severity',
       key: 'severity',
+      sorter: true,
       render: (severity: string) => {
         const colors: Record<string, string> = {
           info: 'blue',
@@ -141,17 +184,17 @@ const FraudPage: React.FC = () => {
       key: 'actions',
       render: (_: any, record: FraudLog) => (
         <Space>
-          <Button 
-            icon={<EyeOutlined />} 
-            size="small" 
+          <Button
+            icon={<EyeOutlined />}
+            size="small"
             onClick={() => handleViewDetails(record)}
           >
             Просмотр
           </Button>
           {!record.is_reviewed && (
-            <Button 
-              icon={<CheckOutlined />} 
-              size="small" 
+            <Button
+              icon={<CheckOutlined />}
+              size="small"
               type="primary"
               onClick={() => handleViewDetails(record)}
             >
@@ -212,10 +255,11 @@ const FraudPage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          pageSize: 50,
+          ...tableParams.pagination,
           showSizeChanger: true,
           showTotal: (total) => `Всего инцидентов: ${total}`,
         }}
+        onChange={handleTableChange}
       />
 
       <Modal

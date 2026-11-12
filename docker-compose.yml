@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: checkin_postgres
+    environment:
+      POSTGRES_DB: checkin_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - checkin_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: checkin_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - checkin_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  server:
+    build: ./server
+    container_name: checkin_server
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: checkin_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD:
+      JWT_PUBLIC_KEY: ${JWT_PUBLIC_KEY}
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
+      JWT_ACCESS_TOKEN_EXPIRATION: 15m
+      JWT_REFRESH_TOKEN_EXPIRATION: 30d
+      THROTTLE_TTL: 60
+      THROTTLE_LIMIT: 60
+      CORS_ORIGINS: https://app.checkin-service.com,https://admin.checkin-service.com
+      LOG_LEVEL: info
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - checkin_network
+    restart: unless-stopped
+
+  # Web Frontend
+  web:
+    build: ./web
+    container_name: checkin_web
+    ports:
+      - "3001:80"
+    depends_on:
+      - server
+    networks:
+      - checkin_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  checkin_network:
+    driver: bridge

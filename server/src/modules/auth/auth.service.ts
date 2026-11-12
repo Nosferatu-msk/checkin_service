@@ -7,6 +7,7 @@ import { User } from '@/modules/users/entities/user.entity';
 import { LoginDto } from './dto/auth.dto';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../redis/redis.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private redisService: RedisService,
+    private emailService: EmailService,
   ) {}
 
   async validateUser(login: string, password: string): Promise<User> {
@@ -129,7 +131,7 @@ export class AuthService {
     try {
       // Декодирование токена для получения срока действия
       const payload = this.jwtService.verify(refreshToken, { ignoreExpiration: true });
-      
+
       // Вычисление оставшегося времени жизни токена
       const now = Math.floor(Date.now() / 1000);
       const exp = payload.exp;
@@ -145,5 +147,71 @@ export class AuthService {
       // Если токен уже недействителен, просто возвращаем успех
       return { message: 'Выход выполнен успешно' };
     }
+  }
+
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    // Ищем пользователя по email
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    // Не раскрываем существование пользователя — всегда возвращаем успех
+    if (!user) {
+      return { message: 'Инструкции по сбросу пароля отправлены на email' };
+    }
+
+    // Проверяем, что пользователь активен
+    if (!user.is_active) {
+      return { message: 'Инструкции по сбросу пароля отправлены на email' };
+    }
+
+    // Генерируем reset token с коротким сроком действия
+    const resetToken = this.jwtService.sign(
+      { sub: user.id, type: 'reset', email: user.email },
+      { expiresIn: '1h' },
+    );
+
+    // Отправляем email с ссылкой для сброса
+    await this.emailService.sendPasswordResetEmail(email, resetToken);
+
+    return { message: 'Инструкции по сбросу пароля отправлены на email' };
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    // Проверяем валидность токена
+    let payload: { sub: string; type: string; email: string };
+    try {
+      payload = this.jwtService.verify(token);
+    } catch (error) {
+      throw new UnauthorizedException('Недействительный или истекший токен');
+    }
+
+    // Проверяем тип токена
+    if (payload.type !== 'reset') {
+      throw new UnauthorizedException('Недействительный тип токена');
+    }
+
+    // Ищем пользователя
+    const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+    if (!user) {
+      throw new UnauthorizedException('Пользователь не найден');
+    }
+
+    // Проверяем, что пользователь активен
+    if (!user.is_active) {
+      throw new ForbiddenException('Аккаунт заблокирован');
+    }
+
+    // Хешируем новый пароль
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+
+    // Обновляем пароль
+    await this.userRepository.update(user.id, { password_hash: passwordHash });
+
+    // Инвалидируем все сессии пользователя (удаляем из Redis)
+    await this.redisService.deleteSession(`session:${user.id}`);
+
+    // Также удаляем device fingerprint, чтобы потребовать повторную привязку устройства
+    await this.redisService.deleteDeviceFingerprint(user.id);
+
+    return { message: 'Пароль успешно сброшен' };
   }
 }

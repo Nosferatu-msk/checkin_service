@@ -7,13 +7,35 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onLogoutSuccess: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    // Handle logout success
+    LaunchedEffect(uiState.logoutSuccess) {
+        if (uiState.logoutSuccess) {
+            onLogoutSuccess()
+        }
+    }
+
+    // Show error snackbar
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { error ->
+            snackbarHostState.showSnackbar(error)
+            viewModel.clearError()
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Настройки") },
@@ -40,7 +62,7 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            
+
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -49,30 +71,31 @@ fun SettingsScreen(
                 ) {
                     SettingsItem(
                         title = "Сменить пароль",
-                        onClick = { /* TODO */ }
+                        onClick = { /* TODO: Navigate to change password screen */ }
                     )
-                    HorizontalDivider()
+                    Divider()
                     SettingsItem(
                         title = "Изменить PIN",
-                        onClick = { /* TODO */ }
+                        onClick = { /* TODO: Navigate to change PIN screen */ }
                     )
-                    HorizontalDivider()
+                    Divider()
                     SettingsItem(
                         title = "Биометрия",
-                        onClick = { /* TODO */ }
+                        subtitle = if (uiState.isBiometricEnabled) "Включена" else "Выключена",
+                        onClick = { viewModel.toggleBiometric(!uiState.isBiometricEnabled) }
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             // Scanning section
             Text(
                 text = "Сканирование",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            
+
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -82,26 +105,26 @@ fun SettingsScreen(
                     SettingsItem(
                         title = "Интервал агрегации",
                         subtitle = "10 минут",
-                        onClick = { /* TODO */ }
+                        onClick = { /* TODO: Show interval picker */ }
                     )
-                    HorizontalDivider()
+                    Divider()
                     SettingsItem(
                         title = "Интервал синхронизации",
                         subtitle = "10 минут",
-                        onClick = { /* TODO */ }
+                        onClick = { /* TODO: Show interval picker */ }
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             // About section
             Text(
                 text = "О приложении",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            
+
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -115,23 +138,33 @@ fun SettingsScreen(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.weight(1f))
-            
+
             // Logout button
             Button(
-                onClick = { /* TODO: Logout */ },
+                onClick = { viewModel.logout() },
                 modifier = Modifier.fillMaxWidth(),
+                enabled = !uiState.isLoggingOut,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text("Выйти")
+                if (uiState.isLoggingOut) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onError,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Выйти")
+                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsItem(
     title: String,

@@ -1,6 +1,6 @@
-import { Table, Card, Button, Tag, Space, message, Badge } from 'antd';
+import { Table, Button, Tag, Space, message, Badge, Select } from 'antd';
 import { CheckOutlined, DeleteOutlined, BellOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { notificationsApi } from '../../services/api';
 import dayjs from 'dayjs';
 import './NotificationsPage.css';
@@ -14,25 +14,93 @@ interface Notification {
   created_at: string;
 }
 
+interface TableParams {
+  pagination: {
+    current: number;
+    pageSize: number;
+    total?: number;
+  };
+  sorter?: {
+    field?: string;
+    order?: 'ascend' | 'descend';
+  };
+}
+
 const NotificationsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  const [readFilter, setReadFilter] = useState<boolean | undefined>(undefined);
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: { current: 1, pageSize: 20 },
+  });
 
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await notificationsApi.getAll();
+      const params: any = {
+        page: tableParams.pagination.current,
+        limit: tableParams.pagination.pageSize,
+      };
+
+      if (typeFilter) {
+        params.type = typeFilter;
+      }
+
+      if (readFilter !== undefined) {
+        params.is_read = readFilter;
+      }
+
+      if (tableParams.sorter?.field) {
+        params.sort_by = tableParams.sorter.field;
+        params.sort_order = tableParams.sorter.order === 'ascend' ? 'asc' : 'desc';
+      }
+
+      const response = await notificationsApi.getAll(params);
       setNotifications(response.data.data);
+      setTableParams(prev => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: response.data.total || response.data.data.length,
+        },
+      }));
     } catch (error) {
       message.error('Ошибка загрузки уведомлений');
       console.error('Error fetching notifications:', error);
     } finally {
       setLoading(false);
     }
+  }, [tableParams, typeFilter, readFilter]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
+    setTableParams({
+      pagination,
+      sorter: {
+        field: sorter.field,
+        order: sorter.order,
+      },
+    });
+  };
+
+  const handleTypeFilter = (value: string | undefined) => {
+    setTypeFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+    }));
+  };
+
+  const handleReadFilter = (value: boolean | undefined) => {
+    setReadFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+    }));
   };
 
   const handleMarkAsRead = async (id: string) => {
@@ -83,6 +151,7 @@ const NotificationsPage: React.FC = () => {
       dataIndex: 'type',
       key: 'type',
       width: 120,
+      sorter: true,
       render: (type: string) => {
         const colors: Record<string, string> = {
           info: 'blue',
@@ -115,6 +184,7 @@ const NotificationsPage: React.FC = () => {
       dataIndex: 'created_at',
       key: 'created_at',
       width: 180,
+      sorter: true,
       render: (date: string) => dayjs(date).format('DD.MM.YYYY HH:mm'),
     },
     {
@@ -162,16 +232,44 @@ const NotificationsPage: React.FC = () => {
         </Button>
       </div>
 
+      <div style={{ marginBottom: 16 }}>
+        <Space wrap>
+          <Select
+            placeholder="Тип"
+            allowClear
+            style={{ width: 150 }}
+            value={typeFilter}
+            onChange={handleTypeFilter}
+          >
+            <Select.Option value="info">Информация</Select.Option>
+            <Select.Option value="warning">Предупреждение</Select.Option>
+            <Select.Option value="error">Ошибка</Select.Option>
+            <Select.Option value="success">Успех</Select.Option>
+          </Select>
+          <Select
+            placeholder="Статус чтения"
+            allowClear
+            style={{ width: 150 }}
+            value={readFilter}
+            onChange={handleReadFilter}
+          >
+            <Select.Option value={true}>Прочитанные</Select.Option>
+            <Select.Option value={false}>Непрочитанные</Select.Option>
+          </Select>
+        </Space>
+      </div>
+
       <Table
         columns={columns}
         dataSource={notifications}
         loading={loading}
         rowKey="id"
         pagination={{
-          pageSize: 20,
+          ...tableParams.pagination,
           showSizeChanger: true,
           showTotal: (total) => `Всего уведомлений: ${total}`,
         }}
+        onChange={handleTableChange}
       />
     </div>
   );

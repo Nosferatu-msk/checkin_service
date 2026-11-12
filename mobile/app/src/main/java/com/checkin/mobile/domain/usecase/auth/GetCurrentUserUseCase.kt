@@ -8,15 +8,20 @@ class GetCurrentUserUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(): Result<User> {
-        // TODO: Get current user from API or local storage
-        return Result.success(
-            User(
-                id = "1",
-                login = "testic",
-                email = "testic@test.ru",
-                fullName = "Тестовый Пользователь",
-                role = "employee"
-            )
-        )
+        return try {
+            val token = authRepository.getAccessToken()
+            if (token.isNullOrEmpty()) {
+                return Result.failure(Exception("Not authenticated"))
+            }
+
+            val user = authRepository.getCurrentUser()
+            if (user != null) {
+                Result.success(user)
+            } else {
+                Result.failure(Exception("User not found"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

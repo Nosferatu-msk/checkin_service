@@ -1,7 +1,8 @@
 import { Card, Row, Col, Statistic, Table, DatePicker, Select, Button, Space, message } from 'antd';
-import { ExportOutlined, DownloadOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
-import { objectsApi, beaconsApi, usersApi, attendanceApi } from '../../services/api';
+import { FileExcelOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { attendanceApi } from '../../services/api';
+import { exportToExcel, exportToPDF } from '../../utils/export';
 import dayjs from 'dayjs';
 import './ReportsPage.css';
 
@@ -11,7 +12,7 @@ const ReportsPage: React.FC = () => {
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
   const [selectedObject, setSelectedObject] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
-  const [reportData, setReportData] = useState<any>(null);
+  const [_reportData, setReportData] = useState<any>(null);
 
   const fetchReportData = async () => {
     setLoading(true);
@@ -38,13 +39,44 @@ const ReportsPage: React.FC = () => {
   };
 
   const handleExportExcel = () => {
-    message.info('Экспорт в Excel (TODO)');
-    // TODO: Реализовать экспорт в Excel с помощью exceljs
+    if (tableData.length === 0) {
+      message.warning('Нет данных для экспорта');
+      return;
+    }
+    const exportData = tableData.map(record => ({
+      'Сотрудник': record.employee_name,
+      'Объект': record.object_name,
+      'Рабочих дней': record.working_days,
+      'Отработано часов': record.hours_worked,
+      'Нарушения': record.violations,
+    }));
+    exportToExcel(
+      exportData,
+      `report-${dayjs().format('YYYY-MM-DD')}`,
+      'Отчёт'
+    );
+    message.success('Файл Excel успешно сформирован');
   };
 
-  const handleExportPDF = () => {
-    message.info('Экспорт в PDF (TODO)');
-    // TODO: Реализовать экспорт в PDF
+  const handleExportPDF = async () => {
+    if (tableData.length === 0) {
+      message.warning('Нет данных для экспорта');
+      return;
+    }
+    const exportData = tableData.map(record => ({
+      employee: record.employee_name,
+      object: record.object_name,
+      working_days: record.working_days,
+      hours: record.hours_worked.toFixed(1),
+      violations: record.violations,
+    }));
+    await exportToPDF(
+      exportData,
+      `report-${dayjs().format('YYYY-MM-DD')}`,
+      'Отчёт по сотрудникам',
+      ['Сотрудник', 'Объект', 'Рабочих дней', 'Часов', 'Нарушения']
+    );
+    message.success('Файл PDF успешно сформирован');
   };
 
   const summaryStats = {
@@ -94,10 +126,10 @@ const ReportsPage: React.FC = () => {
       <div className="page-header">
         <h1>Отчёты и аналитика</h1>
         <Space>
-          <Button icon={<ExportOutlined />} onClick={handleExportExcel}>
+          <Button icon={<FileExcelOutlined />} onClick={handleExportExcel}>
             Экспорт в Excel
           </Button>
-          <Button icon={<DownloadOutlined />} onClick={handleExportPDF}>
+          <Button icon={<FilePdfOutlined />} onClick={handleExportPDF}>
             Экспорт в PDF
           </Button>
         </Space>

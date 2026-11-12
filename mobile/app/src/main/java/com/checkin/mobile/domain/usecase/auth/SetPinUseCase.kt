@@ -1,13 +1,17 @@
 package com.checkin.mobile.domain.usecase.auth
 
-import com.checkin.mobile.domain.repository.AuthRepository
+import com.checkin.mobile.util.TokenManager
 import javax.inject.Inject
 
 class SetPinUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val tokenManager: TokenManager
 ) {
     suspend operator fun invoke(pin: String): Result<Unit> {
-        // TODO: Save PIN securely (EncryptedSharedPreferences)
-        return Result.success(Unit)
+        return try {
+            tokenManager.savePin(pin)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

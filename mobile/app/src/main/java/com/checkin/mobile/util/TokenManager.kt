@@ -55,9 +55,31 @@ class TokenManager @Inject constructor(
             apply()
         }
     }
-    
+
+    fun savePin(pin: String) {
+        prefs.edit().putString(KEY_USER_PIN, pin).apply()
+    }
+
+    fun getPin(): String? {
+        return prefs.getString(KEY_USER_PIN, null)
+    }
+
+    fun hasPin(): Boolean {
+        return getPin() != null
+    }
+
+    fun setBiometricEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_BIOMETRIC_ENABLED, enabled).apply()
+    }
+
+    fun isBiometricEnabled(): Boolean {
+        return prefs.getBoolean(KEY_BIOMETRIC_ENABLED, false)
+    }
+
     companion object {
         private const val KEY_ACCESS_TOKEN = "access_token"
         private const val KEY_REFRESH_TOKEN = "refresh_token"
+        private const val KEY_USER_PIN = "user_pin"
+        private const val KEY_BIOMETRIC_ENABLED = "biometric_enabled"
     }
 }

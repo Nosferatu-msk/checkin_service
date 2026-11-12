@@ -1,6 +1,7 @@
 package com.checkin.mobile.presentation.screens.auth
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -49,13 +50,13 @@ fun PinSetupScreen(
         // PIN input (4-6 digits)
         OutlinedTextField(
             value = uiState.pin,
-            onValueChange = { 
-                if (it.length <= 6) {
-                    viewModel.onPinChange(it)
+            onValueChange = { value ->
+                if (value.length <= 6) {
+                    viewModel.onPinChange(value)
                 }
             },
             label = { Text("PIN-код (4-6 цифр)") },
-            keyboardType = KeyboardType.NumberPassword,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             enabled = !uiState.isLoading
         )
         

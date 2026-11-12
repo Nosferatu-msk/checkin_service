@@ -6,6 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '@/modules/users/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../redis/redis.service';
+import { EmailService } from '../email/email.service';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
@@ -33,6 +34,11 @@ describe('AuthService', () => {
     setDeviceFingerprint: jest.fn(),
     getDeviceFingerprint: jest.fn(),
     deleteDeviceFingerprint: jest.fn(),
+    deleteSession: jest.fn(),
+  };
+
+  const mockEmailService: any = {
+    sendPasswordResetEmail: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -54,6 +60,10 @@ describe('AuthService', () => {
         {
           provide: RedisService,
           useValue: mockRedisService,
+        },
+        {
+          provide: EmailService,
+          useValue: mockEmailService,
         },
       ],
     }).compile();
@@ -143,6 +153,109 @@ describe('AuthService', () => {
       expect(result).toHaveProperty('refresh_token');
       expect(result).toHaveProperty('user');
       expect(result.user.login).toBe('admin');
+    });
+  });
+
+  describe('forgotPassword', () => {
+    it('should return success message even if user not found', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      const result = await service.forgotPassword('nonexistent@example.com');
+
+      expect(result).toEqual({ message: 'Инструкции по сбросу пароля отправлены на email' });
+      expect(mockEmailService.sendPasswordResetEmail).not.toHaveBeenCalled();
+    });
+
+    it('should return success message and send email if user exists', async () => {
+      const mockUser = {
+        id: 'uuid',
+        email: 'user@example.com',
+        is_active: true,
+      };
+
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+      mockJwtService.sign.mockReturnValue('reset-token');
+
+      const result = await service.forgotPassword('user@example.com');
+
+      expect(result).toEqual({ message: 'Инструкции по сбросу пароля отправлены на email' });
+      expect(mockJwtService.sign).toHaveBeenCalledWith(
+        { sub: 'uuid', type: 'reset', email: 'user@example.com' },
+        { expiresIn: '1h' },
+      );
+      expect(mockEmailService.sendPasswordResetEmail).toHaveBeenCalledWith(
+        'user@example.com',
+        'reset-token',
+      );
+    });
+
+    it('should not send email for inactive user', async () => {
+      const mockUser = {
+        id: 'uuid',
+        email: 'inactive@example.com',
+        is_active: false,
+      };
+
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+
+      const result = await service.forgotPassword('inactive@example.com');
+
+      expect(result).toEqual({ message: 'Инструкции по сбросу пароля отправлены на email' });
+      expect(mockEmailService.sendPasswordResetEmail).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('should reset password and invalidate sessions', async () => {
+      const mockPayload = { sub: 'uuid', type: 'reset', email: 'user@example.com' };
+      const mockUser = {
+        id: 'uuid',
+        is_active: true,
+      };
+
+      mockJwtService.verify.mockReturnValue(mockPayload);
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+
+      const result = await service.resetPassword('valid-token', 'newPassword123');
+
+      expect(result).toEqual({ message: 'Пароль успешно сброшен' });
+      expect(mockUserRepository.update).toHaveBeenCalled();
+      expect(mockRedisService.deleteSession).toHaveBeenCalledWith('session:uuid');
+      expect(mockRedisService.deleteDeviceFingerprint).toHaveBeenCalledWith('uuid');
+    });
+
+    it('should throw UnauthorizedException for invalid token', async () => {
+      mockJwtService.verify.mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      await expect(service.resetPassword('invalid-token', 'newPassword123')).rejects.toThrow(
+        'Недействительный или истекший токен',
+      );
+    });
+
+    it('should throw UnauthorizedException for wrong token type', async () => {
+      const mockPayload = { sub: 'uuid', type: 'access', email: 'user@example.com' };
+      mockJwtService.verify.mockReturnValue(mockPayload);
+
+      await expect(service.resetPassword('wrong-type-token', 'newPassword123')).rejects.toThrow(
+        'Недействительный тип токена',
+      );
+    });
+
+    it('should throw ForbiddenException for inactive user', async () => {
+      const mockPayload = { sub: 'uuid', type: 'reset', email: 'user@example.com' };
+      const mockUser = {
+        id: 'uuid',
+        is_active: false,
+      };
+
+      mockJwtService.verify.mockReturnValue(mockPayload);
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+
+      await expect(service.resetPassword('valid-token', 'newPassword123')).rejects.toThrow(
+        'Аккаунт заблокирован',
+      );
     });
   });
 });

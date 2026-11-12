@@ -16,6 +16,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@ne
 import { NotificationsService } from './notifications.service';
 import { MarkAsReadDto } from './dto/notification.dto';
 import { AuthGuard } from '../../common/guards/auth.guard';
+import { AuthenticatedRequest } from '../../common/types/request.types';
 
 @ApiTags('notifications')
 @ApiBearerAuth()
@@ -30,7 +31,7 @@ export class NotificationsController {
   @ApiQuery({ name: 'limit', required: false, example: 50 })
   @ApiResponse({ status: 200, description: 'Список уведомлений' })
   async findAll(
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
     @Query('is_read') isRead?: boolean,
     @Query('limit') limit = 50,
   ) {
@@ -40,7 +41,7 @@ export class NotificationsController {
   @Get('unread-count')
   @ApiOperation({ summary: 'Получение количества непрочитанных уведомлений' })
   @ApiResponse({ status: 200, description: 'Количество непрочитанных' })
-  async getUnreadCount(@Request() req) {
+  async getUnreadCount(@Request() req: AuthenticatedRequest) {
     const count = await this.notificationsService.getUnreadCount(req.user.id);
     return { data: { count } };
   }
@@ -50,7 +51,10 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Пометить уведомление как прочитанное' })
   @ApiResponse({ status: 200, description: 'Уведомление помечено' })
   @ApiResponse({ status: 404, description: 'Уведомление не найдено' })
-  async markAsRead(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
+  async markAsRead(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Request() req: AuthenticatedRequest,
+  ) {
     const notification = await this.notificationsService.markAsRead(id, req.user.id);
     return { data: notification };
   }
@@ -59,7 +63,7 @@ export class NotificationsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Пометить все уведомления как прочитанные' })
   @ApiResponse({ status: 200, description: 'Все уведомления помечены' })
-  async markAllAsRead(@Request() req) {
+  async markAllAsRead(@Request() req: AuthenticatedRequest) {
     const result = await this.notificationsService.markAllAsRead(req.user.id);
     return { data: result };
   }

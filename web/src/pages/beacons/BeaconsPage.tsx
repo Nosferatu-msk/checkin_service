@@ -1,6 +1,6 @@
-import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, StopOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm, Card } from 'antd';
+import { PlusOutlined, EditOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons';
+import { useEffect, useState, useCallback } from 'react';
 import { beaconsApi, zonesApi } from '../../services/api';
 import './BeaconsPage.css';
 
@@ -21,6 +21,23 @@ interface ZoneItem {
   name: string;
 }
 
+interface TableParams {
+  pagination: {
+    current: number;
+    pageSize: number;
+    total?: number;
+  };
+  sorter?: {
+    field?: string;
+    order?: 'ascend' | 'descend';
+  };
+  filters?: {
+    search?: string;
+    is_active?: boolean | undefined;
+    zone_id?: string;
+  };
+}
+
 const BeaconsPage: React.FC = () => {
   const [beacons, setBeacons] = useState<BeaconItem[]>([]);
   const [zones, setZones] = useState<ZoneItem[]>([]);
@@ -28,24 +45,55 @@ const BeaconsPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingBeacon, setEditingBeacon] = useState<BeaconItem | null>(null);
   const [form] = Form.useForm();
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: { current: 1, pageSize: 10 },
+    filters: {},
+  });
+  const [searchValue, setSearchValue] = useState('');
+  const [statusFilter, setStatusFilter] = useState<boolean | undefined>(undefined);
+  const [zoneFilter, setZoneFilter] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    fetchBeacons();
-    fetchZones();
-  }, []);
-
-  const fetchBeacons = async () => {
+  const fetchBeacons = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await beaconsApi.getAll();
+      const params: any = {
+        page: tableParams.pagination.current,
+        limit: tableParams.pagination.pageSize,
+      };
+
+      if (tableParams.sorter?.field) {
+        params.sort_by = tableParams.sorter.field;
+        params.sort_order = tableParams.sorter.order === 'ascend' ? 'asc' : 'desc';
+      }
+
+      if (tableParams.filters?.search) {
+        params.search = tableParams.filters.search;
+      }
+
+      if (tableParams.filters?.is_active !== undefined) {
+        params.is_active = tableParams.filters.is_active;
+      }
+
+      if (tableParams.filters?.zone_id) {
+        params.zone_id = tableParams.filters.zone_id;
+      }
+
+      const response = await beaconsApi.getAll(params);
       setBeacons(response.data.data);
+      setTableParams(prev => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: response.data.total || response.data.data.length,
+        },
+      }));
     } catch (error) {
       message.error('Ошибка загрузки маяков');
       console.error('Error fetching beacons:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [tableParams]);
 
   const fetchZones = async () => {
     try {
@@ -54,6 +102,53 @@ const BeaconsPage: React.FC = () => {
     } catch (error) {
       console.error('Error fetching zones:', error);
     }
+  };
+
+  useEffect(() => {
+    fetchBeacons();
+    fetchZones();
+  }, [fetchBeacons]);
+
+  const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
+    setTableParams({
+      pagination,
+      sorter: {
+        field: sorter.field,
+        order: sorter.order,
+      },
+      filters: {
+        search: searchValue,
+        is_active: statusFilter,
+        zone_id: zoneFilter,
+      },
+    });
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, search: value },
+    }));
+  };
+
+  const handleStatusFilter = (value: boolean | undefined) => {
+    setStatusFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, is_active: value },
+    }));
+  };
+
+  const handleZoneFilter = (value: string | undefined) => {
+    setZoneFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, zone_id: value },
+    }));
   };
 
   const handleAdd = () => {
@@ -112,12 +207,14 @@ const BeaconsPage: React.FC = () => {
       dataIndex: 'major',
       key: 'major',
       width: 100,
+      sorter: true,
     },
     {
       title: 'Minor',
       dataIndex: 'minor',
       key: 'minor',
       width: 100,
+      sorter: true,
     },
     {
       title: 'MAC адрес',
@@ -174,12 +271,54 @@ const BeaconsPage: React.FC = () => {
         </Button>
       </div>
 
+      <Card style={{ marginBottom: 16 }}>
+        <Space wrap>
+          <Input
+            placeholder="Поиск по UUID/MAC..."
+            prefix={<SearchOutlined />}
+            value={searchValue}
+            onChange={(e) => handleSearch(e.target.value)}
+            allowClear
+            style={{ width: 250 }}
+          />
+          <Select
+            placeholder="Статус"
+            allowClear
+            style={{ width: 150 }}
+            value={statusFilter}
+            onChange={handleStatusFilter}
+          >
+            <Select.Option value={true}>Активные</Select.Option>
+            <Select.Option value={false}>Неактивные</Select.Option>
+          </Select>
+          <Select
+            placeholder="Зона"
+            allowClear
+            style={{ width: 200 }}
+            value={zoneFilter}
+            onChange={handleZoneFilter}
+          >
+            {zones.map(zone => (
+              <Select.Option key={zone.id} value={zone.id}>
+                {zone.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Space>
+      </Card>
+
       <Table
         columns={columns}
         dataSource={beacons}
         loading={loading}
         rowKey="id"
         scroll={{ x: 1000 }}
+        pagination={{
+          ...tableParams.pagination,
+          showSizeChanger: true,
+          showTotal: (total) => `Всего маяков: ${total}`,
+        }}
+        onChange={handleTableChange}
       />
 
       <Modal

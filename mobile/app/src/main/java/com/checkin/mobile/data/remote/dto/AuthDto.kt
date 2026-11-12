@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class LoginRequest(
     @SerializedName("login") val login: String,
-    @SerializedName("password") val password: String
+    @SerializedName("password") val password: String,
+    @SerializedName("device_fingerprint") val device_fingerprint: String
 )
 
 data class LoginResponse(

@@ -4,6 +4,7 @@ import { AnalyticsService } from './analytics.service';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { AuthenticatedRequest } from '../../common/types/request.types';
 
 @ApiTags('analytics')
 @ApiBearerAuth()
@@ -16,7 +17,7 @@ export class AnalyticsController {
   @Roles('admin', 'curator')
   @ApiOperation({ summary: 'Получение данных для дашборда' })
   @ApiResponse({ status: 200, description: 'Данные дашборда' })
-  async getDashboard(@Request() req) {
+  async getDashboard(@Request() req: AuthenticatedRequest) {
     const data = await this.analyticsService.getDashboardData(req.user.id, req.user.role);
     return { data };
   }

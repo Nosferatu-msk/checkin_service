@@ -4,9 +4,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { AttendanceService } from './attendance.service';
 import { AttendanceRaw } from './entities/attendance-raw.entity';
 import { AttendanceCalculated } from './entities/attendance-calculated.entity';
+import { DevicePushToken } from './entities/device-push-token.entity';
 import { Beacon } from '../beacons/entities/beacon.entity';
 import { Zone } from '../zones/entities/zone.entity';
 import { ConflictException } from '@nestjs/common';
+import { FraudService } from '../fraud/fraud.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('AttendanceService', () => {
   let service: AttendanceService;
@@ -25,10 +28,26 @@ describe('AttendanceService', () => {
 
   const mockBeaconRepository: any = {
     findOne: jest.fn(),
+    find: jest.fn(),
   };
 
   const mockZoneRepository: any = {
     findOne: jest.fn(),
+  };
+
+  const mockPushTokenRepository: any = {
+    findOne: jest.fn(),
+    create: jest.fn(),
+    save: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  const mockFraudService: any = {
+    create: jest.fn(),
+  };
+
+  const mockNotificationsService: any = {
+    sendToAdmins: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -50,6 +69,18 @@ describe('AttendanceService', () => {
         {
           provide: getRepositoryToken(Zone),
           useValue: mockZoneRepository,
+        },
+        {
+          provide: getRepositoryToken(DevicePushToken),
+          useValue: mockPushTokenRepository,
+        },
+        {
+          provide: FraudService,
+          useValue: mockFraudService,
+        },
+        {
+          provide: NotificationsService,
+          useValue: mockNotificationsService,
         },
       ],
     }).compile();
@@ -142,6 +173,14 @@ describe('AttendanceService', () => {
       const result = await service.submitAttendance('user-uuid', validDto);
 
       expect(result.accepted).toBe(0);
+      expect(mockFraudService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          user_id: 'user-uuid',
+          fraud_type: 'beacon_clone_detected',
+          severity: 'critical',
+        }),
+      );
+      expect(mockNotificationsService.sendToAdmins).toHaveBeenCalled();
     });
 
     it('should skip records with invalid RSSI values', async () => {
@@ -306,6 +345,101 @@ describe('AttendanceService', () => {
       const result = await service.submitAttendance('user-uuid', multiDto);
 
       expect(result.accepted).toBe(2);
+    });
+  });
+
+  describe('savePushToken', () => {
+    it('should create new push token if not exists', async () => {
+      mockPushTokenRepository.findOne.mockResolvedValue(null);
+      mockPushTokenRepository.create.mockReturnValue({
+        user_id: 'user-uuid',
+        push_token: 'test-token',
+        platform: 'android',
+        is_active: true,
+      });
+      mockPushTokenRepository.save.mockResolvedValue({});
+
+      const result = await service.savePushToken('user-uuid', 'test-token', 'android');
+
+      expect(result).toHaveProperty('message');
+      expect(result).toHaveProperty('user_id', 'user-uuid');
+      expect(result).toHaveProperty('platform', 'android');
+      expect(mockPushTokenRepository.create).toHaveBeenCalled();
+      expect(mockPushTokenRepository.save).toHaveBeenCalled();
+    });
+
+    it('should update existing push token', async () => {
+      const existingToken = {
+        id: 'token-id',
+        user_id: 'old-user-uuid',
+        push_token: 'test-token',
+        platform: 'ios',
+        is_active: false,
+      };
+
+      mockPushTokenRepository.findOne.mockResolvedValue(existingToken);
+      mockPushTokenRepository.save.mockResolvedValue({});
+
+      const result = await service.savePushToken('new-user-uuid', 'test-token', 'android');
+
+      expect(result).toHaveProperty('message');
+      expect(existingToken.user_id).toBe('new-user-uuid');
+      expect(existingToken.platform).toBe('android');
+      expect(existingToken.is_active).toBe(true);
+      expect(mockPushTokenRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('removePushToken', () => {
+    it('should remove specific push token', async () => {
+      mockPushTokenRepository.delete.mockResolvedValue({ affected: 1 });
+
+      const result = await service.removePushToken('user-uuid', 'test-token');
+
+      expect(result).toHaveProperty('deleted', 1);
+      expect(mockPushTokenRepository.delete).toHaveBeenCalledWith({
+        user_id: 'user-uuid',
+        push_token: 'test-token',
+      });
+    });
+
+    it('should remove all user push tokens when no token specified', async () => {
+      mockPushTokenRepository.delete.mockResolvedValue({ affected: 2 });
+
+      const result = await service.removePushToken('user-uuid');
+
+      expect(result).toHaveProperty('deleted', 2);
+      expect(mockPushTokenRepository.delete).toHaveBeenCalledWith({
+        user_id: 'user-uuid',
+      });
+    });
+  });
+
+  describe('getActiveBeaconUuids', () => {
+    it('should return array of active beacon uuids', async () => {
+      const mockBeacons = [
+        { uuid: 'uuid-1' },
+        { uuid: 'uuid-2' },
+        { uuid: 'uuid-3' },
+      ];
+
+      mockBeaconRepository.find.mockResolvedValue(mockBeacons);
+
+      const result = await service.getActiveBeaconUuids();
+
+      expect(result).toEqual(['uuid-1', 'uuid-2', 'uuid-3']);
+      expect(mockBeaconRepository.find).toHaveBeenCalledWith({
+        where: { is_active: true },
+        select: { uuid: true },
+      });
+    });
+
+    it('should return empty array when no active beacons', async () => {
+      mockBeaconRepository.find.mockResolvedValue([]);
+
+      const result = await service.getActiveBeaconUuids();
+
+      expect(result).toEqual([]);
     });
   });
 });

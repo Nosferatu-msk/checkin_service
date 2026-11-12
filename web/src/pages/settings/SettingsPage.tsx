@@ -1,4 +1,4 @@
-import { Card, Form, Input, Button, Switch, Select, Divider, message } from 'antd';
+import { Card, Form, Input, Button, Switch, Select, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import './SettingsPage.css';

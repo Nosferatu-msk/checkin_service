@@ -11,6 +11,11 @@ export class CreateObjectDto {
   @IsString()
   @IsOptional()
   address?: string;
+
+  @ApiProperty({ example: true, description: 'Активен ли объект', required: false })
+  @IsBoolean()
+  @IsOptional()
+  is_active?: boolean;
 }
 
 export class UpdateObjectDto {

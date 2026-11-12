@@ -67,6 +67,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
     
+    // Fragment (for BiometricPrompt)
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+
     // Compose
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation("androidx.compose.ui:ui")
@@ -97,6 +100,10 @@ dependencies {
     // Hilt Dependency Injection
     implementation("com.google.dagger:hilt-android:2.48")
     ksp("com.google.dagger:hilt-compiler:2.48")
+
+    // Hilt + WorkManager integration
+    implementation("androidx.hilt:hilt-work:1.1.0")
+    ksp("androidx.hilt:hilt-compiler:1.1.0")
     
     // JWT Token handling
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
@@ -111,6 +118,10 @@ dependencies {
     
     // BLE Scanning
     implementation("org.altbeacon:android-beacon-library:2.19.6")
+
+    // Play Integrity API (фрод-контроль)
+    implementation("com.google.android.play:core-common:2.0.3")
+    implementation("com.google.android.play:integrity:1.3.0")
     
     // WorkManager (Background sync)
     implementation("androidx.work:work-runtime-ktx:2.9.0")

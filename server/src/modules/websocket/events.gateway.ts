@@ -11,9 +11,16 @@ import { Logger, UseGuards } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 
+interface ConnectedUser {
+  userId: string;
+  role: string;
+}
+
 @WebSocketGateway({
   cors: {
-    origin: ['https://app.checkin-service.com', 'https://admin.checkin-service.com'],
+    origin: process.env.NODE_ENV === 'production'
+      ? ['https://app.checkin-service.com', 'https://admin.checkin-service.com']
+      : ['http://localhost:3001', 'http://localhost:5173'],
     credentials: true,
   },
   namespace: '/',
@@ -23,7 +30,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   private readonly logger = new Logger(EventsGateway.name);
-  private connectedUsers: Map<string, string> = new Map(); // socketId -> userId
+  private connectedUsers: Map<string, ConnectedUser> = new Map(); // socketId -> { userId, role }
 
   constructor(private jwtService: JwtService) {}
 
@@ -31,7 +38,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       // Аутентификация через токен в query параметре
       const token = client.handshake.auth?.token || client.handshake.query?.token;
-      
+
       if (!token) {
         this.logger.warn(`Connection rejected: no token provided`);
         client.disconnect();
@@ -40,11 +47,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const payload = this.jwtService.verify(token as string);
       const userId = payload.sub;
+      const role = payload.role;
 
-      this.connectedUsers.set(client.id, userId);
+      this.connectedUsers.set(client.id, { userId, role });
       client.join(`user:${userId}`);
 
-      this.logger.log(`Client connected: ${client.id} (user: ${userId})`);
+      this.logger.log(`Client connected: ${client.id} (user: ${userId}, role: ${role})`);
     } catch (error) {
       this.logger.error(`Connection error: ${error.message}`);
       client.disconnect();
@@ -52,10 +60,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    const userId = this.connectedUsers.get(client.id);
+    const userData = this.connectedUsers.get(client.id);
     this.connectedUsers.delete(client.id);
-    
-    this.logger.log(`Client disconnected: ${client.id} (user: ${userId})`);
+
+    this.logger.log(`Client disconnected: ${client.id} (user: ${userData?.userId})`);
   }
 
   @SubscribeMessage('ping')
@@ -68,12 +76,40 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { channels: string[] },
   ) {
+    const userData = this.connectedUsers.get(client.id);
+    if (!userData) {
+      this.logger.warn(`Subscribe rejected: user not authenticated`);
+      return;
+    }
+
     data.channels.forEach((channel) => {
+      // Проверка прав на подписку
+      if (channel.startsWith('user:')) {
+        // Пользователь может подписаться только на свой канал
+        if (channel !== `user:${userData.userId}`) {
+          this.logger.warn(
+            `User ${userData.userId} attempted to subscribe to another user's channel: ${channel}`
+          );
+          return;
+        }
+      }
+
+      // Admin-only channels
+      const adminOnlyChannels = ['fraud_alerts', 'sla_violations', 'admin_notifications'];
+      if (adminOnlyChannels.includes(channel)) {
+        if (userData.role !== 'admin' && userData.role !== 'curator') {
+          this.logger.warn(
+            `User ${userData.userId} (${userData.role}) attempted to subscribe to admin channel: ${channel}`
+          );
+          return;
+        }
+      }
+
       client.join(channel);
     });
-    
+
     this.logger.log(`Client ${client.id} subscribed to: ${data.channels.join(', ')}`);
-    
+
     client.emit('subscribed', { channels: data.channels });
   }
 
@@ -85,9 +121,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     data.channels.forEach((channel) => {
       client.leave(channel);
     });
-    
+
     this.logger.log(`Client ${client.id} unsubscribed from: ${data.channels.join(', ')}`);
-    
+
     client.emit('unsubscribed', { channels: data.channels });
   }
 
@@ -116,6 +152,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   isUserOnline(userId: string): boolean {
-    return Array.from(this.connectedUsers.values()).includes(userId);
+    return Array.from(this.connectedUsers.values()).some(u => u.userId === userId);
   }
 }

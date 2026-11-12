@@ -6,6 +6,7 @@ import androidx.work.*
 import com.checkin.mobile.data.local.BeaconDao
 import com.checkin.mobile.data.remote.ApiService
 import com.checkin.mobile.data.remote.dto.SubmitAttendanceRequest
+import com.checkin.mobile.util.DeviceFingerprintManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.*
@@ -16,7 +17,8 @@ class SyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val beaconDao: BeaconDao,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val deviceFingerprintManager: DeviceFingerprintManager
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -75,13 +77,12 @@ class SyncWorker @AssistedInject constructor(
 
             Result.success()
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure()
         }
     }
 
     private fun getDeviceFingerprint(): String {
-        // TODO: Implement device fingerprint collection
-        return "device_fingerprint_hash"
+        return deviceFingerprintManager.getDeviceFingerprint()
     }
 
     companion object {

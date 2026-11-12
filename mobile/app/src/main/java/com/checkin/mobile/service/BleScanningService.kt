@@ -12,6 +12,7 @@ import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import com.checkin.mobile.R
 import com.checkin.mobile.presentation.MainActivity
+import com.checkin.mobile.worker.SelfWatchdog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,6 +22,9 @@ class BleScanningService : Service() {
     @Inject
     lateinit var bleManager: BleManager
 
+    @Inject
+    lateinit var selfWatchdog: SelfWatchdog
+
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
 
@@ -29,6 +33,8 @@ class BleScanningService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        // Запустить watchdog для самопроверки
+        selfWatchdog.scheduleWatchdog()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,6 +69,8 @@ class BleScanningService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         stopScanning()
+        // Остановить watchdog
+        selfWatchdog.cancelWatchdog()
     }
 
     private fun createNotificationChannel() {

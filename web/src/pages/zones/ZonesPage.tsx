@@ -1,6 +1,6 @@
-import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm, TreeSelect } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm, TreeSelect, Card } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { useEffect, useState, useCallback } from 'react';
 import { zonesApi, objectsApi } from '../../services/api';
 import './ZonesPage.css';
 
@@ -23,6 +23,23 @@ interface ObjectItem {
   name: string;
 }
 
+interface TableParams {
+  pagination: {
+    current: number;
+    pageSize: number;
+    total?: number;
+  };
+  sorter?: {
+    field?: string;
+    order?: 'ascend' | 'descend';
+  };
+  filters?: {
+    search?: string;
+    zone_type?: string;
+    object_id?: string;
+  };
+}
+
 const ZonesPage: React.FC = () => {
   const [zones, setZones] = useState<ZoneItem[]>([]);
   const [objects, setObjects] = useState<ObjectItem[]>([]);
@@ -30,24 +47,55 @@ const ZonesPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingZone, setEditingZone] = useState<ZoneItem | null>(null);
   const [form] = Form.useForm();
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: { current: 1, pageSize: 10 },
+    filters: {},
+  });
+  const [searchValue, setSearchValue] = useState('');
+  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  const [objectFilter, setObjectFilter] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    fetchZones();
-    fetchObjects();
-  }, []);
-
-  const fetchZones = async () => {
+  const fetchZones = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await zonesApi.getAll();
+      const params: any = {
+        page: tableParams.pagination.current,
+        limit: tableParams.pagination.pageSize,
+      };
+
+      if (tableParams.sorter?.field) {
+        params.sort_by = tableParams.sorter.field;
+        params.sort_order = tableParams.sorter.order === 'ascend' ? 'asc' : 'desc';
+      }
+
+      if (tableParams.filters?.search) {
+        params.search = tableParams.filters.search;
+      }
+
+      if (tableParams.filters?.zone_type) {
+        params.zone_type = tableParams.filters.zone_type;
+      }
+
+      if (tableParams.filters?.object_id) {
+        params.object_id = tableParams.filters.object_id;
+      }
+
+      const response = await zonesApi.getAll(params);
       setZones(response.data.data);
+      setTableParams(prev => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: response.data.total || response.data.data.length,
+        },
+      }));
     } catch (error) {
       message.error('Ошибка загрузки зон');
       console.error('Error fetching zones:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [tableParams]);
 
   const fetchObjects = async () => {
     try {
@@ -56,6 +104,53 @@ const ZonesPage: React.FC = () => {
     } catch (error) {
       console.error('Error fetching objects:', error);
     }
+  };
+
+  useEffect(() => {
+    fetchZones();
+    fetchObjects();
+  }, [fetchZones]);
+
+  const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
+    setTableParams({
+      pagination,
+      sorter: {
+        field: sorter.field,
+        order: sorter.order,
+      },
+      filters: {
+        search: searchValue,
+        zone_type: typeFilter,
+        object_id: objectFilter,
+      },
+    });
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, search: value },
+    }));
+  };
+
+  const handleTypeFilter = (value: string | undefined) => {
+    setTypeFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, zone_type: value },
+    }));
+  };
+
+  const handleObjectFilter = (value: string | undefined) => {
+    setObjectFilter(value);
+    setTableParams(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+      filters: { ...prev.filters, object_id: value },
+    }));
   };
 
   const handleAdd = () => {
@@ -111,11 +206,13 @@ const ZonesPage: React.FC = () => {
       title: 'Название',
       dataIndex: 'name',
       key: 'name',
+      sorter: true,
     },
     {
       title: 'Тип',
       dataIndex: 'zone_type',
       key: 'zone_type',
+      sorter: true,
       render: (type: string) => {
         const colors: Record<string, string> = {
           floor: 'blue',
@@ -178,11 +275,54 @@ const ZonesPage: React.FC = () => {
         </Button>
       </div>
 
+      <Card style={{ marginBottom: 16 }}>
+        <Space wrap>
+          <Input
+            placeholder="Поиск по названию..."
+            prefix={<SearchOutlined />}
+            value={searchValue}
+            onChange={(e) => handleSearch(e.target.value)}
+            allowClear
+            style={{ width: 250 }}
+          />
+          <Select
+            placeholder="Тип зоны"
+            allowClear
+            style={{ width: 150 }}
+            value={typeFilter}
+            onChange={handleTypeFilter}
+          >
+            <Select.Option value="floor">Этаж</Select.Option>
+            <Select.Option value="room">Помещение</Select.Option>
+            <Select.Option value="zone">Зона</Select.Option>
+          </Select>
+          <Select
+            placeholder="Объект"
+            allowClear
+            style={{ width: 200 }}
+            value={objectFilter}
+            onChange={handleObjectFilter}
+          >
+            {objects.map(obj => (
+              <Select.Option key={obj.id} value={obj.id}>
+                {obj.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Space>
+      </Card>
+
       <Table
         columns={columns}
         dataSource={zones}
         loading={loading}
         rowKey="id"
+        pagination={{
+          ...tableParams.pagination,
+          showSizeChanger: true,
+          showTotal: (total) => `Всего зон: ${total}`,
+        }}
+        onChange={handleTableChange}
       />
 
       <Modal

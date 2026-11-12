@@ -85,4 +85,14 @@ export class ObjectsService {
 
     await this.objectRepository.remove(object);
   }
+
+  async findByName(name: string): Promise<ObjectEntity | null> {
+    return await this.objectRepository.findOne({ where: { name } });
+  }
+
+  async findAllForExport(): Promise<ObjectEntity[]> {
+    return await this.objectRepository.find({
+      order: { created_at: 'DESC' },
+    });
+  }
 }
