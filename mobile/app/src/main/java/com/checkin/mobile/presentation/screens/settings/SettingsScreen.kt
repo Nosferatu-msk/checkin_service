@@ -1,12 +1,19 @@
 package com.checkin.mobile.presentation.screens.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,14 +25,12 @@ fun SettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Handle logout success
     LaunchedEffect(uiState.logoutSuccess) {
         if (uiState.logoutSuccess) {
             onLogoutSuccess()
         }
     }
 
-    // Show error snackbar
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
@@ -39,14 +44,10 @@ fun SettingsScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Настройки") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Назад"
-                        )
-                    }
-                }
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF10B981),
+                    titleContentColor = Color.White
+                )
             )
         }
     ) { paddingValues ->
@@ -54,31 +55,29 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(Color(0xFFF9FAFB))
                 .padding(16.dp)
         ) {
             // Account section
-            Text(
-                text = "Аккаунт",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
+            SectionTitle("Аккаунт")
+            
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
+                Column {
                     SettingsItem(
                         title = "Сменить пароль",
-                        onClick = { /* TODO: Navigate to change password screen */ }
+                        onClick = { /* TODO */ }
                     )
-                    Divider()
+                    SettingsDivider()
                     SettingsItem(
                         title = "Изменить PIN",
-                        onClick = { /* TODO: Navigate to change PIN screen */ }
+                        onClick = { /* TODO */ }
                     )
-                    Divider()
+                    SettingsDivider()
                     SettingsItem(
                         title = "Биометрия",
                         subtitle = if (uiState.isBiometricEnabled) "Включена" else "Выключена",
@@ -87,50 +86,44 @@ fun SettingsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Scanning section
-            Text(
-                text = "Сканирование",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
+            SectionTitle("Сканирование")
+            
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
+                Column {
                     SettingsItem(
                         title = "Интервал агрегации",
                         subtitle = "10 минут",
-                        onClick = { /* TODO: Show interval picker */ }
+                        onClick = { /* TODO */ }
                     )
-                    Divider()
+                    SettingsDivider()
                     SettingsItem(
                         title = "Интервал синхронизации",
                         subtitle = "10 минут",
-                        onClick = { /* TODO: Show interval picker */ }
+                        onClick = { /* TODO */ }
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // About section
-            Text(
-                text = "О приложении",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
+            SectionTitle("О приложении")
+            
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
+                Column {
                     SettingsItem(
                         title = "Версия",
                         subtitle = "1.0.0",
@@ -144,27 +137,44 @@ fun SettingsScreen(
             // Logout button
             Button(
                 onClick = { viewModel.logout() },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 enabled = !uiState.isLoggingOut,
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error
+                    containerColor = Color(0xFFEF4444)
                 )
             ) {
                 if (uiState.isLoggingOut) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
-                        color = MaterialTheme.colorScheme.onError,
+                        color = Color.White,
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Выйти")
+                    Text(
+                        "Выйти",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = Color(0xFF111827),
+        modifier = Modifier.padding(vertical = 12.dp)
+    )
+}
+
 @Composable
 private fun SettingsItem(
     title: String,
@@ -173,22 +183,49 @@ private fun SettingsItem(
 ) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.Transparent
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = 12.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            if (subtitle != null) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = title,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF111827)
                 )
+                if (subtitle != null) {
+                    Text(
+                        text = subtitle,
+                        fontSize = 13.sp,
+                        color = Color(0xFF6B7280),
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
             }
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = Color(0xFF9CA3AF),
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
+}
+
+@Composable
+private fun SettingsDivider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .height(1.dp)
+            .background(Color(0xFFE5E7EB))
+    )
 }

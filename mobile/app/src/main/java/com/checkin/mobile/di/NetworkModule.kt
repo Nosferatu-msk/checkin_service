@@ -26,15 +26,19 @@ object NetworkModule {
         tokenManager: TokenManager,
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
-        // Certificate Pinning — защита от MITM-атак
-        // Placeholder hashes: заменить на реальные после получения сертификата от сервера
-        val certificatePinner = CertificatePinner.Builder()
-            .add("api.checkin-service.com", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
-            .add("api.checkin-service.com", "sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=")
-            .build()
-
-        return OkHttpClient.Builder()
-            .certificatePinner(certificatePinner)
+        // Certificate Pinning — только для production
+        // Для локального тестирования отключено
+        val clientBuilder = OkHttpClient.Builder()
+        
+        if (!BuildConfig.DEBUG) {
+            val certificatePinner = CertificatePinner.Builder()
+                .add("api.checkin-service.com", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+                .add("api.checkin-service.com", "sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=")
+                .build()
+            clientBuilder.certificatePinner(certificatePinner)
+        }
+        
+        return clientBuilder
             // Interceptor 1: добавляет Authorization header ко всем запросам
             .addInterceptor { chain ->
                 val request = chain.request()
@@ -69,8 +73,16 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        // Для локального тестирования используем локальный IP
+        // В production заменить на https://api.checkin-service.com/
+        val baseUrl = if (BuildConfig.DEBUG) {
+            "http://192.168.100.77:3000/"
+        } else {
+            "https://api.checkin-service.com/"
+        }
+        
         return Retrofit.Builder()
-            .baseUrl("https://api.checkin-service.com/")
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

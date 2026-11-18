@@ -1,5 +1,6 @@
 package com.checkin.mobile.data.remote.interceptor
 
+import com.checkin.mobile.BuildConfig
 import com.checkin.mobile.util.TokenManager
 import okhttp3.FormBody
 import okhttp3.Interceptor
@@ -108,7 +109,12 @@ class AuthInterceptor @Inject constructor(
     }
 
     companion object {
-        private const val BASE_URL = "https://api.checkin-service.com/"
+        // Для локального тестирования используем локальный IP
+        private val BASE_URL = if (BuildConfig.DEBUG) {
+            "http://192.168.100.77:3000/"
+        } else {
+            "https://api.checkin-service.com/"
+        }
         private const val HTTP_UNAUTHORIZED = 401
         private const val HTTP_FORBIDDEN = 403
     }

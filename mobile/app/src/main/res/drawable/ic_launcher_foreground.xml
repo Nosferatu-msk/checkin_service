@@ -4,14 +4,21 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Checkmark icon -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M42,58.2L33.6,49.8l-3.6,3.6L42,65.4l24,-24l-3.6,-3.6z" />
-    <!-- Circle border -->
+    
+    <!-- Map Pin (outline style, smaller, centered) -->
     <path
         android:fillColor="#00000000"
         android:strokeColor="#FFFFFF"
         android:strokeWidth="3"
-        android:pathData="M54,54m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0" />
+        android:strokeLineJoin="round"
+        android:pathData="M54,24 C63,24 70,32 70,42 C70,56 54,70 54,70 C54,70 38,56 38,42 C38,32 45,24 54,24 Z" />
+    
+    <!-- Checkmark (centered in pin) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M48,44 L53,49 L62,40" />
 </vector>

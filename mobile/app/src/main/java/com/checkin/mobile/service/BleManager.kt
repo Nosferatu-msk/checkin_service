@@ -42,10 +42,14 @@ class BleManager @Inject constructor(
 
     companion object {
         private const val TAG = "BleManager"
+
+        // Адаптивное сканирование
+        private const val SCAN_DURATION_MS = 3000L      // 3 секунды сканирование
+        private const val PAUSE_WITH_BEACONS_MS = 10000L // 10 секунд пауза если маяки найдены
+        private const val PAUSE_NO_BEACONS_MS = 0L       // 0 секунд пауза если маяков нет (непрерывно)
         
-        // Duty cycle параметры (согласно ТЗ раздел 4.1)
-        private const val SCAN_DUTY_CYCLE_MS = 3000L  // 3 секунды сканирование
-        private const val PAUSE_DUTY_CYCLE_MS = 7000L // 7 секунд пауза
+        // Затухание маяков — скрывать если не видели 30 секунд
+        private const val BEACON_TIMEOUT_MS = 30000L // 30 секунд
     }
 
     private var allowedBeaconUuids: List<String> = emptyList()
@@ -71,6 +75,13 @@ class BleManager @Inject constructor(
     private val aggregationBuffer = mutableMapOf<String, MutableList<BeaconReading>>()
     private var aggregationIntervalMs = 10 * 60 * 1000L // 10 minutes
 
+    // Beacon cache with timestamps for "decay" logic
+    private data class CachedBeacon(
+        val beacon: Beacon,
+        val lastSeen: Long
+    )
+    private val beaconCache = mutableMapOf<String, CachedBeacon>()
+
     // Duty cycle
     private var dutyCycleHandler: Handler? = null
     private var dutyCycleRunnable: Runnable? = null
@@ -92,17 +103,28 @@ class BleManager @Inject constructor(
             return
         }
 
-        beaconManager.addRangeNotifier { beacons, region ->
-            if (beacons.isNotEmpty()) {
-                val beaconList = beacons.toList()
-                _discoveredBeacons.value = beaconList
+        // Bind to BeaconManager service if not already bound
+        if (!beaconManager.isBound(this)) {
+            beaconManager.bind(this)
+            Log.d(TAG, "BeaconManager bound to service")
+        }
 
-                // Filter beacons by whitelist and aggregate
-                val filteredBeacons = filterBeaconsByWhitelist(beaconList)
-                if (filteredBeacons.isNotEmpty()) {
-                    aggregateBeacons(filteredBeacons)
-                }
+        beaconManager.addRangeNotifier { beacons, region ->
+            val currentTime = System.currentTimeMillis()
+
+            // Обновляем кэш найденными маяками
+            beacons.forEach { beacon ->
+                val beaconId = "${beacon.id1}_${beacon.id2}_${beacon.id3}"
+
+                beaconCache[beaconId] = CachedBeacon(
+                    beacon = beacon,
+                    lastSeen = currentTime
+                )
+
+                Log.d(TAG, "Beacon $beaconId detected, RSSI: ${beacon.rssi}")
             }
+
+            // Не обновляем UI здесь — это делается в startDutyCycle после цикла
         }
 
         // Запустить duty cycle для экономии батареи
@@ -114,16 +136,24 @@ class BleManager @Inject constructor(
     fun stopScanning() {
         // Остановить duty cycle
         stopDutyCycle()
-        
+
         beaconManager.stopRangingBeaconsInRegion(region)
+        
+        // Unbind from BeaconManager service
+        if (beaconManager.isBound(this)) {
+            beaconManager.unbind(this)
+            Log.d(TAG, "BeaconManager unbound from service")
+        }
+        
         _isScanning.value = false
         _discoveredBeacons.value = emptyList()
         Log.d(TAG, "Scanning stopped")
     }
 
     /**
-     * Запустить duty cycle: 3 секунды сканирование / 7 секунд пауза.
-     * Согласно ТЗ раздел 4.1 для экономии батареи.
+     * Запустить адаптивное сканирование:
+     * - Если маяки найдены — пауза 10 сек (экономия батареи)
+     * - Если маяков нет — непрерывное сканирование (быстрый поиск)
      */
     private fun startDutyCycle() {
         dutyCycleHandler = Handler(Looper.getMainLooper())
@@ -131,20 +161,83 @@ class BleManager @Inject constructor(
             override fun run() {
                 // Начало цикла сканирования
                 beaconManager.startRangingBeaconsInRegion(region)
-                Log.d(TAG, "Duty cycle: scanning started")
+                Log.d(TAG, "Adaptive scan: scanning started")
 
-                // Через 3 секунды — пауза
+                // Через 3 секунды — остановить и обработать результат
                 dutyCycleHandler?.postDelayed({
                     beaconManager.stopRangingBeaconsInRegion(region)
-                    Log.d(TAG, "Duty cycle: pause started")
+                    
+                    // Удалить устаревшие маяки из кэша
+                    cleanupStaleBeacons()
+                    
+                    // Обновить UI из кэша
+                    updateUIFromCache()
 
-                    // Через 7 секунд — снова сканирование
-                    dutyCycleHandler?.postDelayed(this, PAUSE_DUTY_CYCLE_MS)
-                }, SCAN_DUTY_CYCLE_MS)
+                    // Адаптивная пауза в зависимости от наличия активных маяков
+                    val activeBeacons = getActiveBeacons()
+                    val pauseDuration = if (activeBeacons.isNotEmpty()) {
+                        Log.d(TAG, "Adaptive scan: ${activeBeacons.size} active beacons, pause 10s")
+                        PAUSE_WITH_BEACONS_MS
+                    } else {
+                        Log.d(TAG, "Adaptive scan: no active beacons, continuous scanning")
+                        PAUSE_NO_BEACONS_MS
+                    }
+
+                    // Запланировать следующий цикл
+                    if (pauseDuration > 0) {
+                        dutyCycleHandler?.postDelayed(this, pauseDuration)
+                    } else {
+                        // Непрерывное сканирование — сразу следующий цикл
+                        dutyCycleHandler?.post(this)
+                    }
+                }, SCAN_DURATION_MS)
             }
         }
 
         dutyCycleHandler?.post(dutyCycleRunnable!!)
+    }
+    
+    /**
+     * Удалить устаревшие маяки из кэша (не видели дольше BEACON_TIMEOUT_MS).
+     */
+    private fun cleanupStaleBeacons() {
+        val currentTime = System.currentTimeMillis()
+        val keysToRemove = mutableListOf<String>()
+        
+        beaconCache.forEach { (id, cached) ->
+            val age = currentTime - cached.lastSeen
+            if (age > BEACON_TIMEOUT_MS) {
+                keysToRemove.add(id)
+                Log.d(TAG, "Beacon $id removed (stale, age: ${age}ms)")
+            }
+        }
+        
+        keysToRemove.forEach { beaconCache.remove(it) }
+    }
+    
+    /**
+     * Получить список активных маяков из кэша (не устаревшие).
+     */
+    private fun getActiveBeacons(): List<Beacon> {
+        val currentTime = System.currentTimeMillis()
+        return beaconCache.values
+            .filter { (currentTime - it.lastSeen) <= BEACON_TIMEOUT_MS }
+            .map { it.beacon }
+            .toList()
+    }
+    
+    /**
+     * Обновить UI из кэша.
+     */
+    private fun updateUIFromCache() {
+        val activeBeacons = getActiveBeacons()
+        _discoveredBeacons.value = activeBeacons
+        
+        if (activeBeacons.isNotEmpty()) {
+            Log.d(TAG, "UI updated: ${activeBeacons.size} active beacons, first RSSI: ${activeBeacons.first().rssi}")
+        } else {
+            Log.d(TAG, "UI updated: no active beacons")
+        }
     }
 
     /**
