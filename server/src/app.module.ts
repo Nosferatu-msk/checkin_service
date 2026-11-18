@@ -42,7 +42,7 @@ import { EmailModule } from './modules/email/email.module';
         database: configService.get('DB_DATABASE', 'checkin_db'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-        synchronize: false,
+        synchronize: true, // Временно для создания таблиц
         logging: configService.get('NODE_ENV') === 'development',
       }),
     }),

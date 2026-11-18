@@ -13,10 +13,10 @@ export class LoginDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ example: 'sha256_hash_here', description: 'Отпечаток устройства' })
+  @ApiProperty({ example: 'sha256_hash_here', description: 'Отпечаток устройства', required: false })
   @IsString()
-  @IsNotEmpty()
-  device_fingerprint: string;
+  @IsOptional()
+  device_fingerprint?: string;
 
   @ApiProperty({ example: 'fcm_token_here', description: 'FCM push токен', required: false })
   @IsString()

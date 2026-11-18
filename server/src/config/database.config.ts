@@ -16,7 +16,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: configService.get<string>('DB_DATABASE', 'checkin_db'),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
-  synchronize: false,
+  synchronize: true, // Временно для создания таблиц
   logging: configService.get<string>('NODE_ENV') === 'development',
 };
 
