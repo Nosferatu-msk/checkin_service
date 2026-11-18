@@ -634,6 +634,106 @@ void setupBLE() {
     Serial.println("[BLE] Setup complete");
 }
 
+// ==================== Serial Command Processing ====================
+
+String serialBuffer = "";
+
+void printHelp() {
+    Serial.println("\n=== Serial Commands ===");
+    Serial.println("  help        - Show this help");
+    Serial.println("  status      - Show current configuration");
+    Serial.println("  major <val> - Set Major (0-65535)");
+    Serial.println("  minor <val> - Set Minor (0-65535)");
+    Serial.println("  tx <val>    - Set TX Power (-100 to 20 dBm)");
+    Serial.println("  int <val>   - Set interval (20-10000 ms)");
+    Serial.println("  reset       - Reset to factory defaults");
+    Serial.println("========================\n");
+}
+
+void processSerialCommand(String cmd) {
+    cmd.trim();
+    if (cmd.length() == 0) return;
+    
+    // Parse command and arguments
+    int spaceIdx = cmd.indexOf(' ');
+    String command = (spaceIdx > 0) ? cmd.substring(0, spaceIdx) : cmd;
+    String args = (spaceIdx > 0) ? cmd.substring(spaceIdx + 1) : "";
+    
+    command.toLowerCase();
+    
+    if (command == "help") {
+        printHelp();
+    }
+    else if (command == "status") {
+        printConfig();
+    }
+    else if (command == "major") {
+        int val = args.toInt();
+        if (val >= 0 && val <= 65535) {
+            beaconConfig.major = (uint16_t)val;
+            saveConfig();
+            Serial.printf("[CFG] Major set to: %d\n", beaconConfig.major);
+            // Restart advertising with new config
+            if (!configModeActive) {
+                startIBeaconAdvertising();
+            }
+        } else {
+            Serial.println("[ERR] Invalid value. Use: major 0-65535");
+        }
+    }
+    else if (command == "minor") {
+        int val = args.toInt();
+        if (val >= 0 && val <= 65535) {
+            beaconConfig.minor = (uint16_t)val;
+            saveConfig();
+            Serial.printf("[CFG] Minor set to: %d\n", beaconConfig.minor);
+            if (!configModeActive) {
+                startIBeaconAdvertising();
+            }
+        } else {
+            Serial.println("[ERR] Invalid value. Use: minor 0-65535");
+        }
+    }
+    else if (command == "tx") {
+        int val = args.toInt();
+        if (val >= -100 && val <= 20) {
+            beaconConfig.tx_power = (int8_t)val;
+            saveConfig();
+            Serial.printf("[CFG] TX Power set to: %d dBm\n", beaconConfig.tx_power);
+            if (!configModeActive) {
+                startIBeaconAdvertising();
+            }
+        } else {
+            Serial.println("[ERR] Invalid value. Use: tx -100 to 20");
+        }
+    }
+    else if (command == "int") {
+        int val = args.toInt();
+        if (val >= 20 && val <= 10000) {
+            beaconConfig.advertising_interval_ms = (uint16_t)val;
+            saveConfig();
+            Serial.printf("[CFG] Interval set to: %d ms\n", beaconConfig.advertising_interval_ms);
+            if (!configModeActive) {
+                startIBeaconAdvertising();
+            }
+        } else {
+            Serial.println("[ERR] Invalid value. Use: int 20-10000");
+        }
+    }
+    else if (command == "reset") {
+        Serial.println("[CFG] Resetting to factory defaults...");
+        nvsStorage.resetToDefaults(beaconConfig);
+        saveConfig();
+        printConfig();
+        delay(1000);
+        ESP.restart();
+    }
+    else {
+        Serial.printf("[ERR] Unknown command: %s\n", command.c_str());
+        Serial.println("Type 'help' for available commands");
+    }
+}
+
 // ==================== Arduino Setup ====================
 
 void setup() {
@@ -676,8 +776,9 @@ void setup() {
     Serial.println("  - Custom Data contains: Battery Level + Firmware Version");
     Serial.println("  - Eddystone-TLM contains: Battery mV, Temperature, Adv Count, Uptime");
     Serial.println("  - Scan with nRF Connect to see all packet types");
-    Serial.println("  - Connect to 'CheckIn-Beacon' to configure");
-    Serial.println("  - Battery simulation: -1% every 10 minutes\n");
+    Serial.println("  - Connect to 'CheckIn-Beacon' to configure via BLE");
+    Serial.println("  - Battery simulation: -1% every 10 minutes");
+    Serial.println("\n[SERIAL] Type 'help' for USB configuration commands\n");
 
     blinkLED(3, 100);
 }
@@ -685,6 +786,19 @@ void setup() {
 // ==================== Arduino Loop ====================
 
 void loop() {
+    // Process Serial commands
+    while (Serial.available()) {
+        char c = Serial.read();
+        if (c == '\n' || c == '\r') {
+            if (serialBuffer.length() > 0) {
+                processSerialCommand(serialBuffer);
+                serialBuffer = "";
+            }
+        } else {
+            serialBuffer += c;
+        }
+    }
+
     // Status LED: slow blink when running
     static unsigned long lastBlink = 0;
     static bool ledState = false;
@@ -710,7 +824,7 @@ void loop() {
     if (!configModeActive) {
         // Alternate between iBeacon and Custom Manufacturer Data
         alternateAdvertising();
-        
+
         // Update battery level (simulation or ADC)
         updateBatteryLevel();
     }
