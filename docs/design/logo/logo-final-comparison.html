@@ -1,0 +1,120 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F8FAFC; padding: 40px 20px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 { text-align: center; margin-bottom: 16px; color: #0F172A; font-size: 36px; font-weight: 700; }
+  .subtitle { text-align: center; margin-bottom: 50px; color: #64748B; font-size: 16px; }
+  .variants-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin-bottom: 60px; }
+  .variant-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 2px solid #E2E8F0; }
+  .variant-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .variant-title { font-size: 22px; font-weight: 700; color: #0F172A; }
+  .variant-badge { background: #10B981; color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .variant-description { font-size: 14px; color: #64748B; margin-bottom: 30px; line-height: 1.6; }
+  .logo-preview { display: flex; justify-content: center; align-items: center; padding: 50px; background: #F8FAFC; border-radius: 16px; margin-bottom: 30px; }
+  .logo-preview svg { max-width: 100%; height: auto; }
+  .features-list { list-style: none; margin-bottom: 20px; }
+  .features-list li { padding: 10px 0; color: #475569; font-size: 14px; border-bottom: 1px solid #E2E8F0; }
+  .features-list li:before { content: "✓ "; color: #10B981; font-weight: bold; margin-right: 8px; }
+  .color-info { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .color-chip { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #64748B; }
+  .color-swatch { width: 28px; height: 28px; border-radius: 8px; border: 2px solid #E2E8F0; }
+  .recommendation { background: linear-gradient(135deg, #10B981 0%, #059669 100%); border-radius: 20px; padding: 40px; text-align: center; color: white; }
+  .recommendation h2 { font-size: 28px; margin-bottom: 16px; }
+  .recommendation p { font-size: 16px; margin-bottom: 24px; opacity: 0.9; }
+  .recommendation .variant-name { font-size: 20px; font-weight: 700; background: rgba(255,255,255,0.2); padding: 12px 30px; border-radius: 30px; display: inline-block; }
+</style>
+
+<div class="container">
+  <h1>🎨 Финальные варианты логотипа</h1>
+  <p class="subtitle">На основе исходного дизайна с контурной шестерёнкой</p>
+
+  <div class="variants-grid">
+    <!-- Вариант 1: Оригинальный синий -->
+    <div class="variant-card">
+      <div class="variant-header">
+        <div class="variant-title">Вариант 1</div>
+        <div class="variant-badge">Оригинал</div>
+      </div>
+      <div class="variant-description">
+        Точное воспроизведение исходного дизайна с голубым градиентом и контурной шестерёнкой.
+      </div>
+      <div class="logo-preview">
+        <svg width="220" height="220" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="pinGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#4ECDC4;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#45B7D1;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="200" height="200" rx="45" fill="white" />
+          <path d="M100 25 C130 25, 150 50, 150 80 C150 115, 100 145, 100 145 C100 145, 50 115, 50 80 C50 50, 70 25, 100 25 Z" fill="url(#pinGrad1)" />
+          <circle cx="100" cy="75" r="28" fill="rgba(255,255,255,0.15)" />
+          <path d="M85 75 L95 85 L115 65" stroke="white" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <g transform="translate(100, 155)">
+            <path d="M0,-25 L3,-25 L4,-22 L7,-22 L8,-19 L11,-19 L12,-16 L15,-16 L16,-13 L19,-13 L20,-10 L23,-10 L24,-7 L25,-4 L25,0 L24,3 L23,6 L20,6 L19,9 L16,9 L15,12 L12,12 L11,15 L8,15 L7,18 L4,18 L3,21 L0,21 L-3,21 L-4,18 L-7,18 L-8,15 L-11,15 L-12,12 L-15,12 L-16,9 L-19,9 L-20,6 L-23,6 L-24,3 L-25,0 L-24,-4 L-23,-7 L-20,-7 L-19,-10 L-16,-10 L-15,-13 L-12,-13 L-11,-16 L-8,-16 L-7,-19 L-4,-19 L-3,-22 L0,-25 Z" fill="none" stroke="#2C3E50" stroke-width="2.5" stroke-linejoin="round" />
+            <circle cx="0" cy="0" r="15" fill="none" stroke="#2C3E50" stroke-width="2.5" />
+            <circle cx="0" cy="0" r="6" fill="white" stroke="#2C3E50" stroke-width="2" />
+          </g>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Голубой градиент (#4ECDC4 → #45B7D1)</li>
+        <li>Контурная шестерёнка (12 зубцов)</li>
+        <li>Тёмно-синий цвет шестерёнки (#2C3E50)</li>
+        <li>Белый фон с rounded corners</li>
+      </ul>
+      <div class="color-info">
+        <div class="color-chip"><div class="color-swatch" style="background: #4ECDC4;"></div><span>#4ECDC4</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #45B7D1;"></div><span>#45B7D1</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #2C3E50;"></div><span>#2C3E50</span></div>
+      </div>
+    </div>
+
+    <!-- Вариант 2: Зелёный -->
+    <div class="variant-card">
+      <div class="variant-header">
+        <div class="variant-title">Вариант 2</div>
+        <div class="variant-badge">Зелёный</div>
+      </div>
+      <div class="variant-description">
+        Тот же стиль, но с зелёным градиентом для соответствия с мобильным приложением.
+      </div>
+      <div class="logo-preview">
+        <svg width="220" height="220" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="pinGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#34D399;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="200" height="200" rx="45" fill="white" />
+          <path d="M100 25 C130 25, 150 50, 150 80 C150 115, 100 145, 100 145 C100 145, 50 115, 50 80 C50 50, 70 25, 100 25 Z" fill="url(#pinGrad2)" />
+          <circle cx="100" cy="75" r="28" fill="rgba(255,255,255,0.15)" />
+          <path d="M85 75 L95 85 L115 65" stroke="white" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <g transform="translate(100, 155)">
+            <path d="M0,-25 L3,-25 L4,-22 L7,-22 L8,-19 L11,-19 L12,-16 L15,-16 L16,-13 L19,-13 L20,-10 L23,-10 L24,-7 L25,-4 L25,0 L24,3 L23,6 L20,6 L19,9 L16,9 L15,12 L12,12 L11,15 L8,15 L7,18 L4,18 L3,21 L0,21 L-3,21 L-4,18 L-7,18 L-8,15 L-11,15 L-12,12 L-15,12 L-16,9 L-19,9 L-20,6 L-23,6 L-24,3 L-25,0 L-24,-4 L-23,-7 L-20,-7 L-19,-10 L-16,-10 L-15,-13 L-12,-13 L-11,-16 L-8,-16 L-7,-19 L-4,-19 L-3,-22 L0,-25 Z" fill="none" stroke="#065F46" stroke-width="2.5" stroke-linejoin="round" />
+            <circle cx="0" cy="0" r="15" fill="none" stroke="#065F46" stroke-width="2.5" />
+            <circle cx="0" cy="0" r="6" fill="white" stroke="#065F46" stroke-width="2" />
+          </g>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Зелёный градиент (#34D399 → #10B981)</li>
+        <li>Контурная шестерёнка (12 зубцов)</li>
+        <li>Тёмно-зелёный цвет шестерёнки (#065F46)</li>
+        <li>Соответствует мобильному приложению</li>
+      </ul>
+      <div class="color-info">
+        <div class="color-chip"><div class="color-swatch" style="background: #34D399;"></div><span>#34D399</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #10B981;"></div><span>#10B981</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #065F46;"></div><span>#065F46</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="recommendation">
+    <h2>✅ Готово к использованию</h2>
+    <p>Оба варианта готовы для интеграции в проект</p>
+    <div class="variant-name">Выберите предпочтительный цвет</div>
+  </div>
+</div>

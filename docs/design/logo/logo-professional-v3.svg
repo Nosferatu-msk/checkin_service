@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+    </filter>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="200" height="200" rx="45" fill="white" filter="url(#shadow)" />
+  
+  <!-- Hexagonal base (technical, professional) -->
+  <polygon points="100,30 145,55 145,105 100,130 55,105 55,55" 
+           fill="url(#mainGrad)" opacity="0.95" />
+  
+  <!-- Inner hexagon -->
+  <polygon points="100,45 130,62 130,98 100,115 70,98 70,62" 
+           fill="white" opacity="0.1" />
+  
+  <!-- Location pin (centered, geometric) -->
+  <g transform="translate(100, 75)">
+    <path d="M0 -25 L20 -5 L20 15 C20 25, 12 32, 0 32 C-12 32, -20 25, -20 15 L-20 -5 Z" 
+          fill="white" />
+    
+    <!-- Checkmark inside pin -->
+    <circle cx="0" cy="5" r="12" fill="#10B981" />
+    <path d="M-6 5 L-2 9 L6 1" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  
+  <!-- Gear (bottom, professional 16-tooth) -->
+  <g transform="translate(100, 150)">
+    <!-- Main gear body -->
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#064E3B" stroke-width="2" />
+    <circle cx="0" cy="0" r="10" fill="none" stroke="#064E3B" stroke-width="2" />
+    <circle cx="0" cy="0" r="4" fill="#064E3B" />
+    
+    <!-- Gear teeth (16 teeth, precise) -->
+    <g stroke="#064E3B" stroke-width="2.5" stroke-linecap="round">
+      <line x1="0" y1="-22" x2="0" y2="-26" />
+      <line x1="7.65" y1="-20.6" x2="9.19" y2="-24.7" />
+      <line x1="14.14" y1="-14.14" x2="16.97" y2="-16.97" />
+      <line x1="20.6" y1="-7.65" x2="24.7" y2="-9.19" />
+      <line x1="22" y1="0" x2="26" y2="0" />
+      <line x1="20.6" y1="7.65" x2="24.7" y2="9.19" />
+      <line x1="14.14" y1="14.14" x2="16.97" y2="16.97" />
+      <line x1="7.65" y1="20.6" x2="9.19" y2="24.7" />
+      <line x1="0" y1="22" x2="0" y2="26" />
+      <line x1="-7.65" y1="20.6" x2="-9.19" y2="24.7" />
+      <line x1="-14.14" y1="14.14" x2="-16.97" y2="16.97" />
+      <line x1="-20.6" y1="7.65" x2="-24.7" y2="9.19" />
+      <line x1="-22" y1="0" x2="-26" y2="0" />
+      <line x1="-20.6" y1="-7.65" x2="-24.7" y2="-9.19" />
+      <line x1="-14.14" y1="-14.14" x2="-16.97" y2="-16.97" />
+      <line x1="-7.65" y1="-20.6" x2="-9.19" y2="-24.7" />
+    </g>
+  </g>
+  
+  <!-- Accent line -->
+  <line x1="60" y1="175" x2="140" y2="175" stroke="#10B981" stroke-width="2" stroke-linecap="round" />
+</svg>

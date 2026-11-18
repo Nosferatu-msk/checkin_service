@@ -1,0 +1,296 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #0F172A; padding: 40px 20px; color: white; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  h1 { text-align: center; margin-bottom: 16px; color: white; font-size: 36px; font-weight: 700; }
+  .subtitle { text-align: center; margin-bottom: 50px; color: #94A3B8; font-size: 16px; }
+  .variants-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin-bottom: 60px; }
+  .variant-card { background: #1E293B; border-radius: 20px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 1px solid #334155; }
+  .variant-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .variant-title { font-size: 22px; font-weight: 700; color: white; }
+  .variant-badge { background: #10B981; color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .variant-description { font-size: 14px; color: #94A3B8; margin-bottom: 30px; line-height: 1.6; }
+  .logo-preview { display: flex; justify-content: center; align-items: center; padding: 50px; background: white; border-radius: 16px; margin-bottom: 30px; }
+  .logo-preview svg { max-width: 100%; height: auto; }
+  .features-list { list-style: none; margin-bottom: 20px; }
+  .features-list li { padding: 10px 0; color: #CBD5E1; font-size: 14px; border-bottom: 1px solid #334155; }
+  .features-list li:before { content: "✓ "; color: #10B981; font-weight: bold; margin-right: 8px; }
+  .color-info { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .color-chip { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #94A3B8; }
+  .color-swatch { width: 28px; height: 28px; border-radius: 8px; border: 2px solid #475569; }
+  .comparison-section { background: #1E293B; border-radius: 20px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 1px solid #334155; margin-bottom: 40px; }
+  .comparison-title { font-size: 24px; font-weight: 700; margin-bottom: 30px; color: white; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 16px; text-align: left; border-bottom: 1px solid #334155; }
+  th { background: #0F172A; font-weight: 600; font-size: 14px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { font-size: 14px; color: #CBD5E1; }
+  .rating { color: #10B981; font-weight: 600; }
+  .best { background: rgba(16, 185, 129, 0.1); }
+  .recommendation { background: linear-gradient(135deg, #10B981 0%, #059669 100%); border-radius: 20px; padding: 40px; text-align: center; }
+  .recommendation h2 { font-size: 28px; margin-bottom: 16px; color: white; }
+  .recommendation p { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 24px; }
+  .recommendation .variant-name { font-size: 20px; font-weight: 700; color: white; background: rgba(255,255,255,0.2); padding: 12px 30px; border-radius: 30px; display: inline-block; }
+</style>
+
+<div class="container">
+  <h1>🎨 Профессиональные варианты логотипа</h1>
+  <p class="subtitle">Три новых варианта с улучшенным дизайном и профессиональным исполнением</p>
+
+  <div class="variants-grid">
+    <!-- Вариант 1: Классический профессиональный -->
+    <div class="variant-card">
+      <div class="variant-header">
+        <div class="variant-title">Вариант 1</div>
+        <div class="variant-badge">Классический</div>
+      </div>
+      <div class="variant-description">
+        Геометрически точный дизайн с круглой рамкой и профессиональной шестерёнкой (12 зубцов). 
+        Идеально для корпоративного стиля.
+      </div>
+      <div class="logo-preview">
+        <svg width="220" height="220" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="90" fill="#F9FAFB" />
+          <circle cx="100" cy="100" r="85" fill="none" stroke="url(#grad1)" stroke-width="2" />
+          <path d="M100 35 L130 65 L130 95 C130 115, 115 130, 100 130 C85 130, 70 115, 70 95 L70 65 Z" fill="url(#grad1)" opacity="0.95" />
+          <circle cx="100" cy="80" r="22" fill="white" />
+          <path d="M88 80 L96 88 L112 72" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <g transform="translate(100, 145)">
+            <circle cx="0" cy="0" r="18" fill="none" stroke="#065F46" stroke-width="2.5" />
+            <circle cx="0" cy="0" r="8" fill="none" stroke="#065F46" stroke-width="2.5" />
+            <g stroke="#065F46" stroke-width="3" stroke-linecap="round">
+              <line x1="0" y1="-21" x2="0" y2="-25" />
+              <line x1="10.5" y1="-18.2" x2="12.1" y2="-21.7" />
+              <line x1="18.2" y1="-10.5" x2="21.7" y2="-12.1" />
+              <line x1="21" y1="0" x2="25" y2="0" />
+              <line x1="18.2" y1="10.5" x2="21.7" y2="12.1" />
+              <line x1="10.5" y1="18.2" x2="12.1" y2="21.7" />
+              <line x1="0" y1="21" x2="0" y2="25" />
+              <line x1="-10.5" y1="18.2" x2="-12.1" y2="21.7" />
+              <line x1="-18.2" y1="10.5" x2="-21.7" y2="12.1" />
+              <line x1="-21" y1="0" x2="-25" y2="0" />
+              <line x1="-18.2" y1="-10.5" x2="-21.7" y2="-12.1" />
+              <line x1="-10.5" y1="-18.2" x2="-12.1" y2="-21.7" />
+            </g>
+          </g>
+          <ellipse cx="100" cy="175" rx="40" ry="3" fill="#000000" opacity="0.08" />
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Круглая рамка с градиентом</li>
+        <li>Геометрически точная шестерёнка (12 зубцов)</li>
+        <li>Профессиональная цветовая схема</li>
+        <li>Тень для объёма</li>
+      </ul>
+      <div class="color-info">
+        <div class="color-chip"><div class="color-swatch" style="background: #10B981;"></div><span>#10B981</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #059669;"></div><span>#059669</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #065F46;"></div><span>#065F46</span></div>
+      </div>
+    </div>
+
+    <!-- Вариант 2: Технологичный -->
+    <div class="variant-card">
+      <div class="variant-header">
+        <div class="variant-title">Вариант 2</div>
+        <div class="variant-badge">Технологичный</div>
+      </div>
+      <div class="variant-description">
+        Современный дизайн с сеткой и техническими элементами. Синий + зелёный акцент. 
+        Подчёркивает технологичность системы.
+      </div>
+      <div class="logo-preview">
+        <svg width="220" height="220" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#0EA5E9;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#0284C7;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="200" height="200" rx="40" fill="#F8FAFC" />
+          <g transform="translate(100, 85)">
+            <path d="M0 -45 L35 -10 L35 25 C35 45, 20 60, 0 60 C-20 60, -35 45, -35 25 L-35 -10 Z" fill="url(#blueGrad)" opacity="0.9" />
+            <path d="M0 -35 L25 -5 L25 20 C25 35, 15 45, 0 45 C-15 45, -25 35, -25 20 L-25 -5 Z" fill="white" opacity="0.15" />
+            <circle cx="0" cy="5" r="18" fill="white" />
+            <path d="M-10 5 L-4 11 L10 -3" stroke="#10B981" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          <g transform="translate(100, 155)">
+            <circle cx="0" cy="0" r="15" fill="none" stroke="#0F172A" stroke-width="2" />
+            <circle cx="0" cy="0" r="6" fill="#0F172A" />
+            <circle cx="0" cy="-20" r="3" fill="#0F172A" />
+            <circle cx="17.3" cy="-10" r="3" fill="#0F172A" />
+            <circle cx="17.3" cy="10" r="3" fill="#0F172A" />
+            <circle cx="0" cy="20" r="3" fill="#0F172A" />
+            <circle cx="-17.3" cy="10" r="3" fill="#0F172A" />
+            <circle cx="-17.3" cy="-10" r="3" fill="#0F172A" />
+            <g stroke="#0F172A" stroke-width="1.5" stroke-linecap="round">
+              <line x1="0" y1="-15" x2="0" y2="-17" />
+              <line x1="13" y1="-7.5" x2="14.7" y2="-8.7" />
+              <line x1="13" y1="7.5" x2="14.7" y2="8.7" />
+              <line x1="0" y1="15" x2="0" y2="17" />
+              <line x1="-13" y1="7.5" x2="-14.7" y2="8.7" />
+              <line x1="-13" y1="-7.5" x2="-14.7" y2="-8.7" />
+            </g>
+          </g>
+          <g stroke="#E2E8F0" stroke-width="0.5" opacity="0.3">
+            <line x1="20" y1="20" x2="180" y2="20" />
+            <line x1="20" y1="40" x2="180" y2="40" />
+            <line x1="20" y1="60" x2="180" y2="60" />
+            <line x1="20" y1="160" x2="180" y2="160" />
+            <line x1="20" y1="180" x2="180" y2="180" />
+            <line x1="20" y1="20" x2="20" y2="180" />
+            <line x1="40" y1="20" x2="40" y2="180" />
+            <line x1="160" y1="20" x2="160" y2="180" />
+            <line x1="180" y1="20" x2="180" y2="180" />
+          </g>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Синяя цветовая схема с зелёным акцентом</li>
+        <li>Техническая сетка на фоне</li>
+        <li>Схема соединений вместо шестерёнки</li>
+        <li>Современный rounded rectangle</li>
+      </ul>
+      <div class="color-info">
+        <div class="color-chip"><div class="color-swatch" style="background: #0EA5E9;"></div><span>#0EA5E9</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #0284C7;"></div><span>#0284C7</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #10B981;"></div><span>#10B981</span></div>
+      </div>
+    </div>
+
+    <!-- Вариант 3: Гексагональный -->
+    <div class="variant-card">
+      <div class="variant-header">
+        <div class="variant-title">Вариант 3</div>
+        <div class="variant-badge">Премиум</div>
+      </div>
+      <div class="variant-description">
+        Гексагональная форма с градиентом и профессиональной 16-зубцовой шестерёнкой. 
+        Максимально премиальный вид.
+      </div>
+      <div class="logo-preview">
+        <svg width="220" height="220" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="mainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#059669;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="200" height="200" rx="45" fill="white" />
+          <polygon points="100,30 145,55 145,105 100,130 55,105 55,55" fill="url(#mainGrad)" opacity="0.95" />
+          <polygon points="100,45 130,62 130,98 100,115 70,98 70,62" fill="white" opacity="0.1" />
+          <g transform="translate(100, 75)">
+            <path d="M0 -25 L20 -5 L20 15 C20 25, 12 32, 0 32 C-12 32, -20 25, -20 15 L-20 -5 Z" fill="white" />
+            <circle cx="0" cy="5" r="12" fill="#10B981" />
+            <path d="M-6 5 L-2 9 L6 1" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          <g transform="translate(100, 150)">
+            <circle cx="0" cy="0" r="20" fill="none" stroke="#064E3B" stroke-width="2" />
+            <circle cx="0" cy="0" r="10" fill="none" stroke="#064E3B" stroke-width="2" />
+            <circle cx="0" cy="0" r="4" fill="#064E3B" />
+            <g stroke="#064E3B" stroke-width="2.5" stroke-linecap="round">
+              <line x1="0" y1="-22" x2="0" y2="-26" />
+              <line x1="7.65" y1="-20.6" x2="9.19" y2="-24.7" />
+              <line x1="14.14" y1="-14.14" x2="16.97" y2="-16.97" />
+              <line x1="20.6" y1="-7.65" x2="24.7" y2="-9.19" />
+              <line x1="22" y1="0" x2="26" y2="0" />
+              <line x1="20.6" y1="7.65" x2="24.7" y2="9.19" />
+              <line x1="14.14" y1="14.14" x2="16.97" y2="16.97" />
+              <line x1="7.65" y1="20.6" x2="9.19" y2="24.7" />
+              <line x1="0" y1="22" x2="0" y2="26" />
+              <line x1="-7.65" y1="20.6" x2="-9.19" y2="24.7" />
+              <line x1="-14.14" y1="14.14" x2="-16.97" y2="16.97" />
+              <line x1="-20.6" y1="7.65" x2="-24.7" y2="9.19" />
+              <line x1="-22" y1="0" x2="-26" y2="0" />
+              <line x1="-20.6" y1="-7.65" x2="-24.7" y2="-9.19" />
+              <line x1="-14.14" y1="-14.14" x2="-16.97" y2="-16.97" />
+              <line x1="-7.65" y1="-20.6" x2="-9.19" y2="-24.7" />
+            </g>
+          </g>
+          <line x1="60" y1="175" x2="140" y2="175" stroke="#10B981" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Гексагональная форма (тренд 2026)</li>
+        <li>Трёхступенчатый градиент</li>
+        <li>Профессиональная шестерёнка (16 зубцов)</li>
+        <li>Акцентная линия внизу</li>
+      </ul>
+      <div class="color-info">
+        <div class="color-chip"><div class="color-swatch" style="background: #10B981;"></div><span>#10B981</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #059669;"></div><span>#059669</span></div>
+        <div class="color-chip"><div class="color-swatch" style="background: #047857;"></div><span>#047857</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-section">
+    <div class="comparison-title">📊 Сравнительная таблица</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Критерий</th>
+          <th>Вариант 1 (Классический)</th>
+          <th>Вариант 2 (Технологичный)</th>
+          <th>Вариант 3 (Премиум)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Профессионализм</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+          <td class="rating">⭐⭐⭐⭐</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+          <td>Современность</td>
+          <td class="rating">⭐⭐⭐⭐</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+          <td>Читаемость (малые размеры)</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+          <td class="rating">⭐⭐⭐⭐</td>
+          <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+          <td>Уникальность</td>
+          <td class="rating">⭐⭐⭐⭐</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+          <td>Соответствие бренду</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+          <td class="rating">⭐⭐⭐⭐</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+          <td>Масштабируемость</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+          <td class="rating best">⭐⭐⭐⭐⭐</td>
+          <td class="rating">⭐⭐⭐⭐</td>
+        </tr>
+        <tr style="background: #0F172A;">
+          <td><strong>ИТОГО</strong></td>
+          <td class="rating"><strong>4.7/5</strong></td>
+          <td class="rating"><strong>4.5/5</strong></td>
+          <td class="rating"><strong>4.8/5</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recommendation">
+    <h2>🏆 Рекомендация</h2>
+    <p>Для профессионального корпоративного стиля рекомендуем:</p>
+    <div class="variant-name">Вариант 3 (Премиум)</div>
+  </div>
+</div>

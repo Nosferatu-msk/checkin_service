@@ -1,0 +1,243 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif; background: #000; padding: 40px 20px; color: white; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  h1 { text-align: center; margin-bottom: 16px; font-size: 42px; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { text-align: center; margin-bottom: 60px; color: #86868b; font-size: 18px; }
+  .concepts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; margin-bottom: 60px; }
+  .concept-card { background: #1c1c1e; border-radius: 24px; padding: 30px; border: 1px solid #2c2c2e; transition: transform 0.3s ease; }
+  .concept-card:hover { transform: translateY(-5px); }
+  .concept-number { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; margin-bottom: 16px; }
+  .concept-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: white; }
+  .concept-style { font-size: 13px; color: #86868b; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .concept-description { font-size: 14px; color: #86868b; margin-bottom: 24px; line-height: 1.5; }
+  .logo-preview { display: flex; justify-content: center; align-items: center; padding: 40px; background: #2c2c2e; border-radius: 20px; margin-bottom: 24px; min-height: 200px; }
+  .logo-preview svg { max-width: 100%; height: auto; }
+  .features-list { list-style: none; }
+  .features-list li { padding: 8px 0; color: #d1d1d6; font-size: 13px; border-bottom: 1px solid #2c2c2e; }
+  .features-list li:before { content: "✓ "; color: #30d158; font-weight: bold; margin-right: 8px; }
+  .color-palette { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .color-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #3a3a3c; }
+  .color-label { font-size: 11px; color: #86868b; margin-left: 4px; }
+  .recommendation { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 24px; padding: 40px; text-align: center; margin-top: 40px; }
+  .recommendation h2 { font-size: 28px; margin-bottom: 16px; color: white; }
+  .recommendation p { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 24px; }
+</style>
+
+<div class="container">
+  <h1>🎨 Монограмма + Градиент</h1>
+  <p class="subtitle">Комбинация варианта 5 (дизайн) и варианта 2 (фон) в разных палитрах</p>
+
+  <div class="concepts-grid">
+    <!-- Палитра 1: Фиолетово-синяя -->
+    <div class="concept-card">
+      <div class="concept-number">1</div>
+      <div class="concept-title">Purple Dream</div>
+      <div class="concept-style">Фиолетовый → Синий</div>
+      <div class="concept-description">
+        Классический градиент от фиолетового к синему. Премиальный и технологичный вид.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad1)"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="white" stroke-width="5"/>
+          <path d="M50,60 L58,68 L72,52" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Премиальный вид</li>
+        <li>Технологичность</li>
+        <li>Универсальность</li>
+        <li>iOS/Android стиль</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #667eea;"></div>
+        <div class="color-dot" style="background: #764ba2;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Палитра 2: Зелёно-бирюзовая -->
+    <div class="concept-card">
+      <div class="concept-number">2</div>
+      <div class="concept-title">Emerald Flow</div>
+      <div class="concept-style">Зелёный → Бирюзовый</div>
+      <div class="concept-description">
+        Свежий градиент от изумрудного к бирюзовому. Соответствует мобильному приложению.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad2)"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="white" stroke-width="5"/>
+          <path d="M50,60 L58,68 L72,52" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Соответствие бренду</li>
+        <li>Свежесть</li>
+        <li>Природность</li>
+        <li>Позитивность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #10B981;"></div>
+        <div class="color-dot" style="background: #34D399;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Палитра 3: Оранжево-розовая -->
+    <div class="concept-card">
+      <div class="concept-number">3</div>
+      <div class="concept-title">Sunset Glow</div>
+      <div class="concept-style">Оранжевый → Розовый</div>
+      <div class="concept-description">
+        Тёплый градиент заката. Энергичный и дружелюбный дизайн.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#F7931E;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad3)"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="white" stroke-width="5"/>
+          <path d="M50,60 L58,68 L72,52" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Энергичность</li>
+        <li>Теплота</li>
+        <li>Дружелюбность</li>
+        <li>Запоминаемость</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #FF6B35;"></div>
+        <div class="color-dot" style="background: #F7931E;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Палитра 4: Сине-голубая -->
+    <div class="concept-card">
+      <div class="concept-number">4</div>
+      <div class="concept-title">Ocean Blue</div>
+      <div class="concept-style">Синий → Голубой</div>
+      <div class="concept-description">
+        Классический синий градиент. Надёжность и профессионализм.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#007AFF;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5AC8FA;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad4)"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="white" stroke-width="5"/>
+          <path d="M50,60 L58,68 L72,52" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Надёжность</li>
+        <li>Профессионализм</li>
+        <li>Корпоративность</li>
+        <li>Универсальность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #007AFF;"></div>
+        <div class="color-dot" style="background: #5AC8FA;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Палитра 5: Розово-фиолетовая -->
+    <div class="concept-card">
+      <div class="concept-number">5</div>
+      <div class="concept-title">Pink Passion</div>
+      <div class="concept-style">Розовый → Фиолетовый</div>
+      <div class="concept-description">
+        Яркий градиент от розового к фиолетовому. Смелый и современный.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad5)"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="white" stroke-width="5"/>
+          <path d="M50,60 L58,68 L72,52" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Яркость</li>
+        <li>Смелость</li>
+        <li>Современность</li>
+        <li>Креативность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #f093fb;"></div>
+        <div class="color-dot" style="background: #f5576c;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Палитра 6: Тёмная (Midnight) -->
+    <div class="concept-card">
+      <div class="concept-number">6</div>
+      <div class="concept-title">Midnight</div>
+      <div class="concept-style">Тёмно-синий → Чёрный</div>
+      <div class="concept-description">
+        Элегантный тёмный градиент. Премиальный и загадочный вид.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad6)"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="#00d4ff" stroke-width="5"/>
+          <path d="M50,60 L58,68 L72,52" stroke="#00d4ff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Элегантность</li>
+        <li>Премиальность</li>
+        <li>Загадочность</li>
+        <li>Технологичность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #1a1a2e;"></div>
+        <div class="color-dot" style="background: #16213e;"></div>
+        <div class="color-dot" style="background: #00d4ff;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="recommendation">
+    <h2>💡 Рекомендация</h2>
+    <p>Для проекта "Контроль присутствия" рекомендуем:<br/>
+    <strong>Вариант 2 (Emerald Flow)</strong> — соответствует мобильному приложению<br/>
+    <strong>Вариант 4 (Ocean Blue)</strong> — классический корпоративный стиль</p>
+  </div>
+</div>

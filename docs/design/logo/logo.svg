@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1092" height="1092" viewBox="0 0 1092 1092" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1092" height="1092" rx="200" fill="white" />
+  
+  <!-- Map Pin with gradient -->
+  <defs>
+    <linearGradient id="pinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ECDC4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#45B7D1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Map Pin -->
+  <path d="M546 150 C720 150, 820 320, 820 500 C820 700, 546 850, 546 850 C546 850, 272 700, 272 500 C272 320, 372 150, 546 150 Z" 
+        fill="url(#pinGradient)" />
+  
+  <!-- Inner circle for checkmark -->
+  <circle cx="546" cy="450" r="160" fill="rgba(255,255,255,0.15)" />
+  
+  <!-- Checkmark -->
+  <path d="M460 450 L520 510 L640 390" stroke="white" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Gear (outline style) -->
+  <g transform="translate(546, 820)">
+    <!-- Outer gear path with teeth -->
+    <path d="M0,-140 
+             L17,-140 L23,-123 L40,-123 L46,-106 L63,-106 L69,-89 L86,-89 L92,-72 L109,-72 L115,-55 L132,-55 L138,-38 L143,-20 L143,0 
+             L138,17 L132,34 L115,34 L109,51 L92,51 L86,68 L69,68 L63,85 L46,85 L40,102 L23,102 L17,119 L0,119 
+             L-17,119 L-23,102 L-40,102 L-46,85 L-63,85 L-69,68 L-86,68 L-92,51 L-109,51 L-115,34 L-132,34 L-138,17 L-143,0 
+             L-138,-20 L-132,-38 L-115,-38 L-109,-55 L-92,-55 L-86,-72 L-69,-72 L-63,-89 L-46,-89 L-40,-106 L-23,-106 L-17,-123 L0,-140 Z" 
+          fill="none" stroke="#2C3E50" stroke-width="14" stroke-linejoin="round" />
+    
+    <!-- Inner circle -->
+    <circle cx="0" cy="0" r="85" fill="none" stroke="#2C3E50" stroke-width="14" />
+    
+    <!-- Center hole -->
+    <circle cx="0" cy="0" r="35" fill="white" stroke="#2C3E50" stroke-width="12" />
+  </g>
+</svg>

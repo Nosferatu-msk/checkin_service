@@ -1,0 +1,292 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif; background: #000; padding: 40px 20px; color: white; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  h1 { text-align: center; margin-bottom: 16px; font-size: 42px; font-weight: 700; background: linear-gradient(135deg, #10B981 0%, #34D399 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { text-align: center; margin-bottom: 60px; color: #86868b; font-size: 18px; }
+  .concepts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; margin-bottom: 60px; }
+  .concept-card { background: #1c1c1e; border-radius: 24px; padding: 30px; border: 1px solid #2c2c2e; transition: transform 0.3s ease; }
+  .concept-card:hover { transform: translateY(-5px); }
+  .concept-number { display: inline-block; background: linear-gradient(135deg, #10B981 0%, #34D399 100%); color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; margin-bottom: 16px; }
+  .concept-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: white; }
+  .concept-style { font-size: 13px; color: #86868b; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .concept-description { font-size: 14px; color: #86868b; margin-bottom: 24px; line-height: 1.5; }
+  .logo-preview { display: flex; justify-content: center; align-items: center; padding: 40px; background: #2c2c2e; border-radius: 20px; margin-bottom: 24px; min-height: 200px; }
+  .logo-preview svg { max-width: 100%; height: auto; }
+  .features-list { list-style: none; }
+  .features-list li { padding: 8px 0; color: #d1d1d6; font-size: 13px; border-bottom: 1px solid #2c2c2e; }
+  .features-list li:before { content: "✓ "; color: #30d158; font-weight: bold; margin-right: 8px; }
+  .color-palette { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .color-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #3a3a3c; }
+  .comparison { background: #1c1c1e; border-radius: 24px; padding: 40px; margin-top: 40px; border: 1px solid #2c2c2e; }
+  .comparison h2 { font-size: 24px; margin-bottom: 24px; color: white; text-align: center; }
+  .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .comparison-item { text-align: center; }
+  .comparison-item h3 { font-size: 18px; margin-bottom: 16px; color: #30d158; }
+  .comparison-item svg { max-width: 200px; margin: 0 auto; }
+  .recommendation { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); border-radius: 24px; padding: 40px; text-align: center; margin-top: 40px; }
+  .recommendation h2 { font-size: 28px; margin-bottom: 16px; color: white; }
+  .recommendation p { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 24px; }
+</style>
+
+<div class="container">
+  <h1>📍 Map Pin + Checkmark</h1>
+  <p class="subtitle">Форма метки вместо окружности • Emerald Flow градиент</p>
+
+  <div class="concepts-grid">
+    <!-- Вариант 1: Классический map pin -->
+    <div class="concept-card">
+      <div class="concept-number">1</div>
+      <div class="concept-title">Classic Pin</div>
+      <div class="concept-style">Классическая форма метки</div>
+      <div class="concept-description">
+        Традиционная форма map pin с checkmark внутри. Чёткая и узнаваемая.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad1)"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="white"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Узнаваемость</li>
+        <li>Простота</li>
+        <li>Читаемость</li>
+        <li>Масштабируемость</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #10B981;"></div>
+        <div class="color-dot" style="background: #34D399;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Вариант 2: Map pin с контуром -->
+    <div class="concept-card">
+      <div class="concept-number">2</div>
+      <div class="concept-title">Outline Pin</div>
+      <div class="concept-style">Контурная метка</div>
+      <div class="concept-description">
+        Map pin в виде контура с белым checkmark. Более лёгкий и воздушный дизайн.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad2)"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="none" stroke="white" stroke-width="4"/>
+          <path d="M52,55 L58,61 L70,49" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Воздушность</li>
+        <li>Современность</li>
+        <li>Лёгкость</li>
+        <li>Элегантность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #10B981;"></div>
+        <div class="color-dot" style="background: #34D399;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Вариант 3: Map pin с кругом -->
+    <div class="concept-card">
+      <div class="concept-number">3</div>
+      <div class="concept-title">Pin with Circle</div>
+      <div class="concept-style">Метка с круглой подложкой</div>
+      <div class="concept-description">
+        Map pin с круглой подложкой для checkmark. Комбинация формы и окружности.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad3)"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="white" opacity="0.2"/>
+          <circle cx="60" cy="55" r="20" fill="white"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Комбинация стилей</li>
+        <li>Выделение checkmark</li>
+        <li>Глубина</li>
+        <li>Баланс</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #10B981;"></div>
+        <div class="color-dot" style="background: #34D399;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Вариант 4: Минималистичный pin -->
+    <div class="concept-card">
+      <div class="concept-number">4</div>
+      <div class="concept-title">Minimal Pin</div>
+      <div class="concept-style">Упрощённая форма</div>
+      <div class="concept-description">
+        Упрощённая форма map pin без острия. Только верхняя часть с checkmark.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad4)"/>
+          <circle cx="60" cy="50" r="28" fill="white"/>
+          <path d="M52,50 L58,56 L70,44" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Минимализм</li>
+        <li>Современность</li>
+        <li>Чистота</li>
+        <li>Фокус на checkmark</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #10B981;"></div>
+        <div class="color-dot" style="background: #34D399;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Вариант 5: Pin с тенью -->
+    <div class="concept-card">
+      <div class="concept-number">5</div>
+      <div class="concept-title">Pin with Shadow</div>
+      <div class="concept-style">Метка с тенью</div>
+      <div class="concept-description">
+        Map pin с drop shadow для объёма. Более реалистичный и тактильный дизайн.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.3"/>
+            </filter>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad5)"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="white" filter="url(#shadow)"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Объём</li>
+        <li>Тактильность</li>
+        <li>Реалистичность</li>
+        <li>Глубина</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #10B981;"></div>
+        <div class="color-dot" style="background: #34D399;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Вариант 6: Pin с градиентом -->
+    <div class="concept-card">
+      <div class="concept-number">6</div>
+      <div class="concept-title">Gradient Pin</div>
+      <div class="concept-style">Метка с внутренним градиентом</div>
+      <div class="concept-description">
+        Map pin с собственным градиентом внутри. Двойной градиент для глубины.
+      </div>
+      <div class="logo-preview">
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="pinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#E0F2FE;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#bgGrad)"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="url(#pinGrad)"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Двойной градиент</li>
+        <li>Глубина</li>
+        <li>Премиальность</li>
+        <li>Сложность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #10B981;"></div>
+        <div class="color-dot" style="background: #34D399;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+        <div class="color-dot" style="background: #E0F2FE;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison">
+    <h2>📊 Сравнение: Окружность vs Map Pin</h2>
+    <div class="comparison-grid">
+      <div class="comparison-item">
+        <h3>Окружность (предыдущий)</h3>
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="comp1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#comp1)"/>
+          <circle cx="60" cy="60" r="30" fill="white"/>
+          <path d="M50,60 L58,68 L72,52" stroke="#10B981" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p style="margin-top: 16px; color: #86868b; font-size: 14px;">Монограмма "C"<br/>Абстрактный</p>
+      </div>
+      <div class="comparison-item">
+        <h3>Map Pin (новый)</h3>
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="comp2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#comp2)"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="white"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p style="margin-top: 16px; color: #86868b; font-size: 14px;">Map Pin форма<br/>Прямая ассоциация</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="recommendation">
+    <h2>✅ Преимущество Map Pin</h2>
+    <p>Форма метки сразу ассоциируется с локацией и присутствием<br/>
+    Более прямая визуальная коммуникация функции приложения</p>
+  </div>
+</div>

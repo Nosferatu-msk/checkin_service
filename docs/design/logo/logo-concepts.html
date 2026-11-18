@@ -1,0 +1,315 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif; background: #000; padding: 40px 20px; color: white; }
+  .container { max-width: 1600px; margin: 0 auto; }
+  h1 { text-align: center; margin-bottom: 16px; font-size: 42px; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { text-align: center; margin-bottom: 60px; color: #86868b; font-size: 18px; }
+  .concepts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-bottom: 60px; }
+  .concept-card { background: #1c1c1e; border-radius: 24px; padding: 30px; border: 1px solid #2c2c2e; transition: transform 0.3s ease; }
+  .concept-card:hover { transform: translateY(-5px); }
+  .concept-number { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; margin-bottom: 16px; }
+  .concept-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: white; }
+  .concept-style { font-size: 13px; color: #86868b; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .concept-description { font-size: 14px; color: #86868b; margin-bottom: 24px; line-height: 1.5; }
+  .logo-preview { display: flex; justify-content: center; align-items: center; padding: 40px; background: #2c2c2e; border-radius: 20px; margin-bottom: 24px; min-height: 200px; }
+  .logo-preview svg { max-width: 100%; height: auto; }
+  .features-list { list-style: none; }
+  .features-list li { padding: 8px 0; color: #d1d1d6; font-size: 13px; border-bottom: 1px solid #2c2c2e; }
+  .features-list li:before { content: "✓ "; color: #30d158; font-weight: bold; margin-right: 8px; }
+  .color-palette { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .color-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #3a3a3c; }
+</style>
+
+<div class="container">
+  <h1>🎨 10 Концепций Логотипа</h1>
+  <p class="subtitle">Современный стиль iOS/Android • Разные подходы к дизайну</p>
+
+  <div class="concepts-grid">
+    <!-- Концепт 1: Минимализм -->
+    <div class="concept-card">
+      <div class="concept-number">1</div>
+      <div class="concept-title">Pure Minimal</div>
+      <div class="concept-style">Minimalist • Flat</div>
+      <div class="concept-description">
+        Чистый минимализм: только map pin и checkmark. Без лишних деталей. Идеально для современного app icon.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#007AFF"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="white"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#007AFF" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Только essential elements</li>
+        <li>Flat design</li>
+        <li>Высокая читаемость</li>
+        <li>Масштабируемость</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #007AFF;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 2: Градиент -->
+    <div class="concept-card">
+      <div class="concept-number">2</div>
+      <div class="concept-title">Gradient Flow</div>
+      <div class="concept-style">Gradient • Modern</div>
+      <div class="concept-description">
+        Плавный градиент от фиолетового к синему. Современный тренд iOS/Android приложений.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad2)"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="white" opacity="0.95"/>
+          <path d="M52,55 L58,61 L70,49" stroke="url(#grad2)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Трендовый градиент</li>
+        <li>Глубина и объём</li>
+        <li>Премиальный вид</li>
+        <li>Уникальность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #667eea;"></div>
+        <div class="color-dot" style="background: #764ba2;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 3: Неоморфизм -->
+    <div class="concept-card">
+      <div class="concept-number">3</div>
+      <div class="concept-title">Neumorphism</div>
+      <div class="concept-style">Neumorphic • Soft UI</div>
+      <div class="concept-description">
+        Мягкий неоморфизм с тенями. Элементы "выдавлены" из фона. Тренд 2024-2026.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#e0e5ec"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="#e0e5ec" filter="drop-shadow(3px 3px 5px rgba(0,0,0,0.2)) drop-shadow(-3px -3px 5px rgba(255,255,255,0.8))"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#667eea" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Soft UI эффект</li>
+        <li>Тактильность</li>
+        <li>Современный тренд</li>
+        <li>Глубина без градиентов</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #e0e5ec;"></div>
+        <div class="color-dot" style="background: #667eea;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 4: Геометрический -->
+    <div class="concept-card">
+      <div class="concept-number">4</div>
+      <div class="concept-title">Geometric</div>
+      <div class="concept-style">Geometric • Abstract</div>
+      <div class="concept-description">
+        Абстрактная геометрия: шестиугольник + checkmark. Символизирует точность и технологии.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#1a1a2e"/>
+          <polygon points="60,25 80,37 80,63 60,75 40,63 40,37" fill="none" stroke="#00d4ff" stroke-width="3"/>
+          <path d="M52,50 L58,56 L70,44" stroke="#00d4ff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Геометрическая точность</li>
+        <li>Технологичность</li>
+        <li>Уникальная форма</li>
+        <li>Профессионализм</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #1a1a2e;"></div>
+        <div class="color-dot" style="background: #00d4ff;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 5: Монограмма -->
+    <div class="concept-card">
+      <div class="concept-number">5</div>
+      <div class="concept-title">Monogram</div>
+      <div class="concept-style">Typography • Lettermark</div>
+      <div class="concept-description">
+        Стилизованная буква "C" (CheckIn) с интегрированным checkmark. Минималистичный lettermark.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#000000"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="#30d158" stroke-width="6"/>
+          <path d="M50,60 L58,68 L72,52" stroke="#30d158" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Брендинг через букву</li>
+        <li>Запоминаемость</li>
+        <li>Простота</li>
+        <li>Универсальность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #000000;"></div>
+        <div class="color-dot" style="background: #30d158;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 6: Дуотон -->
+    <div class="concept-card">
+      <div class="concept-number">6</div>
+      <div class="concept-title">Duotone</div>
+      <div class="concept-style">Duotone • Bold</div>
+      <div class="concept-description">
+        Два контрастных цвета: оранжевый и чёрный. Смелый и энергичный дизайн.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#FF6B35"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="#000000"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#FF6B35" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Контрастность</li>
+        <li>Энергичность</li>
+        <li>Запоминаемость</li>
+        <li>Смелость</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #FF6B35;"></div>
+        <div class="color-dot" style="background: #000000;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 7: Линейный -->
+    <div class="concept-card">
+      <div class="concept-number">7</div>
+      <div class="concept-title">Line Art</div>
+      <div class="concept-style">Line Art • Outline</div>
+      <div class="concept-description">
+        Только контуры, без заполнения. Элегантный и лёгкий дизайн.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#FFFFFF"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="none" stroke="#007AFF" stroke-width="3"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#007AFF" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Элегантность</li>
+        <li>Лёгкость</li>
+        <li>Чистота</li>
+        <li>Универсальность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+        <div class="color-dot" style="background: #007AFF;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 8: 3D -->
+    <div class="concept-card">
+      <div class="concept-number">8</div>
+      <div class="concept-title">3D Isometric</div>
+      <div class="concept-style">3D • Isometric</div>
+      <div class="concept-description">
+        Изометрическая проекция с объёмом. Современный 3D тренд.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#2d3436"/>
+          <path d="M60,30 L80,42 L80,66 L60,78 L40,66 L40,42 Z" fill="#00b894" opacity="0.8"/>
+          <path d="M60,30 L80,42 L60,54 L40,42 Z" fill="#00cec9" opacity="0.9"/>
+          <path d="M52,54 L58,60 L70,48" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Объёмность</li>
+        <li>Современный 3D</li>
+        <li>Глубина</li>
+        <li>Технологичность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #2d3436;"></div>
+        <div class="color-dot" style="background: #00b894;"></div>
+        <div class="color-dot" style="background: #00cec9;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 9: Неоновый -->
+    <div class="concept-card">
+      <div class="concept-number">9</div>
+      <div class="concept-title">Neon Glow</div>
+      <div class="concept-style">Neon • Cyberpunk</div>
+      <div class="concept-description">
+        Неоновое свечение на тёмном фоне. Киберпанк эстетика.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#0a0a0a"/>
+          <path d="M60,25 C75,25 85,38 85,55 C85,75 60,90 60,90 C60,90 35,75 35,55 C35,38 45,25 60,25 Z" fill="none" stroke="#ff00ff" stroke-width="3" filter="drop-shadow(0 0 8px #ff00ff)"/>
+          <path d="M52,55 L58,61 L70,49" stroke="#00ffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="drop-shadow(0 0 8px #00ffff)"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Неоновое свечение</li>
+        <li>Киберпанк стиль</li>
+        <li>Яркость</li>
+        <li>Футуристичность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #0a0a0a;"></div>
+        <div class="color-dot" style="background: #ff00ff;"></div>
+        <div class="color-dot" style="background: #00ffff;"></div>
+      </div>
+    </div>
+
+    <!-- Концепт 10: Органический -->
+    <div class="concept-card">
+      <div class="concept-number">10</div>
+      <div class="concept-title">Organic</div>
+      <div class="concept-style">Organic • Fluid</div>
+      <div class="concept-description">
+        Плавные органические формы. Мягкие переходы и естественные линии.
+      </div>
+      <div class="logo-preview">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="grad10" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="120" height="120" rx="28" fill="url(#grad10)"/>
+          <path d="M60,28 C72,28 82,38 82,52 C82,68 60,85 60,85 C60,85 38,68 38,52 C38,38 48,28 60,28 Z" fill="white" opacity="0.9"/>
+          <path d="M53,52 L58,57 L68,47" stroke="url(#grad10)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <ul class="features-list">
+        <li>Плавные формы</li>
+        <li>Естественность</li>
+        <li>Мягкость</li>
+        <li>Дружелюбность</li>
+      </ul>
+      <div class="color-palette">
+        <div class="color-dot" style="background: #f093fb;"></div>
+        <div class="color-dot" style="background: #f5576c;"></div>
+        <div class="color-dot" style="background: #FFFFFF;"></div>
+      </div>
+    </div>
+  </div>
+</div>

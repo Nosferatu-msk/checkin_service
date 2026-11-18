@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="emeraldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="1024" height="1024" rx="230" fill="url(#emeraldGradient)" />
+  
+  <!-- Map Pin (outline style) -->
+  <path d="M512,200 C640,200 720,320 720,460 C720,640 512,800 512,800 C512,800 304,640 304,460 C304,320 384,200 512,200 Z" 
+        fill="none" stroke="#FFFFFF" stroke-width="32" stroke-linejoin="round" />
+  
+  <!-- Checkmark -->
+  <path d="M440,480 L500,540 L620,420" 
+        stroke="#FFFFFF" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
