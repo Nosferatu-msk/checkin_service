@@ -41,6 +41,7 @@ const FraudPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | undefined>();
   const [selectedSeverity, setSelectedSeverity] = useState<string | undefined>();
   const [form] = Form.useForm();
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 50 },
   });
@@ -72,21 +73,17 @@ const FraudPage: React.FC = () => {
       }
 
       const response = await fraudApi.getAll(params);
-      setFraudLogs(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setFraudLogs(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки данных фрод-мониторинга');
       console.error('Error fetching fraud logs:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams, dateRange, selectedType, selectedSeverity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, dateRange, selectedType, selectedSeverity]);
 
   useEffect(() => {
     fetchFraudLogs();
@@ -255,7 +252,9 @@ const FraudPage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего инцидентов: ${total}`,
         }}

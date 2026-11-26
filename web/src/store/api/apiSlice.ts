@@ -27,7 +27,7 @@ import type {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+    baseUrl: import.meta.env.VITE_API_URL || '',
     prepareHeaders: (headers) => {
       const token = localStorage.getItem('access_token');
       if (token) {

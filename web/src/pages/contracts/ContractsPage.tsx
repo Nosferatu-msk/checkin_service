@@ -37,6 +37,7 @@ const ContractsPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingContract, setEditingContract] = useState<ContractItem | null>(null);
   const [form] = Form.useForm();
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 10 },
     filters: {},
@@ -66,21 +67,17 @@ const ContractsPage: React.FC = () => {
       }
 
       const response = await contractsApi.getAll(params);
-      setContracts(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setContracts(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки договоров');
       console.error('Error fetching contracts:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, tableParams.filters]);
 
   useEffect(() => {
     fetchContracts();
@@ -269,7 +266,9 @@ const ContractsPage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего договоров: ${total}`,
         }}

@@ -45,6 +45,7 @@ const AttendancePage: React.FC = () => {
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
   const [selectedUser, setSelectedUser] = useState<string | undefined>();
   const [selectedObject, setSelectedObject] = useState<string | undefined>();
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 50 },
   });
@@ -76,21 +77,17 @@ const AttendancePage: React.FC = () => {
       }
 
       const response = await attendanceApi.getAll(params);
-      setRecords(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setRecords(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки данных присутствия');
       console.error('Error fetching attendance:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams, dateRange, selectedUser, selectedObject]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, dateRange, selectedUser, selectedObject]);
 
   useEffect(() => {
     fetchAttendance();
@@ -269,7 +266,9 @@ const AttendancePage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего записей: ${total}`,
         }}

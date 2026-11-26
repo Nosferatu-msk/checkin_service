@@ -31,6 +31,7 @@ const NotificationsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
   const [readFilter, setReadFilter] = useState<boolean | undefined>(undefined);
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 20 },
   });
@@ -57,21 +58,17 @@ const NotificationsPage: React.FC = () => {
       }
 
       const response = await notificationsApi.getAll(params);
-      setNotifications(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setNotifications(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки уведомлений');
       console.error('Error fetching notifications:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams, typeFilter, readFilter]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, typeFilter, readFilter]);
 
   useEffect(() => {
     fetchNotifications();
@@ -215,7 +212,7 @@ const NotificationsPage: React.FC = () => {
     },
   ];
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = notifications?.filter(n => !n.is_read).length || 0;
 
   return (
     <div className="notifications-page">
@@ -265,7 +262,9 @@ const NotificationsPage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего уведомлений: ${total}`,
         }}

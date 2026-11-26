@@ -45,6 +45,7 @@ const BeaconsPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingBeacon, setEditingBeacon] = useState<BeaconItem | null>(null);
   const [form] = Form.useForm();
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 10 },
     filters: {},
@@ -79,21 +80,17 @@ const BeaconsPage: React.FC = () => {
       }
 
       const response = await beaconsApi.getAll(params);
-      setBeacons(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setBeacons(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки маяков');
       console.error('Error fetching beacons:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, tableParams.filters]);
 
   const fetchZones = async () => {
     try {
@@ -314,7 +311,9 @@ const BeaconsPage: React.FC = () => {
         rowKey="id"
         scroll={{ x: 1000 }}
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего маяков: ${total}`,
         }}

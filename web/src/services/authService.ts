@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { LoginCredentials, LoginResponse } from '../types/auth';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -21,7 +21,9 @@ api.interceptors.request.use((config) => {
 
 // Интерцептор для обработки ошибок
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error) => {
     if (error.response?.status === 401) {
       // Токен истёк, попытка обновить
@@ -61,6 +63,14 @@ export const authService = {
 
   refreshToken: async (refreshToken: string) => {
     const response = await api.post<LoginResponse>('/auth/refresh', { refresh_token: refreshToken });
+    return response.data;
+  },
+
+  getProfile: async () => {
+    const token = localStorage.getItem('access_token');
+    const response = await api.get('/auth/me', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     return response.data;
   },
 };

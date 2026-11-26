@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../../redis/redis.service';
+import { readFileSync } from 'fs';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -10,12 +11,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private configService: ConfigService,
     private redisService: RedisService,
   ) {
-    const publicKey = configService.get<string>('JWT_PUBLIC_KEY');
-    
-    if (!publicKey) {
-      throw new Error('JWT_PUBLIC_KEY не установлен в переменных окружения');
+    // Read public key from file
+    let publicKey: string;
+    try {
+      publicKey = readFileSync('/run/secrets/jwt_public', 'utf8');
+    } catch (e) {
+      // Fallback to env variable
+      const envKey = configService.get<string>('JWT_PUBLIC_KEY');
+      if (envKey) {
+        publicKey = envKey.replace(/\\n/g, '\n');
+      } else {
+        throw new Error('JWT_PUBLIC_KEY не установлен');
+      }
     }
-    
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,

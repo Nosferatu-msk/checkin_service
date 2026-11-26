@@ -47,6 +47,7 @@ const ZonesPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingZone, setEditingZone] = useState<ZoneItem | null>(null);
   const [form] = Form.useForm();
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 10 },
     filters: {},
@@ -81,21 +82,17 @@ const ZonesPage: React.FC = () => {
       }
 
       const response = await zonesApi.getAll(params);
-      setZones(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setZones(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки зон');
       console.error('Error fetching zones:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, tableParams.filters]);
 
   const fetchObjects = async () => {
     try {
@@ -318,7 +315,9 @@ const ZonesPage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего зон: ${total}`,
         }}

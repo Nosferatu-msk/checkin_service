@@ -1,14 +1,25 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, UseGuards, Request } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { LoginDto, RefreshTokenDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
 import { Public } from '../../common/decorators/public.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Получение текущего пользователя' })
+  @ApiResponse({ status: 200, description: 'Данные пользователя' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  async getProfile(@Request() req) {
+    return req.user;
+  }
 
   @Post('login')
   @Public()

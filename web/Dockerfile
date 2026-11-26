@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -12,11 +12,18 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Copy production environment
+COPY .env.production .env.production
+
 # Build application
+ENV NODE_OPTIONS=--max-old-space-size=4096
 RUN npm run build
 
 # Production stage
 FROM nginx:alpine
+
+# Install curl for health check
+RUN apk add --no-cache curl
 
 # Copy built files
 COPY --from=builder /app/dist /usr/share/nginx/html
@@ -29,7 +36,7 @@ EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+  CMD curl -f http://localhost/health || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

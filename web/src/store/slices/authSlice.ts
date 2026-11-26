@@ -35,6 +35,18 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   localStorage.removeItem('refresh_token');
 });
 
+export const loadUserProfile = createAsyncThunk(
+  'auth/loadProfile',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await authService.getProfile();
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error?.message || 'Ошибка загрузки профиля');
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -59,6 +71,13 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+      })
+      .addCase(loadUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(loadUserProfile.rejected, (state) => {
         state.user = null;
         state.isAuthenticated = false;
       });

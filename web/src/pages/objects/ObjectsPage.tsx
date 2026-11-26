@@ -34,6 +34,7 @@ const ObjectsPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingObject, setEditingObject] = useState<ObjectItem | null>(null);
   const [form] = Form.useForm();
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 10 },
     filters: {},
@@ -63,21 +64,16 @@ const ObjectsPage: React.FC = () => {
       }
 
       const response = await objectsApi.getAll(params);
-      setObjects(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setObjects(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки объектов');
-      console.error('Error fetching objects:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, tableParams.filters]);
 
   useEffect(() => {
     fetchObjects();
@@ -242,7 +238,9 @@ const ObjectsPage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего объектов: ${total}`,
         }}

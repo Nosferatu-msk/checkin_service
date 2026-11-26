@@ -86,7 +86,7 @@ const Sidebar: React.FC = () => {
   // Фильтрация пунктов меню по роли
   const filteredMenuItems = menuItems.filter((item) => {
     if (!item.roles) return true;
-    return user && item.roles.includes(user.role);
+    return user && user.role && item.roles.includes(user.role);
   });
 
   return (

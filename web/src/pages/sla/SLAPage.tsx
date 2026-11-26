@@ -43,6 +43,7 @@ const SLAPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
   const [selectedContract, setSelectedContract] = useState<string | undefined>();
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: { current: 1, pageSize: 50 },
   });
@@ -70,21 +71,17 @@ const SLAPage: React.FC = () => {
       }
 
       const response = await slaApi.getViolations(params);
-      setViolations(response.data.data);
-      setTableParams(prev => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: response.data.total || response.data.data.length,
-        },
-      }));
+      const data = response.data.data || [];
+      setViolations(data);
+      setTotal(response.data.total || data.length);
     } catch (error) {
       message.error('Ошибка загрузки данных SLA');
       console.error('Error fetching SLA violations:', error);
     } finally {
       setLoading(false);
     }
-  }, [tableParams, dateRange, selectedContract]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize, tableParams.sorter, dateRange, selectedContract]);
 
   useEffect(() => {
     fetchViolations();
@@ -261,7 +258,9 @@ const SLAPage: React.FC = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          ...tableParams.pagination,
+          current: tableParams.pagination.current,
+          pageSize: tableParams.pagination.pageSize,
+          total: total,
           showSizeChanger: true,
           showTotal: (total) => `Всего нарушений: ${total}`,
         }}
