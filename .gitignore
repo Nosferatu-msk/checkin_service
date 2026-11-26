@@ -53,6 +53,7 @@ local-test.sh
 council/
 
 # Environment files with local secrets
+.env
 .env.local
 .env.*.local
 
