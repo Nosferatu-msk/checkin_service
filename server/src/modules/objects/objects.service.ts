@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ObjectEntity } from './entities/object.entity';
@@ -11,8 +11,39 @@ export class ObjectsService {
     private objectRepository: Repository<ObjectEntity>,
   ) {}
 
-  async create(createObjectDto: CreateObjectDto): Promise<Object> {
-    const object = this.objectRepository.create(createObjectDto);
+  private buildFullAddress(data: Partial<ObjectEntity>): string {
+    const parts: string[] = [];
+    if (data.country) parts.push(data.country);
+    if (data.region) parts.push(data.region);
+    if (data.city) parts.push(data.city);
+    if (data.street) parts.push(data.street);
+    if (data.building) parts.push(`д. ${data.building}`);
+    if (data.structure) parts.push(`стр. ${data.structure}`);
+    return parts.join(', ');
+  }
+
+  async create(createObjectDto: CreateObjectDto): Promise<ObjectEntity> {
+    const existingObject = await this.objectRepository.findOne({
+      where: { object_code: createObjectDto.object_code },
+    });
+    if (existingObject) {
+      throw new ConflictException('Объект с таким кодом уже существует');
+    }
+
+    const fullAddress = this.buildFullAddress({
+      country: createObjectDto.country || 'Россия',
+      region: createObjectDto.region,
+      city: createObjectDto.city,
+      street: createObjectDto.street,
+      building: createObjectDto.building,
+      structure: createObjectDto.structure,
+    });
+
+    const object = this.objectRepository.create({
+      ...createObjectDto,
+      country: createObjectDto.country || 'Россия',
+      full_address: fullAddress,
+    });
     return this.objectRepository.save(object);
   }
 
@@ -20,9 +51,10 @@ export class ObjectsService {
     const queryBuilder = this.objectRepository.createQueryBuilder('object');
 
     if (search) {
-      queryBuilder.where('object.name ILIKE :search OR object.address ILIKE :search', {
-        search: `%${search}%`,
-      });
+      queryBuilder.where(
+        'object.name ILIKE :search OR object.full_address ILIKE :search OR object.object_code ILIKE :search',
+        { search: `%${search}%` },
+      );
     }
 
     if (isActive !== undefined) {
@@ -40,6 +72,7 @@ export class ObjectsService {
     return {
       data: objects.map((obj) => ({
         ...obj,
+        full_address: obj.buildFullAddress(),
         zones_count: obj.zones?.length || 0,
         zones: undefined,
       })),
@@ -52,7 +85,7 @@ export class ObjectsService {
     };
   }
 
-  async findOne(id: string): Promise<Object> {
+  async findOne(id: string): Promise<ObjectEntity> {
     const object = await this.objectRepository.findOne({
       where: { id },
       relations: { zones: true },
@@ -62,17 +95,30 @@ export class ObjectsService {
       throw new NotFoundException('Объект не найден');
     }
 
+    (object as any).full_address = object.buildFullAddress();
     return object;
   }
 
-  async update(id: string, updateObjectDto: UpdateObjectDto): Promise<Object> {
+  async update(id: string, updateObjectDto: UpdateObjectDto): Promise<ObjectEntity> {
     const object = await this.objectRepository.findOne({ where: { id } });
 
     if (!object) {
       throw new NotFoundException('Объект не найден');
     }
 
-    Object.assign(object, updateObjectDto);
+    if (updateObjectDto.object_code && updateObjectDto.object_code !== object.object_code) {
+      const existingObject = await this.objectRepository.findOne({
+        where: { object_code: updateObjectDto.object_code },
+      });
+      if (existingObject) {
+        throw new ConflictException('Объект с таким кодом уже существует');
+      }
+    }
+
+    const updatedData = { ...object, ...updateObjectDto };
+    const fullAddress = this.buildFullAddress(updatedData);
+
+    Object.assign(object, updateObjectDto, { full_address: fullAddress });
     return this.objectRepository.save(object);
   }
 
@@ -88,6 +134,10 @@ export class ObjectsService {
 
   async findByName(name: string): Promise<ObjectEntity | null> {
     return await this.objectRepository.findOne({ where: { name } });
+  }
+
+  async findByCode(objectCode: string): Promise<ObjectEntity | null> {
+    return await this.objectRepository.findOne({ where: { object_code: objectCode } });
   }
 
   async findAllForExport(): Promise<ObjectEntity[]> {

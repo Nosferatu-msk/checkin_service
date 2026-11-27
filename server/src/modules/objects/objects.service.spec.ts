@@ -46,7 +46,12 @@ describe('ObjectsService', () => {
     it('should create a new object', async () => {
       const createDto = {
         name: 'Test Object',
-        address: 'Test Address',
+        object_code: 'RU/77/1',
+        country: 'Россия',
+        region: 'Москва',
+        city: 'Москва',
+        street: 'Примерная',
+        building: '1',
       };
 
       const mockObject = {
@@ -55,15 +60,18 @@ describe('ObjectsService', () => {
         is_active: true,
         created_at: new Date(),
         updated_at: new Date(),
+        buildFullAddress: () => 'Россия, Москва, Москва, Примерная, д. 1',
       };
 
       mockObjectRepository.create.mockReturnValue(mockObject);
       mockObjectRepository.save.mockResolvedValue(mockObject);
+      mockObjectRepository.findOne.mockResolvedValue(null);
 
       const result = await service.create(createDto);
 
       expect(result).toBeDefined();
       expect((result as any).name).toBe(createDto.name);
+      expect((result as any).object_code).toBe(createDto.object_code);
     });
   });
 

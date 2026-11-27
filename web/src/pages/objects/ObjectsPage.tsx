@@ -1,4 +1,4 @@
-import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm, Card } from 'antd';
+import { Table, Button, Space, Tag, Modal, Form, Input, Select, message, Popconfirm, Card, Row, Col } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import { useEffect, useState, useCallback } from 'react';
 import { objectsApi } from '../../services/api';
@@ -7,7 +7,14 @@ import './ObjectsPage.css';
 interface ObjectItem {
   id: string;
   name: string;
-  address: string;
+  object_code: string;
+  country: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  building?: string;
+  structure?: string;
+  full_address: string;
   is_active: boolean;
   created_at: string;
 }
@@ -114,6 +121,7 @@ const ObjectsPage: React.FC = () => {
   const handleAdd = () => {
     setEditingObject(null);
     form.resetFields();
+    form.setFieldsValue({ country: 'Россия' });
     setModalVisible(true);
   };
 
@@ -137,7 +145,7 @@ const ObjectsPage: React.FC = () => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       if (editingObject) {
         await objectsApi.update(editingObject.id, values);
         message.success('Объект обновлен');
@@ -145,7 +153,7 @@ const ObjectsPage: React.FC = () => {
         await objectsApi.create(values);
         message.success('Объект создан');
       }
-      
+
       setModalVisible(false);
       form.resetFields();
       fetchObjects();
@@ -157,6 +165,13 @@ const ObjectsPage: React.FC = () => {
 
   const columns = [
     {
+      title: 'Код',
+      dataIndex: 'object_code',
+      key: 'object_code',
+      width: 120,
+      sorter: true,
+    },
+    {
       title: 'Название',
       dataIndex: 'name',
       key: 'name',
@@ -164,13 +179,15 @@ const ObjectsPage: React.FC = () => {
     },
     {
       title: 'Адрес',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'full_address',
+      key: 'full_address',
+      ellipsis: true,
     },
     {
       title: 'Статус',
       dataIndex: 'is_active',
       key: 'is_active',
+      width: 100,
       render: (active: boolean) => (
         <Tag color={active ? 'green' : 'default'}>
           {active ? 'Активен' : 'Неактивен'}
@@ -180,6 +197,7 @@ const ObjectsPage: React.FC = () => {
     {
       title: 'Действия',
       key: 'actions',
+      width: 150,
       render: (_: any, record: ObjectItem) => (
         <Space>
           <Button icon={<EditOutlined />} size="small" onClick={() => handleEdit(record)}>
@@ -212,12 +230,12 @@ const ObjectsPage: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Space wrap>
           <Input
-            placeholder="Поиск по названию..."
+            placeholder="Поиск по названию, коду или адресу..."
             prefix={<SearchOutlined />}
             value={searchValue}
             onChange={(e) => handleSearch(e.target.value)}
             allowClear
-            style={{ width: 250 }}
+            style={{ width: 300 }}
           />
           <Select
             placeholder="Статус"
@@ -257,22 +275,89 @@ const ObjectsPage: React.FC = () => {
         }}
         okText="Сохранить"
         cancelText="Отмена"
+        width={700}
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="name"
-            label="Название"
-            rules={[{ required: true, message: 'Введите название объекта' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="address"
-            label="Адрес"
-            rules={[{ required: true, message: 'Введите адрес объекта' }]}
-          >
-            <Input.TextArea rows={3} />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="name"
+                label="Название"
+                rules={[{ required: true, message: 'Введите название объекта' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="object_code"
+                label="Код объекта"
+                rules={[
+                  { required: true, message: 'Введите код объекта' },
+                  { pattern: /^[A-Z]{2}\/\d+\/\d+$/, message: 'Формат: RU/77/1' },
+                ]}
+                tooltip="Уникальный код в формате: Страна/Регион/Номер (например, RU/77/1)"
+              >
+                <Input placeholder="RU/77/1" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Card type="inner" title="Адрес" style={{ marginBottom: 16 }}>
+            <Row gutter={16}>
+              <Col span={8}>
+                <Form.Item
+                  name="country"
+                  label="Страна"
+                  rules={[{ required: true, message: 'Введите страну' }]}
+                >
+                  <Input defaultValue="Россия" />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  name="region"
+                  label="Регион"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  name="city"
+                  label="Населённый пункт"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="street"
+                  label="Улица"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  name="building"
+                  label="Дом"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  name="structure"
+                  label="Строение/корпус"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Card>
         </Form>
       </Modal>
     </div>

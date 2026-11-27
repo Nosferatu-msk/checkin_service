@@ -17,8 +17,15 @@ export class ImportExportService {
 
     worksheet.columns = [
       { header: 'ID', key: 'id', width: 40 },
+      { header: 'Код объекта', key: 'object_code', width: 15 },
       { header: 'Название', key: 'name', width: 30 },
-      { header: 'Адрес', key: 'address', width: 50 },
+      { header: 'Страна', key: 'country', width: 15 },
+      { header: 'Регион', key: 'region', width: 20 },
+      { header: 'Населённый пункт', key: 'city', width: 20 },
+      { header: 'Улица', key: 'street', width: 20 },
+      { header: 'Дом', key: 'building', width: 10 },
+      { header: 'Строение/корпус', key: 'structure', width: 15 },
+      { header: 'Полный адрес', key: 'full_address', width: 50 },
       { header: 'Активен', key: 'is_active', width: 10 },
       { header: 'Создан', key: 'created_at', width: 20 },
     ];
@@ -35,8 +42,15 @@ export class ImportExportService {
     objects.forEach((obj) => {
       worksheet.addRow({
         id: obj.id,
+        object_code: obj.object_code,
         name: obj.name,
-        address: obj.address || '',
+        country: obj.country || 'Россия',
+        region: obj.region || '',
+        city: obj.city || '',
+        street: obj.street || '',
+        building: obj.building || '',
+        structure: obj.structure || '',
+        full_address: obj.buildFullAddress(),
         is_active: obj.is_active ? 'Да' : 'Нет',
         created_at: obj.created_at.toISOString(),
       });
@@ -90,9 +104,15 @@ export class ImportExportService {
     // Обрабатываем строки
     for (let i = 2; i <= worksheet.rowCount; i++) {
       const row = worksheet.getRow(i);
-      const name = row.getCell(1).value?.toString()?.trim();
-      const address = row.getCell(2).value?.toString()?.trim() || '';
-      const isActiveValue = row.getCell(3).value;
+      const objectCode = row.getCell(1).value?.toString()?.trim();
+      const name = row.getCell(2).value?.toString()?.trim();
+      const country = row.getCell(3).value?.toString()?.trim() || 'Россия';
+      const region = row.getCell(4).value?.toString()?.trim() || '';
+      const city = row.getCell(5).value?.toString()?.trim() || '';
+      const street = row.getCell(6).value?.toString()?.trim() || '';
+      const building = row.getCell(7).value?.toString()?.trim() || '';
+      const structure = row.getCell(8).value?.toString()?.trim() || '';
+      const isActiveValue = row.getCell(9).value;
       const isActive =
         isActiveValue === 'Да' ||
         isActiveValue === 'true' ||
@@ -100,6 +120,16 @@ export class ImportExportService {
         isActiveValue === 1;
 
       // Валидация
+      if (!objectCode) {
+        errors.push(`Строка ${i}: Код объекта обязателен`);
+        continue;
+      }
+
+      if (!/^[A-Z]{2}\/\d+\/\d+$/.test(objectCode)) {
+        errors.push(`Строка ${i}: Код объекта должен быть в формате XX/NN/NN (например, RU/77/1)`);
+        continue;
+      }
+
       if (!name) {
         errors.push(`Строка ${i}: Название обязательно`);
         continue;
@@ -112,34 +142,51 @@ export class ImportExportService {
 
       try {
         if (mode === 'add' || mode === 'replace') {
-          // Проверяем дубликаты по названию
-          const existing = await this.objectsService.findByName(name);
+          // Проверяем дубликаты по коду
+          const existing = await this.objectsService.findByCode(objectCode);
           if (existing) {
-            errors.push(`Строка ${i}: Объект с названием "${name}" уже существует`);
+            errors.push(`Строка ${i}: Объект с кодом "${objectCode}" уже существует`);
             continue;
           }
 
           await this.objectsService.create({
+            object_code: objectCode,
             name,
-            address: address || null,
+            country,
+            region: region || undefined,
+            city: city || undefined,
+            street: street || undefined,
+            building: building || undefined,
+            structure: structure || undefined,
             is_active: isActive,
           });
           imported++;
         } else if (mode === 'update') {
-          // Ищем по названию и обновляем
-          const existing = await this.objectsService.findByName(name);
+          // Ищем по коду и обновляем
+          const existing = await this.objectsService.findByCode(objectCode);
           if (existing) {
             await this.objectsService.update(existing.id, {
               name,
-              address: address || null,
+              country,
+              region: region || undefined,
+              city: city || undefined,
+              street: street || undefined,
+              building: building || undefined,
+              structure: structure || undefined,
               is_active: isActive,
             });
             updated++;
           } else {
             // Создаем новый, если не найден
             await this.objectsService.create({
+              object_code: objectCode,
               name,
-              address: address || null,
+              country,
+              region: region || undefined,
+              city: city || undefined,
+              street: street || undefined,
+              building: building || undefined,
+              structure: structure || undefined,
               is_active: isActive,
             });
             imported++;
@@ -164,8 +211,14 @@ export class ImportExportService {
     switch (type) {
       case 'objects':
         worksheet.columns = [
+          { header: 'Код объекта', key: 'object_code', width: 15 },
           { header: 'Название', key: 'name', width: 30 },
-          { header: 'Адрес', key: 'address', width: 50 },
+          { header: 'Страна', key: 'country', width: 15 },
+          { header: 'Регион', key: 'region', width: 20 },
+          { header: 'Населённый пункт', key: 'city', width: 20 },
+          { header: 'Улица', key: 'street', width: 20 },
+          { header: 'Дом', key: 'building', width: 10 },
+          { header: 'Строение/корпус', key: 'structure', width: 15 },
           { header: 'Активен (Да/Нет)', key: 'is_active', width: 15 },
         ];
 
@@ -179,8 +232,14 @@ export class ImportExportService {
 
         // Добавляем пример
         worksheet.addRow({
-          name: 'Пример объекта',
-          address: 'г. Москва, ул. Примерная, д. 1',
+          object_code: 'RU/77/1',
+          name: 'БЦ "Москва"',
+          country: 'Россия',
+          region: 'Москва',
+          city: 'Москва',
+          street: 'Примерная',
+          building: '1',
+          structure: '',
           is_active: 'Да',
         });
         break;

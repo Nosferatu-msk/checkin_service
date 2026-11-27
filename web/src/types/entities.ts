@@ -2,8 +2,14 @@
 export interface Object {
   id: string;
   name: string;
-  address: string;
-  description?: string;
+  object_code: string;
+  country: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  building?: string;
+  structure?: string;
+  full_address: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -11,8 +17,13 @@ export interface Object {
 
 export interface ObjectCreateRequest {
   name: string;
-  address: string;
-  description?: string;
+  object_code: string;
+  country?: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  building?: string;
+  structure?: string;
 }
 
 export interface ObjectUpdateRequest extends Partial<ObjectCreateRequest> {
@@ -23,23 +34,24 @@ export interface ObjectUpdateRequest extends Partial<ObjectCreateRequest> {
 export interface Zone {
   id: string;
   object_id: string;
+  parent_zone_id?: string;
   name: string;
-  type: 'entry' | 'exit' | 'work' | 'restricted';
-  geometry?: any;
-  is_active: boolean;
+  zone_type: 'floor' | 'room' | 'zone';
+  level: number;
+  path: string;
+  rssi_threshold: number;
   created_at: string;
-  updated_at: string;
 }
 
 export interface ZoneCreateRequest {
   object_id: string;
+  parent_zone_id?: string;
   name: string;
-  type: 'entry' | 'exit' | 'work' | 'restricted';
-  geometry?: any;
+  zone_type: 'floor' | 'room' | 'zone';
+  rssi_threshold?: number;
 }
 
 export interface ZoneUpdateRequest extends Partial<ZoneCreateRequest> {
-  is_active?: boolean;
 }
 
 // Beacon types
