@@ -109,11 +109,11 @@ class AuthInterceptor @Inject constructor(
     }
 
     companion object {
-        // Для локального тестирования используем локальный IP
+        // Production сервер
         private val BASE_URL = if (BuildConfig.DEBUG) {
-            "http://192.168.100.77:3000/"
+            "https://staff-checkin.ru/api/"
         } else {
-            "https://api.checkin-service.com/"
+            "https://staff-checkin.ru/api/"
         }
         private const val HTTP_UNAUTHORIZED = 401
         private const val HTTP_FORBIDDEN = 403

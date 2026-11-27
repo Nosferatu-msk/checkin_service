@@ -8,7 +8,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -26,17 +25,11 @@ object NetworkModule {
         tokenManager: TokenManager,
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
-        // Certificate Pinning — только для production
-        // Для локального тестирования отключено
         val clientBuilder = OkHttpClient.Builder()
-        
-        if (!BuildConfig.DEBUG) {
-            val certificatePinner = CertificatePinner.Builder()
-                .add("api.checkin-service.com", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
-                .add("api.checkin-service.com", "sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=")
-                .build()
-            clientBuilder.certificatePinner(certificatePinner)
-        }
+
+        // Certificate Pinning отключён — используем стандартную HTTPS проверку
+        // Для включения pinning нужно получить реальные SHA-256 hashes сертификатов
+        // через: openssl s_client -connect staff-checkin.ru:443 | openssl x509 -noout -fingerprint -sha256
         
         return clientBuilder
             // Interceptor 1: добавляет Authorization header ко всем запросам
@@ -73,14 +66,13 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        // Для локального тестирования используем локальный IP
-        // В production заменить на https://api.checkin-service.com/
+        // Production сервер
         val baseUrl = if (BuildConfig.DEBUG) {
-            "http://192.168.100.77:3000/"
+            "https://staff-checkin.ru/api/"
         } else {
-            "https://api.checkin-service.com/"
+            "https://staff-checkin.ru/api/"
         }
-        
+
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
